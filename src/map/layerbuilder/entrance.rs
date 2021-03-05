@@ -1,6 +1,6 @@
 use super::all_space;
 use crate::{
-    components::{Description, Door, Glyph, Position, TileTrigger, TriggerType},
+    components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
@@ -74,6 +74,7 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     add_windows(map);
 
     // Add an exit
+    add_exit(&mut rooms, map, ecs);
 
     // Populate rooms
 
@@ -267,15 +268,15 @@ fn add_windows(map: &mut Layer) {
     let mut rng_lock = crate::RNG.lock();
     let rng = rng_lock.as_mut().unwrap();
 
-    for y in 1..HEIGHT-1 {
-        for x in 1..WIDTH-1 {
+    for y in 1..HEIGHT - 1 {
+        for x in 1..WIDTH - 1 {
             let pt = Point::new(x, y);
             let idx = map.point2d_to_index(pt);
             if map.tiles[idx].tile_type == TileType::Wall {
-                if map.tiles[idx-1].tile_type == TileType::Outside ||
-                    map.tiles[idx+1].tile_type == TileType::Outside ||
-                    map.tiles[idx-WIDTH].tile_type == TileType::Outside ||
-                    map.tiles[idx-WIDTH].tile_type == TileType::Outside 
+                if map.tiles[idx - 1].tile_type == TileType::Outside
+                    || map.tiles[idx + 1].tile_type == TileType::Outside
+                    || map.tiles[idx - WIDTH].tile_type == TileType::Outside
+                    || map.tiles[idx - WIDTH].tile_type == TileType::Outside
                 {
                     if rng.range(0, 10) == 0 {
                         map.tiles[idx] = Tile::window();
@@ -284,4 +285,18 @@ fn add_windows(map: &mut Layer) {
             }
         }
     }
+}
+
+fn add_exit(rooms: &mut Vec<Rect>, map: &mut Layer, ecs: &mut World) {
+    let mut rng_lock = crate::RNG.lock();
+    let rng = rng_lock.as_mut().unwrap();
+    let room = rng.random_slice_entry(&rooms).unwrap();
+    let exit_location = room.center();
+    let idx = map.point2d_to_index(exit_location);
+    map.tiles[idx] = Tile::stairs_down();
+
+    ecs.push((
+        Position::with_pt(exit_location, 0),
+        Description("Stairs further into the complex".to_string()),
+    ));
 }

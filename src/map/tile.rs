@@ -7,6 +7,7 @@ pub enum TileType {
     Wall,
     Floor,
     Outside,
+    StairsDown,
 }
 
 #[derive(Clone)]
@@ -66,6 +67,16 @@ impl Tile {
             blocked: true,
             opaque: false,
             tile_type: TileType::Wall,
+        }
+    }
+
+    pub fn stairs_down() -> Self {
+        Self {
+            glyph: to_cp437('>'),
+            color: ColorPair::new(YELLOW, BLACK),
+            blocked: false,
+            opaque: false,
+            tile_type: TileType::StairsDown,
         }
     }
 

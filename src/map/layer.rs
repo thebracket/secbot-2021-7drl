@@ -18,7 +18,7 @@ impl Layer {
                 tiles: vec![Tile::default(); TILES],
                 starting_point: Point::new(WIDTH / 2, HEIGHT / 2),
                 visible: vec![false; TILES],
-                revealed: vec![true; TILES],
+                revealed: vec![false; TILES],
                 is_door: vec![false; TILES],
             },
         };
