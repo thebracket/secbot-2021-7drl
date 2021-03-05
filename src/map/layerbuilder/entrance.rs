@@ -55,6 +55,22 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     map.tiles[idx] = Tile::capsule_window();
     let idx = map.point2d_to_index(Point::new(x_middle + 2, BOTTOM + 1));
     map.tiles[idx] = Tile::capsule_window();
+    ecs.push((
+        Position::with_pt(Point::new(x_middle - 2, TOP - 1), 0),
+        Description("A window. It doesn't look fun outside.".to_string())
+    ));
+    ecs.push((
+        Position::with_pt(Point::new(x_middle - 2, BOTTOM + 1), 0),
+        Description("A window. It doesn't look fun outside.".to_string())
+    ));
+    ecs.push((
+        Position::with_pt(Point::new(x_middle + 2, TOP - 1), 0),
+        Description("A window. It doesn't look fun outside.".to_string())
+    ));
+    ecs.push((
+        Position::with_pt(Point::new(x_middle + 2, BOTTOM + 1), 0),
+        Description("A window. It doesn't look fun outside.".to_string())
+    ));
 
     // Spawn the game exit
     add_game_exit(map, ecs, Point::new(LEFT - 1, MIDDLE));
