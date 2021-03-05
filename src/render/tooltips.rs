@@ -14,7 +14,10 @@ pub fn render_tooltips(ctx: &mut BTerm, ecs: &World, map: &Map) {
         let mut query = <(&Position, &Description)>::query();
         query.for_each(ecs, |(pos, desc)| {
             if pos.layer == map.current_layer as u32 && pos.pt.x == map_x && pos.pt.y == map_y {
-                lines.push(desc.0.clone());
+                let idx = map.get_current().point2d_to_index(pos.pt);
+                if map.get_current().visible[idx] {
+                    lines.push(desc.0.clone());
+                }
             }
         });
 

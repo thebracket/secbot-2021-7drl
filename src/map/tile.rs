@@ -123,9 +123,9 @@ impl Tile {
     pub fn alien_landscape(height: f32) -> Self {
         let fg = if height < 0.0 {
             if height < -0.25 {
-                (40, 20, 0)
+                NAVY
             } else {
-                GRAY
+                DARK_ORANGE
             }
         } else {
             (
