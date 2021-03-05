@@ -50,7 +50,7 @@ pub fn modal(ctx: &mut BTerm, title: &String, body: &String) -> NewState {
         .centered("PRESS ENTER TO CONTINUE")
         .reset();
 
-    let mut block = TextBlock::new(20, 15, 70, 11);
+    let mut block = TextBlock::new(21, 15, 69, 11);
     block.print(&buf).expect("Overflow occurred");
     block.render_to_draw_batch(&mut draw_batch);
     draw_batch.submit(0).expect("Batch error");

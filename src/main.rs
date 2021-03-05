@@ -3,10 +3,10 @@ use lazy_static::*;
 pub use legion::*;
 use std::sync::Mutex;
 mod components;
+mod game;
 mod map;
 mod render;
 mod text;
-mod game;
 
 lazy_static! {
     pub static ref BACKEND: Mutex<RandomNumberGenerator> = Mutex::new(RandomNumberGenerator::new());
