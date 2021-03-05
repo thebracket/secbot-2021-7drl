@@ -1,0 +1,10 @@
+[package]
+name = "secbot"
+version = "0.1.0"
+authors = ["Herbert Wolverson <herberticus@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+bracket-lib = { path = "C:/Users/herbe/Documents/LearnRust/rltk_rs" }
+legion = { version = "0.3.1", default-features = false, features = ["wasm-bindgen"] }
+lazy_static = "1.4.0"

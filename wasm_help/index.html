@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  </head>
+  <body style="background-color: black;">
+    <h1 style="color: white; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">SecBot (2021 7DRL) - by Herbert Wolverson</h1>
+    <canvas id="canvas" width="896" height="496"></canvas>
+    <script src="./secbot.js"></script>
+    <script>
+      window.addEventListener("load", async () => {
+        await wasm_bindgen("./secbot_bg.wasm");
+      });
+    </script>
+  </body>
+</html>
