@@ -48,7 +48,6 @@ impl State {
 
     fn new_game(&mut self) {
         use components::*;
-        self.ecs.clear();
 
         // Spawn the player
         self.ecs.push((
