@@ -4,6 +4,7 @@ pub use legion::*;
 use std::sync::Mutex;
 mod components;
 mod map;
+mod render;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 lazy_static! {
@@ -43,36 +44,15 @@ impl State {
             Description("Everybody's favorite Bracket Corp SecBot".to_string()),
         ));
     }
-
-    fn render_glyphs(&self, ctx: &mut BTerm) {
-        use components::{Glyph, Position};
-        let mut query = <(&Position, &Glyph)>::query();
-        query.for_each(&self.ecs, |(pos, glyph)| {
-            if pos.layer == self.map.current_layer as u32 {
-                ctx.set(
-                    pos.pt.x + 1,
-                    pos.pt.y + 1,
-                    glyph.color.fg,
-                    glyph.color.bg,
-                    glyph.glyph,
-                );
-            }
-        });
-    }
 }
 
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         if REDRAW.load(Ordering::Relaxed) {
             ctx.cls();
-            use map::{HEIGHT, WIDTH};
-            ctx.draw_hollow_box(0, 0, WIDTH+1, HEIGHT+1, GRAY, BLACK);
-            ctx.print_color(2, 0, WHITE, BLACK, "┤ SecBot 2021 7DRL ├");
-            ctx.draw_hollow_box(WIDTH+1, 0, 30, HEIGHT+1, GRAY, BLACK);
-            ctx.set(WIDTH+1, 0, GRAY, BLACK, to_cp437('┬'));
-            ctx.set(WIDTH+1, HEIGHT+1, GRAY, BLACK, to_cp437('┴'));
+            render::render_ui_skeleton(ctx);
             self.map.render(ctx);
-            self.render_glyphs(ctx);
+            render::render_glyphs(ctx, &self.ecs, &self.map);
 
             REDRAW.store(false, Ordering::Relaxed);
         }
