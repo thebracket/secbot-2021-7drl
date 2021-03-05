@@ -11,13 +11,16 @@ pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map) {
     let mut query = <(&Position, &Glyph)>::query();
     query.for_each(ecs, |(pos, glyph)| {
         if pos.layer == map.current_layer as u32 {
-            ctx.set(
-                pos.pt.x + 1,
-                pos.pt.y + 1,
-                glyph.color.fg,
-                glyph.color.bg,
-                glyph.glyph,
-            );
+            let idx = map.get_current().point2d_to_index(pos.pt);
+            if map.get_current().visible[idx] {
+                ctx.set(
+                    pos.pt.x + 1,
+                    pos.pt.y + 1,
+                    glyph.color.fg,
+                    glyph.color.bg,
+                    glyph.glyph,
+                );
+            }
         }
     });
 }

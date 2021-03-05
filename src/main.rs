@@ -61,7 +61,10 @@ impl State {
                 color: ColorPair::new(YELLOW, BLACK),
             },
             Description("Everybody's favorite Bracket Corp SecBot".to_string()),
-            FieldOfView{radius: 20, visible_tiles: HashSet::new()},
+            FieldOfView {
+                radius: 20,
+                visible_tiles: HashSet::new(),
+            },
         ));
     }
 }

@@ -1,6 +1,6 @@
 use super::all_space;
 use crate::{
-    components::{Description, Position, TileTrigger},
+    components::{Description, Door, Glyph, Position, TileTrigger, TriggerType},
     map::{Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
@@ -32,32 +32,35 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     }
 
     // Encasing Walls
-    for x in LEFT-1..=RIGHT+1 {
-        let idx = map.point2d_to_index(Point::new(x, TOP-1));
+    for x in LEFT - 1..=RIGHT + 1 {
+        let idx = map.point2d_to_index(Point::new(x, TOP - 1));
         map.tiles[idx] = Tile::capsule_wall();
-        let idx = map.point2d_to_index(Point::new(x, BOTTOM+1));
+        let idx = map.point2d_to_index(Point::new(x, BOTTOM + 1));
         map.tiles[idx] = Tile::capsule_wall();
     }
-    for y in TOP-1..=BOTTOM+1 {
-        let idx = map.point2d_to_index(Point::new(LEFT-1, y));
+    for y in TOP - 1..=BOTTOM + 1 {
+        let idx = map.point2d_to_index(Point::new(LEFT - 1, y));
         map.tiles[idx] = Tile::capsule_wall();
-        let idx = map.point2d_to_index(Point::new(RIGHT+1, y));
+        let idx = map.point2d_to_index(Point::new(RIGHT + 1, y));
         map.tiles[idx] = Tile::capsule_wall();
     }
 
     // Add some windows
-    let x_middle = (LEFT+RIGHT) / 2;
-    let idx = map.point2d_to_index(Point::new(x_middle - 2, TOP-1));
+    let x_middle = (LEFT + RIGHT) / 2;
+    let idx = map.point2d_to_index(Point::new(x_middle - 2, TOP - 1));
     map.tiles[idx] = Tile::capsule_window();
-    let idx = map.point2d_to_index(Point::new(x_middle - 2, BOTTOM+1));
+    let idx = map.point2d_to_index(Point::new(x_middle - 2, BOTTOM + 1));
     map.tiles[idx] = Tile::capsule_window();
-    let idx = map.point2d_to_index(Point::new(x_middle + 2, TOP-1));
+    let idx = map.point2d_to_index(Point::new(x_middle + 2, TOP - 1));
     map.tiles[idx] = Tile::capsule_window();
-    let idx = map.point2d_to_index(Point::new(x_middle + 2, BOTTOM+1));
+    let idx = map.point2d_to_index(Point::new(x_middle + 2, BOTTOM + 1));
     map.tiles[idx] = Tile::capsule_window();
 
     // Spawn the game exit
     add_game_exit(map, ecs, Point::new(LEFT - 1, MIDDLE));
+
+    // Start adding in building complex features
+    add_door(map, ecs, Point::new(RIGHT + 1, MIDDLE));
 
     map.starting_point = Point::new(LEFT + 1, MIDDLE);
 }
@@ -94,4 +97,19 @@ fn add_landscape(map: &mut Layer, _ecs: &mut World) {
             map.tiles[idx] = Tile::alien_landscape(h);
         }
     }
+}
+
+fn add_door(map: &mut Layer, ecs: &mut World, pt: Point) {
+    let idx = map.point2d_to_index(pt);
+    ecs.push((
+        Position::with_pt(pt, 0),
+        Description("A heavy, steel door.".to_string()),
+        Glyph {
+            glyph: to_cp437('+'),
+            color: ColorPair::new(CYAN, BLACK),
+        },
+        Door {},
+    ));
+    map.tiles[idx] = Tile::wall();
+    map.is_door[idx] = true;
 }

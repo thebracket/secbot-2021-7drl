@@ -1,9 +1,9 @@
-use std::thread::current;
-
 use crate::{components::*, render::tooltips::render_tooltips};
 use crate::{map::Map, NewState};
 use bracket_lib::prelude::*;
+use legion::systems::CommandBuffer;
 use legion::*;
+use std::collections::HashSet;
 
 pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState {
     render_tooltips(ctx, ecs, map);
@@ -32,18 +32,37 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
 fn try_move(ecs: &mut World, map: &mut Map, delta_x: i32, delta_y: i32) -> NewState {
     let mut find_player = <(&Player, &mut Position)>::query();
     let mut result = NewState::Wait;
+    let mut doors_to_delete = HashSet::new();
     find_player.iter_mut(ecs).for_each(|(_, pos)| {
         let new_pos = pos.pt + Point::new(delta_x, delta_y);
         let new_idx = map.get_current().point2d_to_index(new_pos);
         if !map.get_current().tiles[new_idx].blocked {
             pos.pt = new_pos;
             result = NewState::Enemy;
+        } else if map.get_current().is_door[new_idx] {
+            map.get_current_mut().is_door[new_idx] = false;
+            map.get_current_mut().tiles[new_idx].blocked = false;
+            map.get_current_mut().tiles[new_idx].opaque = false;
+            map.get_current_mut().tiles[new_idx].glyph = to_cp437('.');
+            doors_to_delete.insert(map.get_current().index_to_point2d(new_idx));
         }
     });
+
+    if !doors_to_delete.is_empty() {
+        let mut commands = CommandBuffer::new(ecs);
+        let mut q = <(Entity, &Position, &Door)>::query();
+        q.for_each(ecs, |(entity, pos, _)| {
+            if pos.layer == map.current_layer as u32 && doors_to_delete.contains(&pos.pt) {
+                commands.remove(*entity);
+            }
+        });
+        commands.flush(ecs);
+    }
+
     result
 }
 
-fn tile_triggers(new_state: &mut NewState, ecs: &mut World, map: &mut Map) {
+fn tile_triggers(new_state: &mut NewState, ecs: &mut World, _map: &mut Map) {
     if *new_state != NewState::Wait {
         return;
     }
@@ -56,8 +75,7 @@ fn tile_triggers(new_state: &mut NewState, ecs: &mut World, map: &mut Map) {
         .filter(|(_, pos)| **pos == player_pos)
         .for_each(|(tt, _)| match tt.0 {
             TriggerType::EndGame => *new_state = NewState::LeftMap,
-        }
-    );
+        });
 }
 
 fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
@@ -76,5 +94,4 @@ fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
             current_layer.visible[idx] = true;
         });
     });
-
 }

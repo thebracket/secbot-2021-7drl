@@ -27,6 +27,24 @@ impl Tile {
         }
     }
 
+    pub fn floor() -> Self {
+        Self {
+            glyph: to_cp437('.'),
+            color: ColorPair::new(DARK_GRAY, BLACK),
+            blocked: false,
+            opaque: false,
+        }
+    }
+
+    pub fn wall() -> Self {
+        Self {
+            glyph: to_cp437('#'),
+            color: ColorPair::new(DARK_GRAY, BLACK),
+            blocked: true,
+            opaque: true,
+        }
+    }
+
     pub fn capsule_floor() -> Self {
         Self {
             glyph: to_cp437('.'),
@@ -74,7 +92,7 @@ impl Tile {
             (
                 (height * 128.0) as u8 + 128,
                 ((height * 128.0) as u8 + 128) / 2,
-                0
+                0,
             )
         };
 
