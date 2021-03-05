@@ -12,8 +12,8 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
     let mut new_state = if let Some(key) = ctx.key {
         match key {
             VirtualKeyCode::Up | VirtualKeyCode::W => try_move(ecs, map, 0, -1),
-            VirtualKeyCode::Down | VirtualKeyCode::A => try_move(ecs, map, 0, 1),
-            VirtualKeyCode::Left | VirtualKeyCode::S => try_move(ecs, map, -1, 0),
+            VirtualKeyCode::Down | VirtualKeyCode::S => try_move(ecs, map, 0, 1),
+            VirtualKeyCode::Left | VirtualKeyCode::A => try_move(ecs, map, -1, 0),
             VirtualKeyCode::Right | VirtualKeyCode::D => try_move(ecs, map, 1, 0),
             _ => NewState::Wait,
         }
