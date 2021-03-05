@@ -6,6 +6,7 @@ mod components;
 mod map;
 mod render;
 mod text;
+mod game;
 
 lazy_static! {
     pub static ref BACKEND: Mutex<RandomNumberGenerator> = Mutex::new(RandomNumberGenerator::new());
@@ -73,6 +74,7 @@ impl GameState for State {
 
         let new_state = match &self.turn {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),
+            TurnState::WaitingForInput => game::player_turn(ctx, &mut self.ecs, &mut self.map),
             _ => NewState::NoChange,
         };
         match new_state {

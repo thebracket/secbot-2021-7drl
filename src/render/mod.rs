@@ -5,6 +5,7 @@ use crate::{
 };
 use bracket_lib::prelude::*;
 use legion::*;
+pub mod tooltips;
 
 pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map) {
     let mut query = <(&Position, &Glyph)>::query();
