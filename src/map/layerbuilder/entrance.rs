@@ -71,7 +71,7 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     edge_filler(map);
 
     // Add some exterior windows
-    add_windows(map);
+    add_windows(map, ecs);
 
     // Add an exit
     add_exit(&mut rooms, map, ecs);
@@ -264,7 +264,7 @@ fn edge_filler(map: &mut Layer) {
     }
 }
 
-fn add_windows(map: &mut Layer) {
+fn add_windows(map: &mut Layer, ecs: &mut World) {
     let mut rng_lock = crate::RNG.lock();
     let rng = rng_lock.as_mut().unwrap();
 
@@ -280,6 +280,10 @@ fn add_windows(map: &mut Layer) {
                 {
                     if rng.range(0, 10) == 0 {
                         map.tiles[idx] = Tile::window();
+                        ecs.push((
+                            Position::with_pt(Point::new(x, y), 0),
+                            Description("A window. Not sure who thought that was a good idea.".to_string())
+                        ));
                     }
                 }
             }
