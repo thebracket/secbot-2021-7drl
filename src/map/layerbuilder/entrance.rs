@@ -71,6 +71,7 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     edge_filler(map);
 
     // Add some exterior windows
+    add_windows(map);
 
     // Add an exit
 
@@ -258,6 +259,29 @@ fn edge_filler(map: &mut Layer) {
         let idx = map.point2d_to_index(Point::new(x, HEIGHT - 1));
         if map.tiles[idx].tile_type == TileType::Floor {
             map.tiles[idx] = Tile::wall();
+        }
+    }
+}
+
+fn add_windows(map: &mut Layer) {
+    let mut rng_lock = crate::RNG.lock();
+    let rng = rng_lock.as_mut().unwrap();
+
+    for y in 1..HEIGHT-1 {
+        for x in 1..WIDTH-1 {
+            let pt = Point::new(x, y);
+            let idx = map.point2d_to_index(pt);
+            if map.tiles[idx].tile_type == TileType::Wall {
+                if map.tiles[idx-1].tile_type == TileType::Outside ||
+                    map.tiles[idx+1].tile_type == TileType::Outside ||
+                    map.tiles[idx-WIDTH].tile_type == TileType::Outside ||
+                    map.tiles[idx-WIDTH].tile_type == TileType::Outside 
+                {
+                    if rng.range(0, 10) == 0 {
+                        map.tiles[idx] = Tile::window();
+                    }
+                }
+            }
         }
     }
 }

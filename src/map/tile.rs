@@ -59,6 +59,16 @@ impl Tile {
         }
     }
 
+    pub fn window() -> Self {
+        Self {
+            glyph: to_cp437('#'),
+            color: ColorPair::new(DARK_CYAN, BLACK),
+            blocked: true,
+            opaque: false,
+            tile_type: TileType::Wall,
+        }
+    }
+
     pub fn capsule_floor() -> Self {
         Self {
             glyph: to_cp437('.'),
