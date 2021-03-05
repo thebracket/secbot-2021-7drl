@@ -212,10 +212,10 @@ fn try_random_room(map: &mut Layer, ecs: &mut World, rooms: &mut Vec<Rect>) {
                 Rect::with_size(x, next_y, rng.range(3, 6), rng.range(4, 10))
             } else if dx == -1 {
                 let w = 5;
-                Rect::with_size(x - (w + 1), y, rng.range(4, 10), rng.range(3, 6))
+                Rect::with_size(x - w, y, rng.range(4, 10), rng.range(3, 6))
             } else {
                 let h = 5;
-                Rect::with_size(x, y - (h + 1), rng.range(3, 6), rng.range(4, 10))
+                Rect::with_size(x, y - h, rng.range(3, 6), rng.range(4, 10))
             };
 
             let mut can_add = true;
