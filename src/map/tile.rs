@@ -99,7 +99,7 @@ impl Tile {
         Self {
             glyph: to_cp437('~'),
             color: ColorPair::new(fg, BLACK),
-            blocked: false,
+            blocked: height <= -0.255,
             opaque: false,
         }
     }

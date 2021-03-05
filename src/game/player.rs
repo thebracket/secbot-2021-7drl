@@ -89,9 +89,11 @@ fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
         let current_layer = map.get_current_mut();
         current_layer.clear_visible();
         fov.visible_tiles.iter().for_each(|pt| {
-            let idx = current_layer.point2d_to_index(*pt);
-            current_layer.revealed[idx] = true;
-            current_layer.visible[idx] = true;
+            if current_layer.in_bounds(*pt) {
+                let idx = current_layer.point2d_to_index(*pt);
+                current_layer.revealed[idx] = true;
+                current_layer.visible[idx] = true;
+            }
         });
     });
 }

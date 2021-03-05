@@ -81,7 +81,11 @@ impl Algorithm2D for Layer {
 
 impl BaseMap for Layer {
     fn is_opaque(&self, idx: usize) -> bool {
-        self.tiles[idx].opaque
+        if idx < TILES {
+            self.tiles[idx].opaque
+        } else {
+            false
+        }
     }
 
     fn get_available_exits(&self, idx: usize) -> SmallVec<[(usize, f32); 10]> {
