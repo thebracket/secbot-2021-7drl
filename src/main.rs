@@ -14,7 +14,6 @@ lazy_static! {
 
 enum TurnState {
     WaitingForInput,
-    PlayerTurn,
     EnemyTurn,
     Modal { title: String, body: String },
 }
@@ -22,7 +21,6 @@ enum TurnState {
 pub enum NewState {
     NoChange,
     Wait,
-    Player,
     Enemy,
 }
 
@@ -75,12 +73,12 @@ impl GameState for State {
         let new_state = match &self.turn {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),
             TurnState::WaitingForInput => game::player_turn(ctx, &mut self.ecs, &mut self.map),
+            TurnState::EnemyTurn => NewState::Wait,
             _ => NewState::NoChange,
         };
         match new_state {
             NewState::NoChange => {}
             NewState::Wait => self.turn = TurnState::WaitingForInput,
-            NewState::Player => self.turn = TurnState::PlayerTurn,
             NewState::Enemy => self.turn = TurnState::EnemyTurn,
         }
     }

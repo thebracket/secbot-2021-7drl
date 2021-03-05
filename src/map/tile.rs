@@ -31,7 +31,7 @@ impl Tile {
         Self {
             glyph: to_cp437('.'),
             color: ColorPair::new(DARK_CYAN, BLACK),
-            blocked: true,
+            blocked: false,
             opaque: false,
         }
     }
