@@ -9,7 +9,7 @@ mod render;
 mod text;
 
 lazy_static! {
-    pub static ref BACKEND: Mutex<RandomNumberGenerator> = Mutex::new(RandomNumberGenerator::new());
+    pub static ref RNG: Mutex<RandomNumberGenerator> = Mutex::new(RandomNumberGenerator::new());
 }
 
 enum TurnState {
