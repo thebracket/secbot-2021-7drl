@@ -16,7 +16,7 @@ pub fn render_tooltips(ctx: &mut BTerm, ecs: &World, map: &Map) {
         });
 
         if !lines.is_empty() {
-            let height = lines.len() + 2;
+            let height = lines.len() + 1;
             let width = lines.iter().map(|s| s.len()).max().unwrap() + 2;
             let tip_x = if map_x < WIDTH as i32/2 {
                 mx+1
