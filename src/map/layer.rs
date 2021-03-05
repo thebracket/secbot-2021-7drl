@@ -18,7 +18,7 @@ impl Layer {
                 tiles: vec![Tile::default(); TILES],
                 starting_point: Point::new(WIDTH / 2, HEIGHT / 2),
                 visible: vec![false; TILES],
-                revealed: vec![false; TILES],
+                revealed: vec![true; TILES],
                 is_door: vec![false; TILES],
             },
         };
@@ -75,7 +75,7 @@ impl Algorithm2D for Layer {
     }
 
     fn in_bounds(&self, pos: Point) -> bool {
-        pos.x >= 0 && pos.x < WIDTH as i32 && pos.y > 0 && pos.y <= HEIGHT as i32
+        pos.x >= 0 && pos.x < WIDTH as i32 && pos.y > 0 && pos.y < HEIGHT as i32
     }
 }
 

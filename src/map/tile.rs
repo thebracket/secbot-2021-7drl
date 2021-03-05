@@ -1,11 +1,21 @@
 use bracket_lib::prelude::*;
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum TileType {
+    Empty,
+    Capsule,
+    Wall,
+    Floor,
+    Outside,
+}
+
 #[derive(Clone)]
 pub struct Tile {
     pub glyph: FontCharType,
     pub color: ColorPair,
     pub blocked: bool,
     pub opaque: bool,
+    pub tile_type: TileType,
 }
 
 impl Tile {
@@ -15,6 +25,7 @@ impl Tile {
             color: ColorPair::new(GREY, BLACK),
             blocked: false,
             opaque: false,
+            tile_type: TileType::Floor,
         }
     }
 
@@ -24,6 +35,7 @@ impl Tile {
             color: ColorPair::new(DARK_GRAY, BLACK),
             blocked: true,
             opaque: false,
+            tile_type: TileType::Empty,
         }
     }
 
@@ -33,6 +45,7 @@ impl Tile {
             color: ColorPair::new(DARK_GRAY, BLACK),
             blocked: false,
             opaque: false,
+            tile_type: TileType::Floor,
         }
     }
 
@@ -42,6 +55,7 @@ impl Tile {
             color: ColorPair::new(DARK_GRAY, BLACK),
             blocked: true,
             opaque: true,
+            tile_type: TileType::Wall,
         }
     }
 
@@ -51,6 +65,7 @@ impl Tile {
             color: ColorPair::new(DARK_CYAN, BLACK),
             blocked: false,
             opaque: false,
+            tile_type: TileType::Capsule,
         }
     }
 
@@ -60,6 +75,7 @@ impl Tile {
             color: ColorPair::new(DARK_CYAN, BLACK),
             blocked: true,
             opaque: true,
+            tile_type: TileType::Capsule,
         }
     }
 
@@ -69,6 +85,7 @@ impl Tile {
             color: ColorPair::new(DARK_CYAN, BLACK),
             blocked: true,
             opaque: false,
+            tile_type: TileType::Capsule,
         }
     }
 
@@ -78,6 +95,7 @@ impl Tile {
             color: ColorPair::new(YELLOW, RED),
             blocked: false,
             opaque: false,
+            tile_type: TileType::Capsule,
         }
     }
 
@@ -101,6 +119,7 @@ impl Tile {
             color: ColorPair::new(fg, BLACK),
             blocked: height <= -0.255,
             opaque: false,
+            tile_type: TileType::Outside,
         }
     }
 }

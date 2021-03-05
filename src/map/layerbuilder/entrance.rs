@@ -1,7 +1,7 @@
 use super::all_space;
 use crate::{
     components::{Description, Door, Glyph, Position, TileTrigger, TriggerType},
-    map::{Layer, Tile, HEIGHT, WIDTH},
+    map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
 use legion::*;
@@ -61,6 +61,20 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
 
     // Start adding in building complex features
     add_door(map, ecs, Point::new(RIGHT + 1, MIDDLE));
+    let start_room = add_entryway(map, ecs, Point::new(RIGHT + 1, MIDDLE));
+    let mut rooms = vec![start_room];
+    while rooms.len() < 24 {
+        try_random_room(map, ecs, &mut rooms);
+    }
+
+    // Fill in the edges
+    edge_filler(map);
+
+    // Add some exterior windows
+
+    // Add an exit
+
+    // Populate rooms
 
     map.starting_point = Point::new(LEFT + 1, MIDDLE);
 }
@@ -112,4 +126,138 @@ fn add_door(map: &mut Layer, ecs: &mut World, pt: Point) {
     ));
     map.tiles[idx] = Tile::wall();
     map.is_door[idx] = true;
+}
+
+fn add_entryway(map: &mut Layer, _ecs: &mut World, entrance: Point) -> Rect {
+    let room = Rect::with_size(entrance.x + 1, entrance.y - 5, 20, 10);
+    fill_room(map, &room);
+
+    room
+}
+
+fn try_wall(map: &mut Layer, pt: Point) {
+    if map.in_bounds(pt) {
+        let idx = map.point2d_to_index(pt);
+        if !map.is_door[idx] {
+            map.tiles[idx] = Tile::wall();
+        }
+    }
+}
+
+fn fill_room(map: &mut Layer, room: &Rect) {
+    room.for_each(|pt| {
+        if map.in_bounds(pt) {
+            let idx = map.point2d_to_index(pt);
+            map.tiles[idx] = Tile::floor();
+        }
+    });
+    for x in i32::max(0, room.x1 - 1)..=i32::min(WIDTH as i32 - 1, room.x2 + 1) {
+        try_wall(map, Point::new(x, room.y1 - 1));
+        try_wall(map, Point::new(x, room.y2 + 1));
+    }
+    for y in i32::max(room.y1, 0)..=i32::min(room.y2, HEIGHT as i32 - 1) {
+        try_wall(map, Point::new(room.x1 - 1, y));
+        try_wall(map, Point::new(room.x2 + 1, y));
+    }
+}
+
+fn try_random_room(map: &mut Layer, ecs: &mut World, rooms: &mut Vec<Rect>) {
+    let mut rng_lock = crate::RNG.lock();
+    let rng = rng_lock.as_mut().unwrap();
+    if let Some(parent_room) = rng.random_slice_entry(&rooms) {
+        let x;
+        let y;
+        let next_x;
+        let next_y;
+
+        // Decide where to consider an exit
+        if rng.range(0, 2) == 0 {
+            // Take from the horizontal walls
+            x = parent_room.x1 + rng.range(0, parent_room.width() + 1);
+            next_x = x;
+            if rng.range(0, 2) == 0 {
+                // Take from the north side
+                y = parent_room.y1 - 1;
+                next_y = y - 1;
+            } else {
+                // Take from the south side
+                y = parent_room.y2 + 1;
+                next_y = y + 1;
+            }
+        } else {
+            // Take from the vertical walls
+            y = parent_room.y1 + rng.range(0, parent_room.height() + 1);
+            next_y = y;
+            if rng.range(0, 2) == 0 {
+                x = parent_room.x1 - 1;
+                next_x = x - 1;
+            } else {
+                x = parent_room.x2 + 1;
+                next_x = x + 1;
+            }
+        }
+        let dx = next_x - x;
+        let dy = next_y - y;
+
+        // Try to place it
+        let next_pt = Point::new(next_x, next_y);
+        if !map.in_bounds(next_pt) {
+            return;
+        }
+        let next_idx = map.point2d_to_index(next_pt);
+        if map.tiles[next_idx].tile_type == TileType::Outside {
+            let new_room = if dx == 1 {
+                Rect::with_size(x + 1, y, rng.range(4, 10), rng.range(3, 6))
+            } else if dy == 1 {
+                Rect::with_size(x, next_y, rng.range(3, 6), rng.range(4, 10))
+            } else if dx == -1 {
+                let w = 5;
+                Rect::with_size(x - (w + 1), y, rng.range(4, 10), rng.range(3, 6))
+            } else {
+                let h = 5;
+                Rect::with_size(x, y - (h + 1), rng.range(3, 6), rng.range(4, 10))
+            };
+
+            let mut can_add = true;
+            new_room.for_each(|p| {
+                if map.in_bounds(p) {
+                    let idx = map.point2d_to_index(p);
+                    if map.tiles[idx].tile_type != TileType::Outside {
+                        can_add = false;
+                    }
+                } else {
+                    can_add = false;
+                }
+            });
+
+            if can_add {
+                add_door(map, ecs, Point::new(x, y));
+                fill_room(map, &new_room);
+                rooms.push(new_room);
+            }
+        }
+    }
+}
+
+fn edge_filler(map: &mut Layer) {
+    for y in 0..HEIGHT {
+        let idx = map.point2d_to_index(Point::new(0, y));
+        if map.tiles[idx].tile_type == TileType::Floor {
+            map.tiles[idx] = Tile::wall();
+        }
+        let idx = map.point2d_to_index(Point::new(WIDTH - 1, y));
+        if map.tiles[idx].tile_type == TileType::Floor {
+            map.tiles[idx] = Tile::wall();
+        }
+    }
+    for x in 0..WIDTH {
+        let idx = map.point2d_to_index(Point::new(x, 0));
+        if map.tiles[idx].tile_type == TileType::Floor {
+            map.tiles[idx] = Tile::wall();
+        }
+        let idx = map.point2d_to_index(Point::new(x, HEIGHT - 1));
+        if map.tiles[idx].tile_type == TileType::Floor {
+            map.tiles[idx] = Tile::wall();
+        }
+    }
 }
