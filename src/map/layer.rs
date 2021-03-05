@@ -25,7 +25,7 @@ impl Layer {
         while y < HEIGHT {
             for x in 0..WIDTH {
                 let t = &self.tiles[idx];
-                ctx.set(x+1, y+1, t.color.fg, t.color.bg, t.glyph);
+                ctx.set(x + 1, y + 1, t.color.fg, t.color.bg, t.glyph);
                 idx += 1;
             }
             y += 1;

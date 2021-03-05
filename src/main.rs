@@ -6,34 +6,43 @@ mod components;
 mod map;
 mod render;
 mod text;
-use std::sync::atomic::{AtomicBool, Ordering};
 
 lazy_static! {
     pub static ref BACKEND: Mutex<RandomNumberGenerator> = Mutex::new(RandomNumberGenerator::new());
-}
-
-lazy_static! {
-    pub static ref REDRAW: AtomicBool = AtomicBool::new(true);
 }
 
 enum TurnState {
     WaitingForInput,
     PlayerTurn,
     EnemyTurn,
-    Modal{title: String, body: String},
+    Modal { title: String, body: String },
+}
+
+pub enum NewState {
+    NoChange,
+    Wait,
+    Player,
+    Enemy,
 }
 
 struct State {
     ecs: World,
     map: map::Map,
-    turn: TurnState
+    turn: TurnState,
 }
 
 impl State {
     fn new() -> Self {
         let mut ecs = World::default();
         let map = map::Map::new(&mut ecs);
-        let mut state = Self { ecs, map, turn: TurnState::Modal{title: "SecBot Has Landed".to_string(), body: text::INTRO.to_string()} };
+        let mut state = Self {
+            ecs,
+            map,
+            turn: TurnState::Modal {
+                title: "SecBot Has Landed".to_string(),
+                body: text::INTRO.to_string(),
+            },
+        };
         state.new_game();
         state
     }
@@ -57,18 +66,20 @@ impl State {
 
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
-        if REDRAW.load(Ordering::Relaxed) {
-            ctx.cls();
-            render::render_ui_skeleton(ctx);
-            self.map.render(ctx);
-            render::render_glyphs(ctx, &self.ecs, &self.map);
+        ctx.cls();
+        render::render_ui_skeleton(ctx);
+        self.map.render(ctx);
+        render::render_glyphs(ctx, &self.ecs, &self.map);
 
-            match &self.turn {
-                TurnState::Modal { title, body } => render::modal(ctx, title, body),
-                _ => {} // Do nothing
-            }
-
-            REDRAW.store(false, Ordering::Relaxed);
+        let new_state = match &self.turn {
+            TurnState::Modal { title, body } => render::modal(ctx, title, body),
+            _ => NewState::NoChange,
+        };
+        match new_state {
+            NewState::NoChange => {}
+            NewState::Wait => self.turn = TurnState::WaitingForInput,
+            NewState::Player => self.turn = TurnState::PlayerTurn,
+            NewState::Enemy => self.turn = TurnState::EnemyTurn,
         }
     }
 }
