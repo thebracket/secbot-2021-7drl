@@ -25,3 +25,30 @@ pub fn render_ui_skeleton(ctx: &mut BTerm) {
     ctx.set(WIDTH+1, 0, GRAY, BLACK, to_cp437('┬'));
     ctx.set(WIDTH+1, HEIGHT+1, GRAY, BLACK, to_cp437('┴'));
 }
+
+pub fn modal(ctx: &mut BTerm, title: &String, body: &String) {
+    let mut draw_batch = DrawBatch::new();
+    draw_batch.draw_double_box(Rect::with_size(19, 14, 71,12), ColorPair::new(CYAN, BLACK));
+    let mut buf = TextBuilder::empty();
+    buf.ln()
+        .fg(YELLOW)
+        .bg(BLACK)
+        .centered(title)
+        .fg(CYAN)
+        .bg(BLACK)
+        .ln()
+        .ln()
+        .line_wrap(body)
+        .ln()
+        .ln()
+        .fg(YELLOW)
+        .bg(BLACK)
+        .centered("PRESS ENTER TO CONTINUE")
+        .reset();
+
+    let mut block = TextBlock::new(20, 15, 70, 11);
+    block.print(&buf).expect("Overflow occurred");
+    block.render_to_draw_batch(&mut draw_batch);
+    draw_batch.submit(0).expect("Batch error");
+    render_draw_buffer(ctx).expect("Render error");
+}

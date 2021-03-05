@@ -5,6 +5,7 @@ use std::sync::Mutex;
 mod components;
 mod map;
 mod render;
+mod text;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 lazy_static! {
@@ -15,16 +16,24 @@ lazy_static! {
     pub static ref REDRAW: AtomicBool = AtomicBool::new(true);
 }
 
+enum TurnState {
+    WaitingForInput,
+    PlayerTurn,
+    EnemyTurn,
+    Modal{title: String, body: String},
+}
+
 struct State {
     ecs: World,
     map: map::Map,
+    turn: TurnState
 }
 
 impl State {
     fn new() -> Self {
         let mut ecs = World::default();
         let map = map::Map::new(&mut ecs);
-        let mut state = Self { ecs, map };
+        let mut state = Self { ecs, map, turn: TurnState::Modal{title: "SecBot Has Landed".to_string(), body: text::INTRO.to_string()} };
         state.new_game();
         state
     }
@@ -53,6 +62,11 @@ impl GameState for State {
             render::render_ui_skeleton(ctx);
             self.map.render(ctx);
             render::render_glyphs(ctx, &self.ecs, &self.map);
+
+            match &self.turn {
+                TurnState::Modal { title, body } => render::modal(ctx, title, body),
+                _ => {} // Do nothing
+            }
 
             REDRAW.store(false, Ordering::Relaxed);
         }
