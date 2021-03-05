@@ -4,6 +4,8 @@ use legion::*;
 
 pub struct Layer {
     pub tiles: Vec<Tile>,
+    pub revealed: Vec<bool>,
+    pub visible: Vec<bool>,
     pub starting_point: Point,
 }
 
@@ -14,6 +16,8 @@ impl Layer {
             _ => Self {
                 tiles: vec![Tile::default(); TILES],
                 starting_point: Point::new(WIDTH / 2, HEIGHT / 2),
+                visible: vec![false; TILES],
+                revealed: vec![false; TILES],
             },
         };
         layer
@@ -24,12 +28,21 @@ impl Layer {
         let mut idx = 0;
         while y < HEIGHT {
             for x in 0..WIDTH {
-                let t = &self.tiles[idx];
-                ctx.set(x + 1, y + 1, t.color.fg, t.color.bg, t.glyph);
+                if self.visible[idx] {
+                    let t = &self.tiles[idx];
+                    ctx.set(x + 1, y + 1, t.color.fg, t.color.bg, t.glyph);
+                } else if self.revealed[idx] {
+                    let t = &self.tiles[idx];
+                    ctx.set(x + 1, y + 1, t.color.fg.to_greyscale(), t.color.bg, t.glyph);
+                }
                 idx += 1;
             }
             y += 1;
         }
+    }
+
+    pub fn clear_visible(&mut self) {
+        self.visible.iter_mut().for_each(|b| *b = false);
     }
 
     fn test_exit(&self, pt: Point, delta: Point, exits: &mut SmallVec<[(usize, f32); 10]>) {

@@ -1,7 +1,7 @@
 use super::all_space;
 use crate::{
     components::{Description, Position, TileTrigger},
-    map::{Layer, Tile, HEIGHT, TILES, WIDTH},
+    map::{Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
 use legion::*;
@@ -76,7 +76,7 @@ fn add_game_exit(map: &mut Layer, ecs: &mut World, pt: Point) {
     ));
 }
 
-fn add_landscape(map: &mut Layer, ecs: &mut World) {
+fn add_landscape(map: &mut Layer, _ecs: &mut World) {
     let mut rng_lock = crate::RNG.lock();
     let rng = rng_lock.as_mut().unwrap();
     let mut noise = FastNoise::seeded(rng.next_u64());

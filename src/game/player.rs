@@ -1,3 +1,5 @@
+use std::thread::current;
+
 use crate::{components::*, render::tooltips::render_tooltips};
 use crate::{map::Map, NewState};
 use bracket_lib::prelude::*;
@@ -21,6 +23,8 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
 
     // Check for tile trigger effects
     tile_triggers(&mut new_state, ecs, map);
+
+    update_fov(&new_state, ecs, map);
 
     new_state
 }
@@ -52,5 +56,25 @@ fn tile_triggers(new_state: &mut NewState, ecs: &mut World, map: &mut Map) {
         .filter(|(_, pos)| **pos == player_pos)
         .for_each(|(tt, _)| match tt.0 {
             TriggerType::EndGame => *new_state = NewState::LeftMap,
+        }
+    );
+}
+
+fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
+    if *new_state != NewState::Wait {
+        return;
+    }
+
+    let mut query = <(&Player, &Position, &mut FieldOfView)>::query();
+    query.for_each_mut(ecs, |(_, pos, fov)| {
+        fov.visible_tiles = field_of_view_set(pos.pt, fov.radius, map.get_current());
+        let current_layer = map.get_current_mut();
+        current_layer.clear_visible();
+        fov.visible_tiles.iter().for_each(|pt| {
+            let idx = current_layer.point2d_to_index(*pt);
+            current_layer.revealed[idx] = true;
+            current_layer.visible[idx] = true;
         });
+    });
+
 }
