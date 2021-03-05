@@ -1,6 +1,6 @@
 use super::all_space;
 use crate::{
-    components::{Description, Position},
+    components::{Description, Position, TileTrigger},
     map::{Layer, Tile, HEIGHT, TILES, WIDTH},
 };
 use bracket_lib::prelude::*;
@@ -45,5 +45,6 @@ fn add_game_exit(map: &mut Layer, ecs: &mut World, pt: Point) {
             "Exit to SecBot's Ship. Leave through here when you are ready to call it game over."
                 .to_string(),
         ),
+        TileTrigger(crate::components::TriggerType::EndGame),
     ));
 }

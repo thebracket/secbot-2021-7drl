@@ -40,7 +40,7 @@ impl Tile {
         Self {
             glyph: to_cp437('+'),
             color: ColorPair::new(YELLOW, RED),
-            blocked: true,
+            blocked: false,
             opaque: false,
         }
     }

@@ -7,7 +7,7 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
     render_tooltips(ctx, ecs, map);
 
     // Check for input
-    if let Some(key) = ctx.key {
+    let mut new_state = if let Some(key) = ctx.key {
         match key {
             VirtualKeyCode::Up | VirtualKeyCode::W => try_move(ecs, map, 0, -1),
             VirtualKeyCode::Down | VirtualKeyCode::A => try_move(ecs, map, 0, 1),
@@ -17,7 +17,12 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
         }
     } else {
         NewState::Wait
-    }
+    };
+
+    // Check for tile trigger effects
+    tile_triggers(&mut new_state, ecs, map);
+
+    new_state
 }
 
 fn try_move(ecs: &mut World, map: &mut Map, delta_x: i32, delta_y: i32) -> NewState {
@@ -32,4 +37,20 @@ fn try_move(ecs: &mut World, map: &mut Map, delta_x: i32, delta_y: i32) -> NewSt
         }
     });
     result
+}
+
+fn tile_triggers(new_state: &mut NewState, ecs: &mut World, map: &mut Map) {
+    if *new_state != NewState::Wait {
+        return;
+    }
+    let mut find_player = <(&Player, &Position)>::query();
+    let player_pos = find_player.iter(ecs).map(|(_, pos)| *pos).nth(0).unwrap();
+
+    let mut find_triggers = <(&TileTrigger, &Position)>::query();
+    find_triggers
+        .iter(ecs)
+        .filter(|(_, pos)| **pos == player_pos)
+        .for_each(|(tt, _)| match tt.0 {
+            TriggerType::EndGame => *new_state = NewState::LeftMap,
+        });
 }

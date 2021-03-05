@@ -16,12 +16,15 @@ enum TurnState {
     WaitingForInput,
     EnemyTurn,
     Modal { title: String, body: String },
+    GameOverLeft,
 }
 
+#[derive(PartialEq)]
 pub enum NewState {
     NoChange,
     Wait,
     Enemy,
+    LeftMap,
 }
 
 struct State {
@@ -73,12 +76,14 @@ impl GameState for State {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),
             TurnState::WaitingForInput => game::player_turn(ctx, &mut self.ecs, &mut self.map),
             TurnState::EnemyTurn => NewState::Wait,
+            TurnState::GameOverLeft => render::game_over_left(ctx),
             _ => NewState::NoChange,
         };
         match new_state {
             NewState::NoChange => {}
             NewState::Wait => self.turn = TurnState::WaitingForInput,
             NewState::Enemy => self.turn = TurnState::EnemyTurn,
+            NewState::LeftMap => self.turn = TurnState::GameOverLeft,
         }
     }
 }

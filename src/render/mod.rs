@@ -66,3 +66,18 @@ pub fn modal(ctx: &mut BTerm, title: &String, body: &String) -> NewState {
         NewState::NoChange
     }
 }
+
+pub fn game_over_left(ctx: &mut BTerm) -> NewState {
+    ctx.cls();
+    ctx.print(
+        1,
+        1,
+        "Game over. You left the map. Haven't written the stuff to show here.",
+    );
+    ctx.print(
+        1,
+        2,
+        "You need to refresh or reload. Haven't done restarting yet.",
+    );
+    NewState::NoChange
+}
