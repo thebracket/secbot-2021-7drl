@@ -9,8 +9,11 @@ pub mod colonist_panel;
 pub mod tooltips;
 pub use colonist_panel::*;
 pub mod speech;
+pub mod targeting_panel;
+pub use targeting_panel::*;
 
-pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map) {
+pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map, target_pt: Option<Point>) {
+    let mut player_point = Point::zero();
     let mut query = <(&Position, &Glyph)>::query();
     query.for_each(ecs, |(pos, glyph)| {
         if pos.layer == map.current_layer as u32 {
@@ -23,9 +26,24 @@ pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map) {
                     glyph.color.bg,
                     glyph.glyph,
                 );
+                if glyph.glyph == to_cp437('@') {
+                    player_point = pos.pt;
+                }
             }
         }
     });
+
+    if let Some(pt) = target_pt {
+        line2d_bresenham(player_point, pt)
+            .iter()
+            .skip(1)
+            .for_each(|pt| {
+                ctx.set_bg(pt.x + 1, pt.y + 1, GOLD);
+            });
+        ctx.set(pt.x, pt.y + 1, DARK_RED, BLACK, to_cp437('['));
+        ctx.set(pt.x + 2, pt.y + 1, DARK_RED, BLACK, to_cp437(']'));
+        ctx.set_bg(pt.x + 1, pt.y + 1, GOLD);
+    }
 }
 
 pub fn render_ui_skeleton(ctx: &mut BTerm) {

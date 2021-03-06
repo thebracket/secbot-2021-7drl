@@ -56,6 +56,7 @@ impl State {
         // Spawn the player
         self.ecs.push((
             Player {},
+            Name("SecBot".to_string()),
             Position::with_pt(self.map.get_current().starting_point, 0),
             Glyph {
                 glyph: to_cp437('@'),
@@ -66,7 +67,15 @@ impl State {
                 radius: 20,
                 visible_tiles: HashSet::new(),
             },
+            Targeting {
+                targets: Vec::new(),
+                current_target: None,
+                index: 0,
+            },
         ));
+
+        // Trigger FOV for the first round
+        game::player::update_fov(&NewState::Enemy, &mut self.ecs, &mut self.map);
     }
 }
 
@@ -74,9 +83,11 @@ impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.cls();
         render::render_ui_skeleton(ctx);
-        render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer);
+        let y = render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer);
+        let (y, target_pt) =
+            render::render_targeting_panel(y, ctx, &self.ecs, self.map.current_layer);
         self.map.render(ctx);
-        render::render_glyphs(ctx, &self.ecs, &self.map);
+        render::render_glyphs(ctx, &self.ecs, &self.map, target_pt);
         render::speech::render_speech(ctx, &mut self.ecs, &self.map);
 
         let new_state = match &self.turn {

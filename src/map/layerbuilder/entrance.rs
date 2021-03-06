@@ -1,4 +1,6 @@
-use super::{all_space, colonists::spawn_first_colonist, spawn_random_colonist};
+use super::{
+    all_space, colonists::spawn_first_colonist, monsters::spawn_face_eater, spawn_random_colonist,
+};
 use crate::{
     components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -337,6 +339,8 @@ fn populate_rooms(rooms: &Vec<Rect>, _map: &mut Layer, ecs: &mut World) {
     rooms.iter().skip(1).for_each(|r| {
         if rng.range(0, 5) == 0 {
             spawn_random_colonist(ecs, r.center(), 0);
+        } else {
+            spawn_face_eater(ecs, r.center(), 0);
         }
     });
 }

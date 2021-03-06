@@ -15,6 +15,7 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
             VirtualKeyCode::Down | VirtualKeyCode::S => try_move(ecs, map, 0, 1),
             VirtualKeyCode::Left | VirtualKeyCode::A => try_move(ecs, map, -1, 0),
             VirtualKeyCode::Right | VirtualKeyCode::D => try_move(ecs, map, 1, 0),
+            VirtualKeyCode::Tab => cycle_target(ecs),
             _ => NewState::Wait,
         }
     } else {
@@ -63,7 +64,7 @@ fn try_move(ecs: &mut World, map: &mut Map, delta_x: i32, delta_y: i32) -> NewSt
 }
 
 fn tile_triggers(new_state: &mut NewState, ecs: &mut World, _map: &mut Map) {
-    if *new_state != NewState::Wait {
+    if *new_state == NewState::Wait {
         return;
     }
     let mut find_player = <(&Player, &Position)>::query();
@@ -78,16 +79,20 @@ fn tile_triggers(new_state: &mut NewState, ecs: &mut World, _map: &mut Map) {
         });
 }
 
-fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
-    if *new_state != NewState::Wait {
+pub fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
+    if *new_state == NewState::Wait {
         return;
     }
 
     let mut visible = None;
+    let mut player_pos = Point::zero();
+    let mut player_entity = None;
 
     // Build the player FOV
-    let mut query = <(&Player, &Position, &mut FieldOfView)>::query();
-    query.for_each_mut(ecs, |(_, pos, fov)| {
+    let mut query = <(Entity, &Player, &Position, &mut FieldOfView)>::query();
+    query.for_each_mut(ecs, |(e, _, pos, fov)| {
+        player_pos = pos.pt;
+        player_entity = Some(*e);
         fov.visible_tiles = field_of_view_set(pos.pt, fov.radius, map.get_current());
         let current_layer = map.get_current_mut();
         current_layer.clear_visible();
@@ -102,9 +107,13 @@ fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
     });
 
     if let Some(vt) = visible {
+        // Update colonist status
         let mut colonists_on_layer = <(&Colonist, &mut ColonistStatus, &Position)>::query();
         colonists_on_layer.for_each_mut(ecs, |(_, status, pos)| {
-            if pos.layer == map.current_layer as u32 && vt.contains(&pos.pt) {
+            if pos.layer == map.current_layer as u32
+                && vt.contains(&pos.pt)
+                && DistanceAlg::Pythagoras.distance2d(player_pos, pos.pt) < 6.0
+            {
                 // TODO: All the other possibilities including being dead
                 match *status {
                     ColonistStatus::Unknown => *status = ColonistStatus::Alive,
@@ -112,5 +121,46 @@ fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
                 }
             }
         });
+
+        // Targeting system
+        let mut possible_targets = <(Entity, &Hostile, &Position)>::query();
+        let mut targets = possible_targets
+            .iter(ecs)
+            .filter(|(_, _, pos)| pos.layer == map.current_layer as u32 && vt.contains(&pos.pt))
+            .map(|(e, _, pos)| (*e, DistanceAlg::Pythagoras.distance2d(player_pos, pos.pt)))
+            .collect::<Vec<(Entity, f32)>>();
+
+        targets.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+        let mut commands = legion::systems::CommandBuffer::new(ecs);
+        let current_target = if targets.is_empty() {
+            None
+        } else {
+            Some(targets[0].0)
+        };
+        commands.add_component(
+            player_entity.unwrap(),
+            Targeting {
+                targets,
+                current_target,
+                index: 0,
+            },
+        );
+        commands.flush(ecs);
     }
+}
+
+fn cycle_target(ecs: &mut World) -> NewState {
+    let mut pq = <(&Player, &mut Targeting)>::query();
+    pq.for_each_mut(ecs, |(_, targeting)| {
+        if targeting.targets.is_empty() {
+            targeting.current_target = None;
+        } else {
+            targeting.index += 1;
+            if targeting.index > targeting.targets.len() - 1 {
+                targeting.index = 0;
+            }
+            targeting.current_target = Some(targeting.targets[targeting.index].0);
+        }
+    });
+    NewState::Wait
 }
