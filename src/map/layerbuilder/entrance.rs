@@ -1,6 +1,4 @@
-use super::{
-    all_space, colonists::spawn_first_colonist, monsters::spawn_face_eater, spawn_random_colonist,
-};
+use super::{all_space, colonists::spawn_first_colonist, spawn_face_eater, spawn_random_colonist};
 use crate::{
     components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},

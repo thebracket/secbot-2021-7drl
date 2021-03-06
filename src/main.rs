@@ -1,7 +1,6 @@
 use bracket_lib::prelude::*;
 use lazy_static::*;
 pub use legion::*;
-use render::speech::render_speech;
 use std::{collections::HashSet, sync::Mutex};
 mod components;
 mod game;
@@ -84,7 +83,7 @@ impl GameState for State {
         ctx.cls();
         render::render_ui_skeleton(ctx);
         let y = render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer);
-        let (y, target_pt) =
+        let (_y, target_pt) =
             render::render_targeting_panel(y, ctx, &self.ecs, self.map.current_layer);
         self.map.render(ctx);
         render::render_glyphs(ctx, &self.ecs, &self.map, target_pt);
@@ -98,7 +97,6 @@ impl GameState for State {
                 NewState::Wait
             }
             TurnState::GameOverLeft => render::game_over_left(ctx),
-            _ => NewState::NoChange,
         };
         match new_state {
             NewState::NoChange => {}

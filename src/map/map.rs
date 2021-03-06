@@ -35,6 +35,7 @@ impl Map {
         &self.layers[layer]
     }
 
+    #[allow(dead_code)]
     pub fn get_layer_mut(&mut self, layer: usize) -> &mut Layer {
         &mut self.layers[layer]
     }
