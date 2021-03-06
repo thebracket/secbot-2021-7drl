@@ -322,7 +322,7 @@ fn add_exit(rooms: &mut Vec<Rect>, map: &mut Layer, ecs: &mut World) {
     ));
 }
 
-fn populate_rooms(rooms: &Vec<Rect>, map: &mut Layer, ecs: &mut World) {
+fn populate_rooms(rooms: &Vec<Rect>, _map: &mut Layer, ecs: &mut World) {
     let mut rng_lock = crate::RNG.lock();
     let rng = rng_lock.as_mut().unwrap();
 

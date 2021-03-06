@@ -83,6 +83,9 @@ fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
         return;
     }
 
+    let mut visible = None;
+
+    // Build the player FOV
     let mut query = <(&Player, &Position, &mut FieldOfView)>::query();
     query.for_each_mut(ecs, |(_, pos, fov)| {
         fov.visible_tiles = field_of_view_set(pos.pt, fov.radius, map.get_current());
@@ -95,5 +98,21 @@ fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
                 current_layer.visible[idx] = true;
             }
         });
+        visible = Some(fov.visible_tiles.clone());
     });
+
+    if let Some(vt) = visible {
+        let mut colonists_on_layer = <(&Colonist, &mut ColonistStatus, &Position)>::query();
+        colonists_on_layer.for_each_mut(ecs, |(_, status, pos)| {
+            if pos.layer == map.current_layer as u32 &&
+                vt.contains(&pos.pt)
+                {
+                    // TODO: All the other possibilities including being dead
+                    match *status {
+                        ColonistStatus::Unknown => *status = ColonistStatus::Alive,
+                        _ => {}
+                    }
+                }
+        });
+    }
 }
