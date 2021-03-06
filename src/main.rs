@@ -1,6 +1,7 @@
 use bracket_lib::prelude::*;
 use lazy_static::*;
 pub use legion::*;
+use render::speech::render_speech;
 use std::{collections::HashSet, sync::Mutex};
 mod components;
 mod game;
@@ -76,6 +77,7 @@ impl GameState for State {
         render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer);
         self.map.render(ctx);
         render::render_glyphs(ctx, &self.ecs, &self.map);
+        render::speech::render_speech(ctx, &mut self.ecs, &self.map);
 
         let new_state = match &self.turn {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),

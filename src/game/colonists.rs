@@ -51,7 +51,7 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                 let line = dialog.lines[0].clone();
                 dialog.lines.remove(0);
                 commands.push((
-                    Speech{lifetime: 1},
+                    Speech{lifetime: 20},
                     pos.clone(),
                     Description(line)
                 ));
