@@ -1,4 +1,4 @@
-use super::{all_space, spawn_random_colonist};
+use super::{all_space, colonists::spawn_first_colonist, spawn_random_colonist};
 use crate::{
     components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -101,6 +101,7 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
 fn add_game_exit(map: &mut Layer, ecs: &mut World, pt: Point) {
     let exit_idx = map.point2d_to_index(pt);
     map.tiles[exit_idx] = Tile::game_over();
+    map.colonist_exit = pt;
 
     ecs.push((
         Position::with_pt(pt, 0),
@@ -326,8 +327,8 @@ fn populate_rooms(rooms: &Vec<Rect>, _map: &mut Layer, ecs: &mut World) {
     let mut rng_lock = crate::RNG.lock();
     let rng = rng_lock.as_mut().unwrap();
 
-    // The first room always contains a single colonist
-    spawn_random_colonist(ecs, rooms[0].center(), 0);
+    // The first room always contains a single colonist, who must be alive.
+    spawn_first_colonist(ecs, rooms[0].center(), 0);
 
     // Each room after that can be random. This is an initial, very boring spawn to get
     // the colonist functionality going.

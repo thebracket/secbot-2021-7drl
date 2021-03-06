@@ -8,6 +8,7 @@ pub struct Layer {
     pub visible: Vec<bool>,
     pub is_door: Vec<bool>,
     pub starting_point: Point,
+    pub colonist_exit: Point,
 }
 
 impl Layer {
@@ -20,6 +21,7 @@ impl Layer {
                 visible: vec![false; TILES],
                 revealed: vec![false; TILES],
                 is_door: vec![false; TILES],
+                colonist_exit: Point::zero()
             },
         };
         layer
@@ -48,12 +50,12 @@ impl Layer {
     }
 
     fn test_exit(&self, pt: Point, delta: Point, exits: &mut SmallVec<[(usize, f32); 10]>) {
+        //println!("Testing exit");
         let dest_pt = pt + delta;
-        if self.in_bounds(dest_pt) {
-            let dest_idx = self.point2d_to_index(pt + delta);
-            if !self.tiles[dest_idx].blocked {
-                exits.push((dest_idx, 1.0));
-            }
+        if self.is_exit_possible(pt, delta) {
+            //println!("It's possible");
+            let dest_idx = self.point2d_to_index(dest_pt);
+            exits.push((dest_idx, 1.0));
         }
     }
 
@@ -61,7 +63,7 @@ impl Layer {
         let dest_pt = pt + delta;
         if self.in_bounds(dest_pt) {
             let dest_idx = self.point2d_to_index(pt + delta);
-            if !self.tiles[dest_idx].blocked {
+            if !self.tiles[dest_idx].blocked || self.is_door[dest_idx] {
                 return true;
             }
         }

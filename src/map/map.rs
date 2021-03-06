@@ -30,4 +30,12 @@ impl Map {
     pub fn get_current_mut(&mut self) -> &mut Layer {
         &mut self.layers[self.current_layer]
     }
+
+    pub fn get_layer(&self, layer: usize) -> &Layer {
+        &self.layers[layer]
+    }
+
+    pub fn get_layer_mut(&mut self, layer: usize) -> &mut Layer {
+        &mut self.layers[layer]
+    }
 }

@@ -80,7 +80,10 @@ impl GameState for State {
         let new_state = match &self.turn {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),
             TurnState::WaitingForInput => game::player_turn(ctx, &mut self.ecs, &mut self.map),
-            TurnState::EnemyTurn => NewState::Wait,
+            TurnState::EnemyTurn => {
+                game::colonists_turn(&mut self.ecs, &mut self.map);
+                NewState::Wait
+            }
             TurnState::GameOverLeft => render::game_over_left(ctx),
             _ => NewState::NoChange,
         };
