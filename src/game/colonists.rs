@@ -1,12 +1,18 @@
 use crate::components::*;
-use bracket_lib::prelude::{Algorithm2D, a_star_search};
-use legion::{*, systems::CommandBuffer};
 use crate::map::Map;
+use bracket_lib::prelude::{a_star_search, Algorithm2D};
+use legion::{systems::CommandBuffer, *};
 
 pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
     let mut commands = CommandBuffer::new(ecs);
 
-    let mut colonists = <(Entity, &mut Colonist, &mut ColonistStatus, &mut Position, &mut Dialog)>::query();
+    let mut colonists = <(
+        Entity,
+        &mut Colonist,
+        &mut ColonistStatus,
+        &mut Position,
+        &mut Dialog,
+    )>::query();
     colonists
         .iter_mut(ecs)
         .filter(|(_, _, status, _, _)| **status == ColonistStatus::Alive)
@@ -43,21 +49,15 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                 } else {
                     println!("Failed to find the path");
                 }
-
             }
 
             // If the actor has dialogue, emit it
             if !dialog.lines.is_empty() {
                 let line = dialog.lines[0].clone();
                 dialog.lines.remove(0);
-                commands.push((
-                    Speech{lifetime: 20},
-                    pos.clone(),
-                    Description(line)
-                ));
+                commands.push((Speech { lifetime: 20 }, pos.clone(), Description(line)));
             }
-        }
-    );
+        });
 
     // Execute the command buffer
     commands.flush(ecs);

@@ -1,3 +1,3 @@
 pub struct Dialog {
-    pub lines : Vec<String>
+    pub lines: Vec<String>,
 }

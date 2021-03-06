@@ -4,5 +4,5 @@ pub enum ColonistStatus {
     Alive,
     StartedDead,
     DiedAfterStart,
-    Rescued
+    Rescued,
 }

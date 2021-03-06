@@ -104,15 +104,13 @@ fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
     if let Some(vt) = visible {
         let mut colonists_on_layer = <(&Colonist, &mut ColonistStatus, &Position)>::query();
         colonists_on_layer.for_each_mut(ecs, |(_, status, pos)| {
-            if pos.layer == map.current_layer as u32 &&
-                vt.contains(&pos.pt)
-                {
-                    // TODO: All the other possibilities including being dead
-                    match *status {
-                        ColonistStatus::Unknown => *status = ColonistStatus::Alive,
-                        _ => {}
-                    }
+            if pos.layer == map.current_layer as u32 && vt.contains(&pos.pt) {
+                // TODO: All the other possibilities including being dead
+                match *status {
+                    ColonistStatus::Unknown => *status = ColonistStatus::Alive,
+                    _ => {}
                 }
+            }
         });
     }
 }

@@ -21,7 +21,7 @@ impl Layer {
                 visible: vec![false; TILES],
                 revealed: vec![false; TILES],
                 is_door: vec![false; TILES],
-                colonist_exit: Point::zero()
+                colonist_exit: Point::zero(),
             },
         };
         layer

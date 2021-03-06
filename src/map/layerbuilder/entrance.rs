@@ -57,19 +57,19 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     map.tiles[idx] = Tile::capsule_window();
     ecs.push((
         Position::with_pt(Point::new(x_middle - 2, TOP - 1), 0),
-        Description("A window. It doesn't look fun outside.".to_string())
+        Description("A window. It doesn't look fun outside.".to_string()),
     ));
     ecs.push((
         Position::with_pt(Point::new(x_middle - 2, BOTTOM + 1), 0),
-        Description("A window. It doesn't look fun outside.".to_string())
+        Description("A window. It doesn't look fun outside.".to_string()),
     ));
     ecs.push((
         Position::with_pt(Point::new(x_middle + 2, TOP - 1), 0),
-        Description("A window. It doesn't look fun outside.".to_string())
+        Description("A window. It doesn't look fun outside.".to_string()),
     ));
     ecs.push((
         Position::with_pt(Point::new(x_middle + 2, BOTTOM + 1), 0),
-        Description("A window. It doesn't look fun outside.".to_string())
+        Description("A window. It doesn't look fun outside.".to_string()),
     ));
 
     // Spawn the game exit
@@ -300,7 +300,9 @@ fn add_windows(map: &mut Layer, ecs: &mut World) {
                         map.tiles[idx] = Tile::window();
                         ecs.push((
                             Position::with_pt(Point::new(x, y), 0),
-                            Description("A window. Not sure who thought that was a good idea.".to_string())
+                            Description(
+                                "A window. Not sure who thought that was a good idea.".to_string(),
+                            ),
                         ));
                     }
                 }
@@ -332,13 +334,9 @@ fn populate_rooms(rooms: &Vec<Rect>, _map: &mut Layer, ecs: &mut World) {
 
     // Each room after that can be random. This is an initial, very boring spawn to get
     // the colonist functionality going.
-    rooms
-        .iter()
-        .skip(1)
-        .for_each(|r| {
-            if rng.range(0, 5) == 0 {
-                spawn_random_colonist(ecs, r.center(), 0);
-            }
+    rooms.iter().skip(1).for_each(|r| {
+        if rng.range(0, 5) == 0 {
+            spawn_random_colonist(ecs, r.center(), 0);
         }
-    );
+    });
 }

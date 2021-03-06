@@ -5,8 +5,8 @@ use crate::{
 };
 use bracket_lib::prelude::*;
 use legion::*;
-pub mod tooltips;
 pub mod colonist_panel;
+pub mod tooltips;
 pub use colonist_panel::*;
 pub mod speech;
 

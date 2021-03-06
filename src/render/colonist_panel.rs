@@ -1,6 +1,6 @@
+use crate::components::{Colonist, ColonistStatus, Position};
 use bracket_lib::prelude::*;
 use legion::*;
-use crate::components::{Colonist, Position, ColonistStatus};
 
 use super::WIDTH;
 
@@ -29,15 +29,51 @@ pub fn render_colonist_panel(ctx: &mut BTerm, ecs: &World, current_layer: usize)
 
     let x = WIDTH + 3;
     let mut y = 2;
-    ctx.print_color(x, y, LIME_GREEN, BLACK, format!("Total Colonists   : {}", total_colonists));
+    ctx.print_color(
+        x,
+        y,
+        LIME_GREEN,
+        BLACK,
+        format!("Total Colonists   : {}", total_colonists),
+    );
     y += 1;
-    ctx.print_color(x, y, LIME_GREEN, BLACK, format!("   (On this level): {}", colonists_on_layer));
+    ctx.print_color(
+        x,
+        y,
+        LIME_GREEN,
+        BLACK,
+        format!("   (On this level): {}", colonists_on_layer),
+    );
     y += 1;
-    ctx.print_color(x, y, LIME_GREEN, BLACK, format!(" (Located & Alive): {}", located_alive));
+    ctx.print_color(
+        x,
+        y,
+        LIME_GREEN,
+        BLACK,
+        format!(" (Located & Alive): {}", located_alive),
+    );
     y += 1;
-    ctx.print_color(x, y, HOT_PINK, BLACK,   format!("  (Located & Dead): {}", located_dead));
+    ctx.print_color(
+        x,
+        y,
+        HOT_PINK,
+        BLACK,
+        format!("  (Located & Dead): {}", located_dead),
+    );
     y += 1;
-    ctx.print_color(x, y, RED, BLACK,        format!("  (Died in Rescue): {}", died_in_rescue));
+    ctx.print_color(
+        x,
+        y,
+        RED,
+        BLACK,
+        format!("  (Died in Rescue): {}", died_in_rescue),
+    );
     y += 1;
-    ctx.print_color(x, y, GREEN, BLACK,      format!("         (Rescued): {}", rescued));
+    ctx.print_color(
+        x,
+        y,
+        GREEN,
+        BLACK,
+        format!("         (Rescued): {}", rescued),
+    );
 }
