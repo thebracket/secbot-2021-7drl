@@ -1,4 +1,4 @@
-use super::all_space;
+use super::{all_space, spawn_random_colonist};
 use crate::{
     components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -93,6 +93,7 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     add_exit(&mut rooms, map, ecs);
 
     // Populate rooms
+    populate_rooms(&mut rooms, map, ecs);
 
     map.starting_point = Point::new(LEFT + 1, MIDDLE);
 }
@@ -319,4 +320,11 @@ fn add_exit(rooms: &mut Vec<Rect>, map: &mut Layer, ecs: &mut World) {
         Position::with_pt(exit_location, 0),
         Description("Stairs further into the complex".to_string()),
     ));
+}
+
+fn populate_rooms(rooms: &mut Vec<Rect>, map: &mut Layer, ecs: &mut World) {
+    // The first room always contains a single colonist
+    spawn_random_colonist(ecs, rooms[0].center(), 0);
+
+    // Each room after that can be random
 }
