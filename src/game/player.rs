@@ -15,7 +15,7 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
             VirtualKeyCode::Down | VirtualKeyCode::S => try_move(ecs, map, 0, 1),
             VirtualKeyCode::Left | VirtualKeyCode::A => try_move(ecs, map, -1, 0),
             VirtualKeyCode::Right | VirtualKeyCode::D => try_move(ecs, map, 1, 0),
-            VirtualKeyCode::Tab => cycle_target(ecs),
+            VirtualKeyCode::T | VirtualKeyCode::Tab => cycle_target(ecs),
             _ => NewState::Wait,
         }
     } else {

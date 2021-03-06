@@ -35,7 +35,7 @@ pub fn render_targeting_panel(
                 target_point = Some(pos.pt);
             }
         }
-        ctx.print_color(x, y, GOLD, BLACK, "TAB to cycle targets");
+        ctx.print_color(x, y, GOLD, BLACK, "T to cycle targets");
         y += 1;
         ctx.print_color(x, y, GOLD, BLACK, "F to fire");
         y += 1;
