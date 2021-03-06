@@ -322,9 +322,22 @@ fn add_exit(rooms: &mut Vec<Rect>, map: &mut Layer, ecs: &mut World) {
     ));
 }
 
-fn populate_rooms(rooms: &mut Vec<Rect>, map: &mut Layer, ecs: &mut World) {
+fn populate_rooms(rooms: &Vec<Rect>, map: &mut Layer, ecs: &mut World) {
+    let mut rng_lock = crate::RNG.lock();
+    let rng = rng_lock.as_mut().unwrap();
+
     // The first room always contains a single colonist
     spawn_random_colonist(ecs, rooms[0].center(), 0);
 
-    // Each room after that can be random
+    // Each room after that can be random. This is an initial, very boring spawn to get
+    // the colonist functionality going.
+    rooms
+        .iter()
+        .skip(1)
+        .for_each(|r| {
+            if rng.range(0, 5) == 0 {
+                spawn_random_colonist(ecs, r.center(), 0);
+            }
+        }
+    );
 }

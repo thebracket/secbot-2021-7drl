@@ -73,6 +73,7 @@ impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.cls();
         render::render_ui_skeleton(ctx);
+        render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer);
         self.map.render(ctx);
         render::render_glyphs(ctx, &self.ecs, &self.map);
 
