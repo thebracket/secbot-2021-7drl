@@ -16,6 +16,8 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
             VirtualKeyCode::Left | VirtualKeyCode::A => try_move(ecs, map, -1, 0),
             VirtualKeyCode::Right | VirtualKeyCode::D => try_move(ecs, map, 1, 0),
             VirtualKeyCode::T | VirtualKeyCode::Tab => cycle_target(ecs),
+            VirtualKeyCode::Comma => go_up(ecs, map),
+            VirtualKeyCode::Down => go_down(ecs, map),
             _ => NewState::Wait,
         }
     } else {
@@ -162,5 +164,13 @@ fn cycle_target(ecs: &mut World) -> NewState {
             targeting.current_target = Some(targeting.targets[targeting.index].0);
         }
     });
+    NewState::Wait
+}
+
+fn go_up(ecs: &mut World, map: &mut Map) -> NewState {
+    NewState::Wait
+}
+
+fn go_down(ecs: &mut World, map: &mut Map) -> NewState {
     NewState::Wait
 }
