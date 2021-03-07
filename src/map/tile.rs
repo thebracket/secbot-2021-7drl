@@ -8,7 +8,7 @@ pub enum TileType {
     Floor,
     Outside,
     StairsDown,
-    StairsUp
+    StairsUp,
 }
 
 #[derive(Clone)]

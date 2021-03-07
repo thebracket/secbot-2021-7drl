@@ -56,7 +56,10 @@ impl State {
         self.ecs.push((
             Player {},
             Name("SecBot".to_string()),
-            Position::with_pt(self.map.get_current().starting_point, self.map.current_layer as u32),
+            Position::with_pt(
+                self.map.get_current().starting_point,
+                self.map.current_layer as u32,
+            ),
             Glyph {
                 glyph: to_cp437('@'),
                 color: ColorPair::new(YELLOW, BLACK),

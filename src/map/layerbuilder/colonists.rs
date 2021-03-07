@@ -16,7 +16,7 @@ pub fn spawn_random_colonist(ecs: &mut World, location: Point, layer: u32) {
             lines: vec!["Thanks, SecBot!".to_string()],
         },
         Name("Colonist".to_string()),
-        Targetable{},
+        Targetable {},
     ));
 }
 
@@ -39,6 +39,6 @@ pub fn spawn_first_colonist(ecs: &mut World, location: Point, layer: u32) {
             ],
         },
         Name("Colonist".to_string()),
-        Targetable{},
+        Targetable {},
     ));
 }

@@ -1,17 +1,17 @@
-mod entrance;
-mod mine_top;
-mod mine_middle;
 mod caverns;
-use super::{HEIGHT, Layer, Tile, WIDTH, tile::TileType};
+mod entrance;
+mod mine_middle;
+mod mine_top;
+use super::{tile::TileType, Layer, Tile, HEIGHT, WIDTH};
 mod colonists;
+pub use caverns::build_caverns;
 use colonists::*;
 pub use entrance::build_entrance;
-pub use mine_top::build_mine_top;
 pub use mine_middle::build_mine_middle;
-pub use caverns::build_caverns;
+pub use mine_top::build_mine_top;
 mod monsters;
+use bracket_lib::prelude::{Algorithm2D, Point};
 use monsters::*;
-use bracket_lib::prelude::{Point, Algorithm2D};
 
 fn all_space(layer: &mut Layer) {
     layer.tiles.iter_mut().for_each(|t| {
