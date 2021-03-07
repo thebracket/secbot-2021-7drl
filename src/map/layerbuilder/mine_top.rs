@@ -1,4 +1,4 @@
-use super::{all_wall, colonists::spawn_first_colonist, spawn_face_eater, spawn_random_colonist};
+use super::{all_wall, edge_filler, colonists::spawn_first_colonist, spawn_face_eater, spawn_random_colonist};
 use crate::{
     components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -65,6 +65,8 @@ pub fn build_mine_top(ecs: &mut World) -> Layer {
             }
         }
     );
+
+    edge_filler(&mut layer);
 
     layer
 }

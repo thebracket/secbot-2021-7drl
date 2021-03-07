@@ -1,4 +1,4 @@
-use super::{all_space, colonists::spawn_first_colonist, spawn_face_eater, spawn_random_colonist};
+use super::{all_space, edge_filler, colonists::spawn_first_colonist, spawn_face_eater, spawn_random_colonist};
 use crate::{
     components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -255,29 +255,6 @@ fn try_random_room(map: &mut Layer, ecs: &mut World, rooms: &mut Vec<Rect>) {
                 fill_room(map, &new_room);
                 rooms.push(new_room);
             }
-        }
-    }
-}
-
-fn edge_filler(map: &mut Layer) {
-    for y in 0..HEIGHT {
-        let idx = map.point2d_to_index(Point::new(0, y));
-        if map.tiles[idx].tile_type == TileType::Floor {
-            map.tiles[idx] = Tile::wall();
-        }
-        let idx = map.point2d_to_index(Point::new(WIDTH - 1, y));
-        if map.tiles[idx].tile_type == TileType::Floor {
-            map.tiles[idx] = Tile::wall();
-        }
-    }
-    for x in 0..WIDTH {
-        let idx = map.point2d_to_index(Point::new(x, 0));
-        if map.tiles[idx].tile_type == TileType::Floor {
-            map.tiles[idx] = Tile::wall();
-        }
-        let idx = map.point2d_to_index(Point::new(x, HEIGHT - 1));
-        if map.tiles[idx].tile_type == TileType::Floor {
-            map.tiles[idx] = Tile::wall();
         }
     }
 }

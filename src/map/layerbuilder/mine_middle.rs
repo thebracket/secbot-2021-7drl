@@ -1,4 +1,4 @@
-use super::{all_wall, colonists::spawn_first_colonist, spawn_face_eater, spawn_random_colonist};
+use super::{all_wall, edge_filler, colonists::spawn_first_colonist, spawn_face_eater, spawn_random_colonist};
 use crate::{components::{Description, Door, Glyph, Position, TileTrigger}, map::{HEIGHT, Layer, TILES, Tile, WIDTH, tile::TileType}};
 use bracket_lib::prelude::*;
 use legion::*;
@@ -42,6 +42,8 @@ pub fn build_mine_middle(ecs: &mut World) -> Layer {
     {
         drunkard(&mut layer);
     }
+
+    edge_filler(&mut layer);
 
     layer
 }
