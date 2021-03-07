@@ -87,7 +87,7 @@ impl Tile {
             color: ColorPair::new(YELLOW, BLACK),
             blocked: false,
             opaque: false,
-            tile_type: TileType::StairsDown,
+            tile_type: TileType::StairsUp,
         }
     }
 
