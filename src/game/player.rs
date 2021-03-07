@@ -123,7 +123,7 @@ pub fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
         });
 
         // Targeting system
-        let mut possible_targets = <(Entity, &Hostile, &Position)>::query();
+        let mut possible_targets = <(Entity, &Targetable, &Position)>::query();
         let mut targets = possible_targets
             .iter(ecs)
             .filter(|(_, _, pos)| pos.layer == map.current_layer as u32 && vt.contains(&pos.pt))
