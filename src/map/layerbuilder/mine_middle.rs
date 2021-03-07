@@ -33,7 +33,7 @@ pub fn build_mine_middle(ecs: &mut World) -> Layer {
     layer.tiles[up_idx] = Tile::stairs_up();
     layer.tiles[down_idx] = Tile::stairs_down();
     layer.starting_point = up_pt;
-    layer.colonist_exit = down_pt;
+    layer.colonist_exit = up_pt;
 
     // Start using drunkard's walk to dig outwards
     while layer.tiles

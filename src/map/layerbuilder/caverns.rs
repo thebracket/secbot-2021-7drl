@@ -15,6 +15,19 @@ pub fn build_caverns(ecs: &mut World) -> Layer {
     }
     edge_filler(&mut layer);
 
+    let desired_start = Point::new(2, HEIGHT/2);
+    let mut possible_starts : Vec<(usize, f32)> = layer
+        .tiles
+        .iter()
+        .enumerate()
+        .filter(|(_, t)| t.tile_type == TileType::Floor)
+        .map(|(idx, _)| (idx, DistanceAlg::Pythagoras.distance2d(desired_start, layer.index_to_point2d(idx))))
+        .collect();
+    possible_starts.sort_by(|a,b| a.1.partial_cmp(&b.1).unwrap());
+    layer.starting_point = layer.index_to_point2d(possible_starts[0].0);
+    layer.colonist_exit = layer.starting_point;
+    layer.tiles[possible_starts[0].0] = Tile::stairs_up();
+
     layer
 }
 
