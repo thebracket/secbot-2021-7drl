@@ -14,7 +14,7 @@ impl Map {
             layers.push(Layer::new(i, ecs));
         }
         Self {
-            current_layer: 0,
+            current_layer: 1, // REMEMBER TO CHANGE THIS BACK
             layers,
         }
     }

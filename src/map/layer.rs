@@ -15,6 +15,8 @@ impl Layer {
     pub fn new(depth: usize, ecs: &mut World) -> Self {
         let layer = match depth {
             0 => build_entrance(ecs),
+            1 => build_mine_top(ecs),
+            2 => build_mine_middle(ecs),
             _ => Self {
                 tiles: vec![Tile::default(); TILES],
                 starting_point: Point::new(WIDTH / 2, HEIGHT / 2),

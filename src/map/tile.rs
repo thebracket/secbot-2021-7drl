@@ -8,6 +8,7 @@ pub enum TileType {
     Floor,
     Outside,
     StairsDown,
+    StairsUp
 }
 
 #[derive(Clone)]
@@ -32,7 +33,7 @@ impl Tile {
 
     pub fn empty() -> Self {
         Self {
-            glyph: to_cp437('#'),
+            glyph: to_cp437(' '),
             color: ColorPair::new(DARK_GRAY, BLACK),
             blocked: true,
             opaque: false,
@@ -42,7 +43,7 @@ impl Tile {
 
     pub fn floor() -> Self {
         Self {
-            glyph: to_cp437('.'),
+            glyph: to_cp437('∙'),
             color: ColorPair::new(DARK_GRAY, BLACK),
             blocked: false,
             opaque: false,
@@ -80,9 +81,19 @@ impl Tile {
         }
     }
 
+    pub fn stairs_up() -> Self {
+        Self {
+            glyph: to_cp437('<'),
+            color: ColorPair::new(YELLOW, BLACK),
+            blocked: false,
+            opaque: false,
+            tile_type: TileType::StairsDown,
+        }
+    }
+
     pub fn capsule_floor() -> Self {
         Self {
-            glyph: to_cp437('.'),
+            glyph: to_cp437('∙'),
             color: ColorPair::new(DARK_CYAN, BLACK),
             blocked: false,
             opaque: false,

@@ -1,7 +1,7 @@
 pub const WIDTH: usize = 80;
 pub const HEIGHT: usize = 60;
 const TILES: usize = WIDTH * HEIGHT;
-pub const NUM_LAYERS: usize = 5;
+pub const NUM_LAYERS: usize = 4;
 
 mod tile;
 use tile::Tile;
