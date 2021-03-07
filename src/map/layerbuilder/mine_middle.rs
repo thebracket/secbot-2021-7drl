@@ -39,7 +39,6 @@ pub fn build_mine_middle(ecs: &mut World) -> Layer {
     layer.colonist_exit = down_pt;
 
     // Start building rooms and corridors
-    let mut rooms = vec![Rect::with_size((WIDTH/2)-10, (HEIGHT/2)-10, 20, 20)];
 
     layer
 }
