@@ -1,5 +1,5 @@
 use crate::{components::*, render::tooltips::render_tooltips};
-use crate::{map::Map, NewState};
+use crate::{map::Map, map::TileType, NewState};
 use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
 use legion::*;
@@ -17,7 +17,7 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
             VirtualKeyCode::Right | VirtualKeyCode::D => try_move(ecs, map, 1, 0),
             VirtualKeyCode::T | VirtualKeyCode::Tab => cycle_target(ecs),
             VirtualKeyCode::Comma => go_up(ecs, map),
-            VirtualKeyCode::Down => go_down(ecs, map),
+            VirtualKeyCode::Period => go_down(ecs, map),
             _ => NewState::Wait,
         }
     } else {
@@ -41,7 +41,7 @@ fn try_move(ecs: &mut World, map: &mut Map, delta_x: i32, delta_y: i32) -> NewSt
         let new_idx = map.get_current().point2d_to_index(new_pos);
         if !map.get_current().tiles[new_idx].blocked {
             pos.pt = new_pos;
-            result = NewState::Enemy;
+            result = NewState::Player;
         } else if map.get_current().is_door[new_idx] {
             map.get_current_mut().is_door[new_idx] = false;
             map.get_current_mut().tiles[new_idx].blocked = false;
@@ -168,9 +168,31 @@ fn cycle_target(ecs: &mut World) -> NewState {
 }
 
 fn go_up(ecs: &mut World, map: &mut Map) -> NewState {
-    NewState::Wait
+    let mut find_player = <(&Player, &mut Position)>::query();
+    find_player.for_each_mut(ecs, |(_, pos)| {
+        let idx = map.get_current().point2d_to_index(pos.pt);
+        if map.get_current().tiles[idx].tile_type == TileType::StairsUp {
+            // It really is an up staircase
+            let new_layer = pos.layer - 1;
+            map.set_current_layer(new_layer as usize);
+            pos.layer = new_layer;
+            pos.pt = map.get_current().find_down_stairs();
+        }
+    });
+    NewState::Player
 }
 
 fn go_down(ecs: &mut World, map: &mut Map) -> NewState {
-    NewState::Wait
+    let mut find_player = <(&Player, &mut Position)>::query();
+    find_player.for_each_mut(ecs, |(_, pos)| {
+        let idx = map.get_current().point2d_to_index(pos.pt);
+        if map.get_current().tiles[idx].tile_type == TileType::StairsDown {
+            // It really is a down staircase
+            let new_layer = pos.layer + 1;
+            map.set_current_layer(new_layer as usize);
+            pos.layer = new_layer;
+            pos.pt = map.get_current().starting_point;
+        }
+    });
+    NewState::Player
 }

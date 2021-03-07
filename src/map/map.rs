@@ -39,4 +39,8 @@ impl Map {
     pub fn get_layer_mut(&mut self, layer: usize) -> &mut Layer {
         &mut self.layers[layer]
     }
+
+    pub fn set_current_layer(&mut self, new_layer: usize) {
+        self.current_layer = new_layer;
+    }
 }

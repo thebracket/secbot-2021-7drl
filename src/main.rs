@@ -14,6 +14,7 @@ lazy_static! {
 
 enum TurnState {
     WaitingForInput,
+    PlayerTurn,
     EnemyTurn,
     Modal { title: String, body: String },
     GameOverLeft,
@@ -23,6 +24,7 @@ enum TurnState {
 pub enum NewState {
     NoChange,
     Wait,
+    Player,
     Enemy,
     LeftMap,
 }
@@ -100,12 +102,14 @@ impl GameState for State {
                 NewState::Wait
             }
             TurnState::GameOverLeft => render::game_over_left(ctx),
+            TurnState::PlayerTurn => NewState::Enemy, // Placeholder
         };
         match new_state {
             NewState::NoChange => {}
             NewState::Wait => self.turn = TurnState::WaitingForInput,
             NewState::Enemy => self.turn = TurnState::EnemyTurn,
             NewState::LeftMap => self.turn = TurnState::GameOverLeft,
+            NewState::Player => self.turn = TurnState::PlayerTurn,
         }
     }
 }

@@ -1,4 +1,4 @@
-use super::{layerbuilder::*, Tile, HEIGHT, TILES, WIDTH};
+use super::{layerbuilder::*, Tile, TileType, HEIGHT, TILES, WIDTH};
 use bracket_lib::prelude::*;
 use legion::*;
 
@@ -71,6 +71,18 @@ impl Layer {
             }
         }
         false
+    }
+
+    pub fn find_down_stairs(&self) -> Point {
+        let idx = self
+            .tiles
+            .iter()
+            .enumerate()
+            .filter(|(_, t)| t.tile_type == TileType::StairsDown)
+            .map(|(idx, _)| idx)
+            .nth(0)
+            .unwrap();
+        self.index_to_point2d(idx)
     }
 }
 

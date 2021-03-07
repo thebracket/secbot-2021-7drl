@@ -76,6 +76,7 @@ pub fn render_colonist_panel(ctx: &mut BTerm, ecs: &World, current_layer: usize)
         BLACK,
         format!("         (Rescued): {}", rescued),
     );
+    y += 1;
 
     y
 }

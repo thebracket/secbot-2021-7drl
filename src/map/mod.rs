@@ -10,3 +10,4 @@ use layer::Layer;
 mod map;
 pub use map::Map;
 mod layerbuilder;
+pub use tile::TileType;
