@@ -30,7 +30,6 @@ pub fn render_colonist_panel(
                     ColonistStatus::StartedDead => located_dead += 1,
                     ColonistStatus::DiedAfterStart => died_in_rescue += 1,
                     ColonistStatus::Rescued => rescued += 1,
-                    _ => {}
                 }
             }
         }

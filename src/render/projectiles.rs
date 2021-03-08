@@ -1,4 +1,4 @@
-use crate::{components::*, map::Map, map::WIDTH};
+use crate::{components::*, map::Map};
 use bracket_lib::prelude::*;
 use legion::*;
 
