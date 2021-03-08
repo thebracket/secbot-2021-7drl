@@ -305,7 +305,7 @@ fn add_exit(rooms: &mut Vec<Rect>, map: &mut Layer, ecs: &mut World) {
     ));
 }
 
-fn populate_rooms(rooms: &Vec<Rect>, _map: &mut Layer, ecs: &mut World) {
+fn populate_rooms(rooms: &Vec<Rect>, map: &mut Layer, ecs: &mut World) {
     let mut rng_lock = crate::RNG.lock();
     let rng = rng_lock.as_mut().unwrap();
 
@@ -314,11 +314,14 @@ fn populate_rooms(rooms: &Vec<Rect>, _map: &mut Layer, ecs: &mut World) {
 
     // Each room after that can be random. This is an initial, very boring spawn to get
     // the colonist functionality going.
+    let stairs = map.find_down_stairs();
     rooms.iter().skip(1).for_each(|r| {
-        if rng.range(0, 5) == 0 {
-            spawn_random_colonist(ecs, r.center(), 0);
-        } else {
-            spawn_face_eater(ecs, r.center(), 0);
+        if !r.point_set().contains(&stairs) {
+            if rng.range(0, 5) == 0 {
+                spawn_random_colonist(ecs, r.center(), 0);
+            } else {
+                spawn_face_eater(ecs, r.center(), 0);
+            }
         }
     });
 }
