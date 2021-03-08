@@ -118,3 +118,18 @@ pub fn game_over_decompression(ctx: &mut BTerm) -> NewState {
     );
     NewState::NoChange
 }
+
+pub fn game_over_dead(ctx: &mut BTerm) -> NewState {
+    ctx.cls();
+    ctx.print(
+        1,
+        1,
+        "Game over. You ran out of hit points.",
+    );
+    ctx.print(
+        1,
+        2,
+        "You need to refresh or reload. Haven't done restarting yet.",
+    );
+    NewState::NoChange
+}

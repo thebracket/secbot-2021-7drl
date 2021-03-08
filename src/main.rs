@@ -21,6 +21,7 @@ enum TurnState {
     Modal { title: String, body: String },
     GameOverLeft,
     GameOverDecompression,
+    GameOverDead,
 }
 
 #[derive(PartialEq)]
@@ -31,6 +32,7 @@ pub enum NewState {
     Enemy,
     LeftMap,
     ShotWindow,
+    Dead,
 }
 
 struct State {
@@ -111,7 +113,17 @@ impl GameState for State {
         let new_state = match &self.turn {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),
             TurnState::WaitingForInput => game::player_turn(ctx, &mut self.ecs, &mut self.map),
-            TurnState::PlayerTurn => NewState::Enemy, // Placeholder
+            TurnState::PlayerTurn => {
+                use components::{Player, Health};
+                let mut is_dead = false;
+                <(&Player, &Health)>::query().for_each(&self.ecs, |(_, hp)| if hp.current == 0 { is_dead = true; });
+                if is_dead {
+                    NewState::Dead
+                } else {
+                    NewState::Enemy
+                }
+                // TODO: Extra turns for speed boosts could go here
+            }
             TurnState::EnemyTurn => {
                 game::colonists_turn(&mut self.ecs, &mut self.map);
                 game::monsters_turn(&mut self.ecs, &mut self.map);
@@ -119,6 +131,7 @@ impl GameState for State {
             }
             TurnState::GameOverLeft => render::game_over_left(ctx),
             TurnState::GameOverDecompression => render::game_over_decompression(ctx),
+            TurnState::GameOverDead => render::game_over_dead(ctx),
         };
         match new_state {
             NewState::NoChange => {}
@@ -127,6 +140,7 @@ impl GameState for State {
             NewState::LeftMap => self.turn = TurnState::GameOverLeft,
             NewState::Player => self.turn = TurnState::PlayerTurn,
             NewState::ShotWindow => self.turn = TurnState::GameOverDecompression,
+            NewState::Dead => self.turn = TurnState::GameOverDead,
         }
     }
 }
