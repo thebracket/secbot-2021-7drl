@@ -68,6 +68,39 @@ pub fn spawn_first_colonist(ecs: &mut World, location: Point, layer: u32) {
     commands.flush(ecs);
 }
 
+pub fn spawn_napping_colonist(ecs: &mut World, location: Point, layer: u32) {
+    let entity = build_base_colonist(ecs, location, layer);
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(
+        entity,
+        Dialog {
+            lines: vec![
+                "YAWN! Oh, hi SecBot!".to_string(),
+                "I was having a terrible dream about monsters.".to_string(),
+            ],
+        },
+    );
+    commands.add_component(entity, Description("Colonist senior manager.".to_string()));
+    commands.flush(ecs);
+}
+
+pub fn spawn_dead_colonist(ecs: &mut World, location: Point, layer: u32) {
+    let name_lock = NAMES.lock();
+    let name = name_lock.unwrap().random_human_name();
+    ecs.push((
+        Colonist { path: None },
+        Position::with_pt(location, layer),
+        Glyph {
+            glyph: to_cp437('☺'),
+            color: ColorPair::new(GRAY, DARK_RED),
+        },
+        Description("This colonist was dead when you arrived.".to_string()),
+        ColonistStatus::StartedDead,
+        Name(format!("Corpse: {}", name)),
+        CanBeActivated{},
+    ));
+}
+
 /* Name Generation */
 
 const FIRST_NAMES_1: &str = include_str!("first_names_female.txt");

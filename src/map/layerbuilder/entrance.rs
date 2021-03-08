@@ -1,7 +1,4 @@
-use super::{
-    all_space, colonists::spawn_first_colonist, edge_filler, spawn_face_eater,
-    spawn_random_colonist,
-};
+use super::{all_space, colonists::*, edge_filler, spawn_face_eater, spawn_random_colonist};
 use crate::{
     components::*,
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -314,13 +311,24 @@ fn populate_rooms(rooms: &Vec<Rect>, map: &mut Layer, ecs: &mut World) {
 
     // Each room after that can be random. This is an initial, very boring spawn to get
     // the colonist functionality going.
+    let mut room_types = Vec::new();
+    for i in 0..MAX_ROOM_TYPES {
+        room_types.push(i);
+    }
     let stairs = map.find_down_stairs();
     rooms.iter().skip(1).for_each(|r| {
         if !r.point_set().contains(&stairs) {
-            if rng.range(0, 5) == 0 {
-                spawn_random_colonist(ecs, r.center(), 0);
+            if !room_types.is_empty() {
+                let room_index = rng.random_slice_index(&room_types).unwrap();
+                let ri = room_types[room_index];
+                room_types.remove(room_index);
+                spawn_room(ri, r, map, ecs, rng);
             } else {
-                spawn_face_eater(ecs, r.center(), 0);
+                if rng.range(0, 5) == 0 {
+                    spawn_random_colonist(ecs, r.center(), 0);
+                } else {
+                    spawn_face_eater(ecs, r.center(), 0);
+                }
             }
         }
     });
@@ -355,6 +363,53 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
             spawn_table(ecs, point + Point::new(1, 0), 0);
         }
     }
+}
+
+const MAX_ROOM_TYPES : usize = 3;
+
+fn spawn_room(rt: usize, room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    match rt {
+        0 => charnel_house(room, map, ecs),
+        1 => bedroom(room, map, ecs, rng),
+        2 => bedroom_not_so_nice(room, map, ecs, rng),
+        _ => {}
+    }
+}
+
+fn charnel_house(room: &Rect, map: &mut Layer, ecs: &mut World) {
+    room.for_each(|pt| {
+        let idx = map.point2d_to_index(pt);
+        map.tiles[idx].color.bg = DARK_RED.into();
+    });
+    spawn_dead_colonist(ecs, room.center() + Point::new(-1, 0), 0);
+    spawn_dead_colonist(ecs, room.center() + Point::new(1, 0), 0);
+}
+
+fn bedroom(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    let mut open_space = Vec::new();
+    room.for_each(|p| {
+        if p != map.starting_point {
+            open_space.push(p)
+        }
+    });
+    let pt = get_random_point(&mut open_space, rng);
+    spawn_napping_colonist(ecs, pt, 0);
+    spawn_bed(ecs, pt, 0);
+}
+
+fn bedroom_not_so_nice(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    let mut open_space = Vec::new();
+    room.for_each(|p| {
+        if p != map.starting_point {
+            open_space.push(p)
+        }
+    });
+    let pt = get_random_point(&mut open_space, rng);
+    spawn_napping_colonist(ecs, pt, 0);
+    spawn_bed(ecs, pt, 0);
+    spawn_face_eater(ecs, Point::new(room.x1, room.y1), 0);
+    spawn_face_eater(ecs, Point::new(room.x2, room.y1), 0);
+    spawn_face_eater(ecs, Point::new(room.x1, room.y2), 0);
 }
 
 ///////// Spawners
@@ -428,6 +483,21 @@ fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
         Name("GreeterBot".to_string()),
         Description("Bracket Corp welcoming robot. Your safety is important to us!".to_string()),
         Health { current: 2, max: 2 },
+        Targetable {},
+        Position::with_pt(pos, layer),
+        PropertyValue(100),
+    ));
+}
+
+fn spawn_bed(ecs: &mut World, pos: Point, layer: u32) {
+    ecs.push((
+        Glyph {
+            glyph: to_cp437('ß'),
+            color: ColorPair::new(YELLOW, BLACK),
+        },
+        Name("Comfy Bed".to_string()),
+        Description("A really comfortable bed".to_string()),
+        Health { current: 5, max: 5 },
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
