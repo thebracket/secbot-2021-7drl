@@ -1,9 +1,9 @@
-use legion::*;
-use legion::systems::CommandBuffer;
 use crate::components::*;
-use crate::NewState;
 use crate::map::*;
+use crate::NewState;
 use bracket_lib::prelude::*;
+use legion::systems::CommandBuffer;
+use legion::*;
 use std::collections::HashSet;
 
 pub fn player_open_fire_at_target(ecs: &mut World, map: &mut Map) -> NewState {
@@ -208,37 +208,46 @@ pub fn melee(ecs: &mut World, map: &mut Map, attacker: Entity, victim: Entity, m
     // Splatter blood. It's good for you.
 }
 
-fn kill_things(ecs: &mut World, commands: &mut CommandBuffer, dead_entities : Vec<Entity>, splatter: &mut Option<RGB>) {
+fn kill_things(
+    ecs: &mut World,
+    commands: &mut CommandBuffer,
+    dead_entities: Vec<Entity>,
+    splatter: &mut Option<RGB>,
+) {
     dead_entities.iter().for_each(|entity| {
-    if let Ok(mut er) = ecs.entry_mut(*entity) {
-        let mut was_colonist = false;
-        if let Ok(_colonist) = er.get_component_mut::<ColonistStatus>() {
-            commands.add_component(*entity, ColonistStatus::DiedAfterStart);
-            was_colonist = true;
-        }
-        if let Ok(g) = er.get_component_mut::<Glyph>() {
-            g.color.bg = DARK_RED.into();
-            g.color.fg = DARK_GRAY.into();
-        }
-        if let Ok(n) = er.get_component_mut::<Name>() {
-            n.0 = format!("Corpse: {}", n.0);
-        }
-        if was_colonist {
-            if let Ok(d) = er.get_component_mut::<Description>() {
-                let mut rng = RandomNumberGenerator::new();
-                if rng.range(0,10) < 5 {
-                    d.0 = format!("{} They left behind a spouse and {} children.", d.0, rng.range(1, 8));
+        if let Ok(mut er) = ecs.entry_mut(*entity) {
+            let mut was_colonist = false;
+            if let Ok(_colonist) = er.get_component_mut::<ColonistStatus>() {
+                commands.add_component(*entity, ColonistStatus::DiedAfterStart);
+                was_colonist = true;
+            }
+            if let Ok(g) = er.get_component_mut::<Glyph>() {
+                g.color.bg = DARK_RED.into();
+                g.color.fg = DARK_GRAY.into();
+            }
+            if let Ok(n) = er.get_component_mut::<Name>() {
+                n.0 = format!("Corpse: {}", n.0);
+            }
+            if was_colonist {
+                if let Ok(d) = er.get_component_mut::<Description>() {
+                    let mut rng = RandomNumberGenerator::new();
+                    if rng.range(0, 10) < 5 {
+                        d.0 = format!(
+                            "{} They left behind a spouse and {} children.",
+                            d.0,
+                            rng.range(1, 8)
+                        );
+                    }
                 }
             }
+            if let Ok(b) = er.get_component::<Blood>() {
+                *splatter = Some(b.0);
+            }
         }
-        if let Ok(b) = er.get_component::<Blood>() {
-            *splatter = Some(b.0);
-        }
-    }
-    commands.remove_component::<Health>(*entity);
-    commands.remove_component::<Active>(*entity);
-    commands.remove_component::<CanBeActivated>(*entity);
-    commands.remove_component::<Blood>(*entity);
-    commands.remove_component::<Targetable>(*entity);
+        commands.remove_component::<Health>(*entity);
+        commands.remove_component::<Active>(*entity);
+        commands.remove_component::<CanBeActivated>(*entity);
+        commands.remove_component::<Blood>(*entity);
+        commands.remove_component::<Targetable>(*entity);
     });
 }

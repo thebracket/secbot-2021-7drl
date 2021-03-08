@@ -103,7 +103,6 @@ pub fn game_over_left(ctx: &mut BTerm) -> NewState {
     NewState::NoChange
 }
 
-
 pub fn game_over_decompression(ctx: &mut BTerm) -> NewState {
     ctx.cls();
     ctx.print(
@@ -121,11 +120,7 @@ pub fn game_over_decompression(ctx: &mut BTerm) -> NewState {
 
 pub fn game_over_dead(ctx: &mut BTerm) -> NewState {
     ctx.cls();
-    ctx.print(
-        1,
-        1,
-        "Game over. You ran out of hit points.",
-    );
+    ctx.print(1, 1, "Game over. You ran out of hit points.");
     ctx.print(
         1,
         2,

@@ -1,10 +1,10 @@
+use super::combat::player_open_fire_at_target;
 use crate::{components::*, render::tooltips::render_tooltips};
 use crate::{map::Map, map::TileType, NewState};
 use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
 use legion::*;
 use std::collections::HashSet;
-use super::combat::player_open_fire_at_target;
 
 pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState {
     render_tooltips(ctx, ecs, map);

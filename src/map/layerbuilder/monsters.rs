@@ -6,10 +6,10 @@ use std::collections::HashSet;
 pub fn spawn_face_eater(ecs: &mut World, location: Point, layer: u32) {
     let entity = ecs.push((
         Name("Face Eater".to_string()),
-        Hostile { 
+        Hostile {
             aggro: AggroMode::Player,
             ranged: Vec::new(),
-            melee: vec![ Melee{ damage: 1 } ],
+            melee: vec![Melee { damage: 1 }],
         },
         Targetable {},
         Position::with_pt(location, layer),
@@ -22,7 +22,13 @@ pub fn spawn_face_eater(ecs: &mut World, location: Point, layer: u32) {
         Blood(DARK_GREEN.into()),
     ));
     let mut commands = legion::systems::CommandBuffer::new(ecs);
-    commands.add_component(entity, FieldOfView{ radius: 6, visible_tiles: HashSet::new() });
-    commands.add_component(entity, CanBeActivated{});
+    commands.add_component(
+        entity,
+        FieldOfView {
+            radius: 6,
+            visible_tiles: HashSet::new(),
+        },
+    );
+    commands.add_component(entity, CanBeActivated {});
     commands.flush(ecs);
 }

@@ -337,7 +337,11 @@ fn get_random_point(points: &mut Vec<Point>, rng: &mut RandomNumberGenerator) ->
 
 fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
     let mut open_space = Vec::new();
-    room.for_each(|p| if p != map.starting_point { open_space.push(p) });
+    room.for_each(|p| {
+        if p != map.starting_point {
+            open_space.push(p)
+        }
+    });
 
     // Spawn the colonist who greets you
     spawn_first_colonist(ecs, get_random_point(&mut open_space, rng), 0);
@@ -346,72 +350,86 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
     spawn_greeter(ecs, get_random_point(&mut open_space, rng), 0);
     for _ in 0..10 {
         let point = get_random_point(&mut open_space, rng);
-        if open_space.contains(&(point + Point::new(1,0))) {
+        if open_space.contains(&(point + Point::new(1, 0))) {
             spawn_chair(ecs, point, 0);
             spawn_table(ecs, point + Point::new(1, 0), 0);
         }
     }
-
 }
 
 ///////// Spawners
 
 fn spawn_soda_machine(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
-        Glyph{ glyph: to_cp437('◘'), color: ColorPair::new(YELLOW, BLACK)},
+        Glyph {
+            glyph: to_cp437('◘'),
+            color: ColorPair::new(YELLOW, BLACK),
+        },
         Name("Soda Machine".to_string()),
         Description("A powered-down soda machine".to_string()),
-        Health{current: 3, max: 3},
-        Targetable{},
+        Health { current: 3, max: 3 },
+        Targetable {},
         Position::with_pt(pos, layer),
-        PropertyValue(100)
+        PropertyValue(100),
     ));
 }
 
 fn spawn_snack_machine(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
-        Glyph{ glyph: to_cp437('◘'), color: ColorPair::new(MAGENTA, BLACK)},
+        Glyph {
+            glyph: to_cp437('◘'),
+            color: ColorPair::new(MAGENTA, BLACK),
+        },
         Name("Snack Machine".to_string()),
         Description("A powered-down snack machine".to_string()),
-        Health{current: 3, max: 3},
-        Targetable{},
+        Health { current: 3, max: 3 },
+        Targetable {},
         Position::with_pt(pos, layer),
-        PropertyValue(100)
+        PropertyValue(100),
     ));
 }
 
 fn spawn_chair(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
-        Glyph{ glyph: to_cp437('╓'), color: ColorPair::new(GRAY, BLACK)},
+        Glyph {
+            glyph: to_cp437('╓'),
+            color: ColorPair::new(GRAY, BLACK),
+        },
         Name("Plastic Chair".to_string()),
         Description("A plastic chair".to_string()),
-        Health{current: 1, max: 1},
-        Targetable{},
+        Health { current: 1, max: 1 },
+        Targetable {},
         Position::with_pt(pos, layer),
-        PropertyValue(5)
+        PropertyValue(5),
     ));
 }
 
 fn spawn_table(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
-        Glyph{ glyph: to_cp437('╓'), color: ColorPair::new(GRAY, BLACK)},
+        Glyph {
+            glyph: to_cp437('╓'),
+            color: ColorPair::new(GRAY, BLACK),
+        },
         Name("Plastic Table".to_string()),
         Description("A plastic table".to_string()),
-        Health{current: 2, max: 2},
-        Targetable{},
+        Health { current: 2, max: 2 },
+        Targetable {},
         Position::with_pt(pos, layer),
-        PropertyValue(10)
+        PropertyValue(10),
     ));
 }
 
 fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
-        Glyph{ glyph: to_cp437('♥'), color: ColorPair::new(PINK, BLACK)},
+        Glyph {
+            glyph: to_cp437('♥'),
+            color: ColorPair::new(PINK, BLACK),
+        },
         Name("GreeterBot".to_string()),
         Description("Bracket Corp welcoming robot. Your safety is important to us!".to_string()),
-        Health{current: 2, max: 2},
-        Targetable{},
+        Health { current: 2, max: 2 },
+        Targetable {},
         Position::with_pt(pos, layer),
-        PropertyValue(100)
+        PropertyValue(100),
     ));
 }

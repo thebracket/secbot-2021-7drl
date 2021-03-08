@@ -1,7 +1,7 @@
 use bracket_lib::prelude::*;
 use lazy_static::*;
-pub use legion::*;
 use legion::systems::CommandBuffer;
+pub use legion::*;
 use render::projectiles::render_projectiles;
 use std::{collections::HashSet, sync::Mutex};
 mod components;
@@ -114,9 +114,13 @@ impl GameState for State {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),
             TurnState::WaitingForInput => game::player_turn(ctx, &mut self.ecs, &mut self.map),
             TurnState::PlayerTurn => {
-                use components::{Player, Health};
+                use components::{Health, Player};
                 let mut is_dead = false;
-                <(&Player, &Health)>::query().for_each(&self.ecs, |(_, hp)| if hp.current == 0 { is_dead = true; });
+                <(&Player, &Health)>::query().for_each(&self.ecs, |(_, hp)| {
+                    if hp.current == 0 {
+                        is_dead = true;
+                    }
+                });
                 if is_dead {
                     NewState::Dead
                 } else {

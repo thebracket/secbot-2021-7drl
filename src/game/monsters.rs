@@ -4,7 +4,7 @@ use bracket_lib::prelude::*;
 use legion::{systems::CommandBuffer, *};
 
 pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
-    let mut targets : Vec<(Position, Entity)> = <(Entity, &Colonist, &Health, &Position)>::query()
+    let mut targets: Vec<(Position, Entity)> = <(Entity, &Colonist, &Health, &Position)>::query()
         .iter(ecs)
         .map(|(e, _, _, pos)| (*pos, *e))
         .collect();
@@ -22,18 +22,20 @@ pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
         .for_each(|(entity, _, hostile, pos, fov)| {
             let mut attacked = false;
             // What can I see?
-            fov.visible_tiles = field_of_view_set(pos.pt, fov.radius, map.get_layer(pos.layer as usize));
-            let mut target_subset : Vec<(Point, f32, Entity)> = targets
+            fov.visible_tiles =
+                field_of_view_set(pos.pt, fov.radius, map.get_layer(pos.layer as usize));
+            let mut target_subset: Vec<(Point, f32, Entity)> = targets
                 .iter()
                 .filter(|p| p.0.layer == pos.layer)
-                .map(|p| (
-                    p.0.pt, 
-                    DistanceAlg::Pythagoras.distance2d(pos.pt, p.0.pt),
-                    p.1,
-                )
-                )
+                .map(|p| {
+                    (
+                        p.0.pt,
+                        DistanceAlg::Pythagoras.distance2d(pos.pt, p.0.pt),
+                        p.1,
+                    )
+                })
                 .collect();
-            target_subset.sort_by(|a,b| a.1.partial_cmp(&b.1).unwrap());
+            target_subset.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
 
             if !target_subset.is_empty() {
                 // Can I melee?
@@ -70,18 +72,15 @@ pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
                             }
                         }
                     }
-                    AggroMode::Nearest => {
-
-                    }
+                    AggroMode::Nearest => {}
                 }
                 // If its the player, follow them
                 // If its nearest, look for something to kill
             }
-        }
-    );
+        });
     commands.flush(ecs);
 
-    melee_buffer.iter().for_each(|(a,d,dmg)| {
+    melee_buffer.iter().for_each(|(a, d, dmg)| {
         super::combat::melee(ecs, map, *a, *d, *dmg);
     });
 }
