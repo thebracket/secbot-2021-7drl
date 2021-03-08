@@ -18,6 +18,7 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
             VirtualKeyCode::T | VirtualKeyCode::Tab => cycle_target(ecs),
             VirtualKeyCode::Comma => go_up(ecs, map),
             VirtualKeyCode::Period => go_down(ecs, map),
+            VirtualKeyCode::Space => NewState::Player, // Wait action
             _ => NewState::Wait,
         }
     } else {

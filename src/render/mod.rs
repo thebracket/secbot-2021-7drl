@@ -34,15 +34,9 @@ pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map, target_pt: Option<
     });
 
     if let Some(pt) = target_pt {
-        line2d_bresenham(player_point, pt)
-            .iter()
-            .skip(1)
-            .for_each(|pt| {
-                ctx.set_bg(pt.x + 1, pt.y + 1, GOLD);
-            });
-        ctx.set(pt.x, pt.y + 1, DARK_RED, BLACK, to_cp437('['));
-        ctx.set(pt.x + 2, pt.y + 1, DARK_RED, BLACK, to_cp437(']'));
-        ctx.set_bg(pt.x + 1, pt.y + 1, GOLD);
+        ctx.set(pt.x, pt.y + 1, RED, BLACK, to_cp437('['));
+        ctx.set(pt.x + 2, pt.y + 1, RED, BLACK, to_cp437(']'));
+        //ctx.set_bg(pt.x + 1, pt.y + 1, GOLD);
     }
 }
 

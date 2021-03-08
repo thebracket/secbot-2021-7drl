@@ -66,6 +66,11 @@ pub fn build_mine_top(ecs: &mut World) -> Layer {
     });
 
     edge_filler(&mut layer);
+    std::mem::drop(rng);
+
+    rooms.iter().for_each(|r| {
+        spawn_random_colonist(ecs, r.center(), 1);
+    });
 
     layer
 }
