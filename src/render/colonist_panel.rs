@@ -1,11 +1,11 @@
-use crate::components::{Colonist, ColonistStatus, Position};
+use crate::components::*;
 use bracket_lib::prelude::*;
 use legion::*;
 
 use super::WIDTH;
 
 pub fn render_colonist_panel(ctx: &mut BTerm, ecs: &World, current_layer: usize) -> i32 {
-    let mut query = <(&Colonist, &Position, &ColonistStatus)>::query();
+    let mut query = <(Entity, &Colonist, &Position, &ColonistStatus)>::query();
     let mut total_colonists = 0;
     let mut colonists_on_layer = 0;
     let mut located_alive = 0;
@@ -13,17 +13,21 @@ pub fn render_colonist_panel(ctx: &mut BTerm, ecs: &World, current_layer: usize)
     let mut died_in_rescue = 0;
     let mut rescued = 0;
 
-    query.for_each(ecs, |(_, pos, status)| {
+    query.for_each(ecs, |(entity, _, pos, status)| {
         total_colonists += 1;
         if pos.layer == current_layer as u32 && *status != ColonistStatus::Rescued {
             colonists_on_layer += 1;
         }
-        match *status {
-            ColonistStatus::Alive => located_alive += 1,
-            ColonistStatus::StartedDead => located_dead += 1,
-            ColonistStatus::DiedAfterStart => died_in_rescue += 1,
-            ColonistStatus::Rescued => rescued += 1,
-            _ => {}
+        if let Ok(entry) = ecs.entry_ref(*entity) {
+            if let Ok(_) = entry.get_component::<Active>() {
+                match *status {
+                    ColonistStatus::Alive => located_alive += 1,
+                    ColonistStatus::StartedDead => located_dead += 1,
+                    ColonistStatus::DiedAfterStart => died_in_rescue += 1,
+                    ColonistStatus::Rescued => rescued += 1,
+                    _ => {}
+                }
+            }
         }
     });
 

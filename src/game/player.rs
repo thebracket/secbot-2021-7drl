@@ -109,18 +109,16 @@ pub fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
     });
 
     if let Some(vt) = visible {
+        let mut commands = legion::systems::CommandBuffer::new(ecs);
         // Update colonist status
-        let mut colonists_on_layer = <(&Colonist, &mut ColonistStatus, &Position)>::query();
-        colonists_on_layer.for_each_mut(ecs, |(_, status, pos)| {
+        let mut can_be_activated = <(Entity, &CanBeActivated, &Position)>::query();
+        can_be_activated.for_each_mut(ecs, |(entity, _, pos)| {
             if pos.layer == map.current_layer as u32
                 && vt.contains(&pos.pt)
                 && DistanceAlg::Pythagoras.distance2d(player_pos, pos.pt) < 6.0
             {
-                // TODO: All the other possibilities including being dead
-                match *status {
-                    ColonistStatus::Unknown => *status = ColonistStatus::Alive,
-                    _ => {}
-                }
+                commands.remove_component::<CanBeActivated>(*entity);
+                commands.add_component(*entity, Active {});
             }
         });
 
@@ -133,7 +131,6 @@ pub fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
             .collect::<Vec<(Entity, f32)>>();
 
         targets.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
-        let mut commands = legion::systems::CommandBuffer::new(ecs);
         let current_target = if targets.is_empty() {
             None
         } else {

@@ -12,11 +12,14 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
         &mut ColonistStatus,
         &mut Position,
         &mut Dialog,
+        &Active,
     )>::query();
     colonists
         .iter_mut(ecs)
-        .filter(|(_, _, status, _, _)| **status == ColonistStatus::Alive)
-        .for_each(|(entity, colonist, status, pos, dialog)| {
+        .filter(|(_, _, status, _, _, _)| **status == ColonistStatus::Alive)
+        .for_each(|(entity, colonist, status, pos, dialog, _)| {
+            let idx = map.get_layer(pos.layer as usize).point2d_to_index(pos.pt);
+
             // Check basics like "am I dead?"
 
             // Am I at the exit? If so, I can change my status to "rescued"
