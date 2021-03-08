@@ -13,5 +13,6 @@ pub fn spawn_face_eater(ecs: &mut World, location: Point, layer: u32) {
             color: ColorPair::new(RED, BLACK),
         },
         Description("Nasty eight-legged beastie that likes to eat faces.".to_string()),
+        Health{max: 3, current: 3},
     ));
 }

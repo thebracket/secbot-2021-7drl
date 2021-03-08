@@ -4,7 +4,7 @@ use legion::*;
 
 use super::WIDTH;
 
-pub fn render_colonist_panel(ctx: &mut BTerm, ecs: &World, current_layer: usize) -> i32 {
+pub fn render_colonist_panel(ctx: &mut BTerm, ecs: &World, current_layer: usize, mut y: i32) -> i32 {
     let mut query = <(Entity, &Colonist, &Position, &ColonistStatus)>::query();
     let mut total_colonists = 0;
     let mut colonists_on_layer = 0;
@@ -32,7 +32,6 @@ pub fn render_colonist_panel(ctx: &mut BTerm, ecs: &World, current_layer: usize)
     });
 
     let x = WIDTH + 3;
-    let mut y = 2;
     ctx.print_color(
         x,
         y,

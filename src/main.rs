@@ -76,6 +76,7 @@ impl State {
                 current_target: None,
                 index: 0,
             },
+            Health{max: 10, current: 10},
         ));
 
         // Trigger FOV for the first round
@@ -87,7 +88,8 @@ impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.cls();
         render::render_ui_skeleton(ctx);
-        let y = render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer);
+        let y = render::render_status(ctx, &self.ecs, 2);
+        let y = render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer, y);
         let (_y, target_pt) =
             render::render_targeting_panel(y, ctx, &self.ecs, self.map.current_layer);
         self.map.render(ctx);

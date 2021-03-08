@@ -1,5 +1,5 @@
 use crate::{
-    components::{Description, Name, Position},
+    components::*,
     map::{Map, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
@@ -11,20 +11,25 @@ pub fn render_tooltips(ctx: &mut BTerm, ecs: &World, map: &Map) {
     let map_y = my - 1;
     if map_x >= 0 && map_x < WIDTH as i32 && map_y >= 0 && map_y < HEIGHT as i32 {
         let mut lines = Vec::new();
-        let mut query = <(&Position, &Description, &Name)>::query();
-        query.for_each(ecs, |(pos, desc, name)| {
+        let mut query = <(Entity, &Position, &Description, &Name)>::query();
+        query.for_each(ecs, |(entity, pos, desc, name)| {
             if pos.layer == map.current_layer as u32 && pos.pt.x == map_x && pos.pt.y == map_y {
                 let idx = map.get_current().point2d_to_index(pos.pt);
                 if map.get_current().visible[idx] {
-                    lines.push(name.0.clone());
-                    lines.push(desc.0.clone());
+                    lines.push((CYAN, name.0.clone()));
+                    lines.push((GRAY, desc.0.clone()));
+                    if let Ok(er) = ecs.entry_ref(*entity) {
+                        if let Ok(hp) = er.get_component::<Health>() {
+                            lines.push((GRAY, format!("{}/{} hp", hp.current, hp.max)));
+                        }
+                    }
                 }
             }
         });
 
         if !lines.is_empty() {
             let height = lines.len() + 1;
-            let width = lines.iter().map(|s| s.len()).max().unwrap() + 2;
+            let width = lines.iter().map(|s| s.1.len()).max().unwrap() + 2;
             let tip_x = if map_x < WIDTH as i32 / 2 {
                 mx + 1
             } else {
@@ -35,10 +40,10 @@ pub fn render_tooltips(ctx: &mut BTerm, ecs: &World, map: &Map) {
             } else {
                 my
             };
-            ctx.draw_box(tip_x, tip_y, width, height, WHITE, BLACK);
-            let mut y = tip_y + 1;
+            ctx.draw_box(tip_x, tip_y- (lines.len()/2) as i32, width, height, WHITE, BLACK);
+            let mut y = tip_y + 1 - (lines.len()/2) as i32;
             lines.iter().for_each(|s| {
-                ctx.print_color(tip_x + 1, y, WHITE, BLACK, s);
+                ctx.print_color(tip_x + 1, y, s.0, BLACK, &s.1);
                 y += 1;
             });
         }

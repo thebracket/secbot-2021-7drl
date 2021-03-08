@@ -10,6 +10,7 @@ mod speech;
 mod tags;
 mod targeting;
 mod tile_trigger;
+mod health;
 
 pub use colonist::*;
 pub use colonist_status::*;
@@ -23,3 +24,4 @@ pub use speech::*;
 pub use tags::*;
 pub use targeting::*;
 pub use tile_trigger::*;
+pub use health::*;

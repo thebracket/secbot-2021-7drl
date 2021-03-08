@@ -11,6 +11,8 @@ pub use colonist_panel::*;
 pub mod speech;
 pub mod targeting_panel;
 pub use targeting_panel::*;
+pub mod status_panel;
+pub use status_panel::*;
 
 pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map, target_pt: Option<Point>) {
     let mut player_point = Point::zero();

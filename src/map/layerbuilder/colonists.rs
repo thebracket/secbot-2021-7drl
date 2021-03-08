@@ -7,7 +7,7 @@ use std::sync::Mutex;
 fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
     let name_lock = NAMES.lock();
     let name = name_lock.unwrap().random_human_name();
-    ecs.push((
+    let entity = ecs.push((
         Colonist { path: None },
         Position::with_pt(location, layer),
         Glyph {
@@ -19,7 +19,15 @@ fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
         Name(name),
         Targetable {},
         CanBeActivated {},
-    ))
+    ));
+
+    let mut rng = RandomNumberGenerator::new();
+    let hp = rng.roll_dice(1, 6) + 3;
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(entity, Health{max: hp, current: hp});
+    commands.flush(ecs);
+
+    entity
 }
 
 pub fn spawn_random_colonist(ecs: &mut World, location: Point, layer: u32) {
@@ -49,6 +57,7 @@ pub fn spawn_first_colonist(ecs: &mut World, location: Point, layer: u32) {
             ],
         },
     );
+    commands.add_component(entity, Description("Colonist senior manager.".to_string()));
     commands.flush(ecs);
 }
 
