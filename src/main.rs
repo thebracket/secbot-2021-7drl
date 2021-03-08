@@ -86,7 +86,7 @@ impl State {
             },
         ));
         let mut commands = CommandBuffer::new(&self.ecs);
-        commands.add_component(e, Blood(RED.into()));
+        commands.add_component(e, Blood(BROWN2.into()));
         commands.flush(&mut self.ecs);
         // TODO: Add blood
 

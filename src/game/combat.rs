@@ -157,7 +157,7 @@ fn hit_tile_contents(
 }
 
 pub fn melee(ecs: &mut World, map: &mut Map, attacker: Entity, victim: Entity, melee_power: i32) {
-    // Check that range < 1.3 (no diagonals)
+    // Check range and validity
     let mut attacker_pos = None;
     let mut defender_pos = None;
 
@@ -181,7 +181,7 @@ pub fn melee(ecs: &mut World, map: &mut Map, attacker: Entity, victim: Entity, m
         return; // Bail out - can't attack across layers
     }
     let d = DistanceAlg::Pythagoras.distance2d(apos.pt, dpos.pt);
-    if d > 1.2 {
+    if d > 1.5 {
         return; // Too far away, bail
     }
 

@@ -7,7 +7,7 @@ pub fn spawn_face_eater(ecs: &mut World, location: Point, layer: u32) {
     let entity = ecs.push((
         Name("Face Eater".to_string()),
         Hostile { 
-            aggro: AggroMode::Nearest,
+            aggro: AggroMode::Player,
             ranged: Vec::new(),
             melee: vec![ Melee{ damage: 1 } ],
         },
