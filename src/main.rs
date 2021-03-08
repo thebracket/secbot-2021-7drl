@@ -3,7 +3,7 @@ use lazy_static::*;
 pub use legion::*;
 use std::{collections::HashSet, sync::Mutex};
 mod components;
-mod game;
+pub mod game;
 mod map;
 mod render;
 mod text;

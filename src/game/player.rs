@@ -194,3 +194,30 @@ fn go_down(ecs: &mut World, map: &mut Map) -> NewState {
     });
     NewState::Player
 }
+
+// Returns (probability, range)
+pub fn hit_probability(ecs: &World, target: Entity) -> (u32, u32) {
+    let mut target_pos = Point::zero();
+    if let Ok(entry) = ecs.entry_ref(target) {
+        if let Ok(pos) = entry.get_component::<Position>() {
+            target_pos = pos.pt;
+        }
+    }
+
+    let player_pos = <(&Player, &Position)>::query()
+        .iter(ecs)
+        .map(|(_, pos)| pos)
+        .nth(0)
+        .unwrap()
+        .pt;
+
+    let range = DistanceAlg::Pythagoras.distance2d(player_pos, target_pos) as u32;
+
+    // TODO: More complexity here
+    let mut hit_chance = 90;
+    if range > 5 {
+        hit_chance -= (range - 5) * 5;
+    }
+
+    (hit_chance, range)
+}
