@@ -21,11 +21,16 @@ pub fn render_targeting_panel(
     if let Some(target_entity) = current_target {
         // TODO: Retrieve target details here
         if let Ok(entry) = ecs.entry_ref(target_entity) {
+            let color = if let Ok(g) = entry.get_component::<Glyph>() {
+                g.color.fg
+            } else {
+                RGBA::named(RED)
+            };
             if let Ok(name) = entry.get_component::<Name>() {
                 ctx.print_color(
                     x,
                     y,
-                    RED,
+                    color,
                     BLACK,
                     format!("Target: {}", name.0.to_uppercase()),
                 );

@@ -1,8 +1,12 @@
 use crate::components::*;
 use bracket_lib::prelude::*;
 use legion::{systems::CommandBuffer, *};
+use lazy_static::*;
+use std::sync::Mutex;
 
 fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
+    let name_lock = NAMES.lock();
+    let name = name_lock.unwrap().random_human_name();
     ecs.push((
         Colonist { path: None },
         Position::with_pt(location, layer),
@@ -12,7 +16,7 @@ fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
         },
         Description("A squishy friend. You are here to rescue your squishies.".to_string()),
         ColonistStatus::Alive,
-        Name("Colonist".to_string()),
+        Name(name),
         Targetable {},
         CanBeActivated {},
     ))
@@ -46,4 +50,51 @@ pub fn spawn_first_colonist(ecs: &mut World, location: Point, layer: u32) {
         },
     );
     commands.flush(ecs);
+}
+
+/* Name Generation */
+
+const FIRST_NAMES_1 : &str = include_str!("first_names_female.txt");
+const FIRST_NAMES_2 : &str = include_str!("first_names_male.txt");
+const LAST_NAMES : &str = include_str!("last_names.txt");
+
+#[derive(Clone, Debug)]
+struct Names {
+    male_first: Vec<String>,
+    female_first: Vec<String>,
+    last_names: Vec<String>,
+}
+
+impl Names {
+    fn new() -> Self {
+        Self {
+            male_first: FIRST_NAMES_1.split("\n").map(|n| n.to_string()).collect(),
+            female_first: FIRST_NAMES_2.split("\n").map(|n| n.to_string()).collect(),
+            last_names: LAST_NAMES.split("\n").map(|n| n.to_string()).collect(),
+        }
+    }
+
+    fn random_human_name(&self) -> String {
+        use inflector::Inflector;
+        let mut rng = RandomNumberGenerator::new(); // Avoiding locking issues
+        let male = rng.range(0, 100) < 50;
+        let first_source = match male {
+            true => &self.male_first,
+            false => &self.female_first,
+        };
+        let first_name = rng
+            .random_slice_entry(first_source)
+            .unwrap()
+            .to_title_case();
+        let last_name = rng
+            .random_slice_entry(&self.last_names)
+            .unwrap()
+            .to_title_case();
+
+        format!("{} {}", first_name, last_name).to_string()
+    }
+}
+
+lazy_static! {
+    static ref NAMES: Mutex<Names> = Mutex::new(Names::new());
 }
