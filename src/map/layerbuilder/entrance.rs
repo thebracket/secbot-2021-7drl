@@ -3,7 +3,7 @@ use super::{
     spawn_random_colonist,
 };
 use crate::{
-    components::{Description, Door, Glyph, Position, TileTrigger},
+    components::*,
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
@@ -310,7 +310,7 @@ fn populate_rooms(rooms: &Vec<Rect>, map: &mut Layer, ecs: &mut World) {
     let rng = rng_lock.as_mut().unwrap();
 
     // The first room always contains a single colonist, who must be alive.
-    spawn_first_colonist(ecs, rooms[0].center(), 0);
+    entryway(&rooms[0], map, ecs, rng);
 
     // Each room after that can be random. This is an initial, very boring spawn to get
     // the colonist functionality going.
@@ -324,4 +324,94 @@ fn populate_rooms(rooms: &Vec<Rect>, map: &mut Layer, ecs: &mut World) {
             }
         }
     });
+}
+
+////////// Room Definitions
+
+fn get_random_point(points: &mut Vec<Point>, rng: &mut RandomNumberGenerator) -> Point {
+    let index = rng.random_slice_index(&points).unwrap();
+    let result = points[index];
+    points.remove(index);
+    result
+}
+
+fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    let mut open_space = Vec::new();
+    room.for_each(|p| if p != map.starting_point { open_space.push(p) });
+
+    // Spawn the colonist who greets you
+    spawn_first_colonist(ecs, get_random_point(&mut open_space, rng), 0);
+    spawn_soda_machine(ecs, get_random_point(&mut open_space, rng), 0);
+    spawn_snack_machine(ecs, get_random_point(&mut open_space, rng), 0);
+    spawn_greeter(ecs, get_random_point(&mut open_space, rng), 0);
+    for _ in 0..10 {
+        let point = get_random_point(&mut open_space, rng);
+        if open_space.contains(&(point + Point::new(1,0))) {
+            spawn_chair(ecs, point, 0);
+            spawn_table(ecs, point + Point::new(1, 0), 0);
+        }
+    }
+
+}
+
+///////// Spawners
+
+fn spawn_soda_machine(ecs: &mut World, pos: Point, layer: u32) {
+    ecs.push((
+        Glyph{ glyph: to_cp437('◘'), color: ColorPair::new(YELLOW, BLACK)},
+        Name("Soda Machine".to_string()),
+        Description("A powered-down soda machine".to_string()),
+        Health{current: 3, max: 3},
+        Targetable{},
+        Position::with_pt(pos, layer),
+        PropertyValue(100)
+    ));
+}
+
+fn spawn_snack_machine(ecs: &mut World, pos: Point, layer: u32) {
+    ecs.push((
+        Glyph{ glyph: to_cp437('◘'), color: ColorPair::new(MAGENTA, BLACK)},
+        Name("Snack Machine".to_string()),
+        Description("A powered-down snack machine".to_string()),
+        Health{current: 3, max: 3},
+        Targetable{},
+        Position::with_pt(pos, layer),
+        PropertyValue(100)
+    ));
+}
+
+fn spawn_chair(ecs: &mut World, pos: Point, layer: u32) {
+    ecs.push((
+        Glyph{ glyph: to_cp437('╓'), color: ColorPair::new(GRAY, BLACK)},
+        Name("Plastic Chair".to_string()),
+        Description("A plastic chair".to_string()),
+        Health{current: 1, max: 1},
+        Targetable{},
+        Position::with_pt(pos, layer),
+        PropertyValue(5)
+    ));
+}
+
+fn spawn_table(ecs: &mut World, pos: Point, layer: u32) {
+    ecs.push((
+        Glyph{ glyph: to_cp437('╓'), color: ColorPair::new(GRAY, BLACK)},
+        Name("Plastic Table".to_string()),
+        Description("A plastic table".to_string()),
+        Health{current: 2, max: 2},
+        Targetable{},
+        Position::with_pt(pos, layer),
+        PropertyValue(10)
+    ));
+}
+
+fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
+    ecs.push((
+        Glyph{ glyph: to_cp437('♥'), color: ColorPair::new(PINK, BLACK)},
+        Name("GreeterBot".to_string()),
+        Description("Bracket Corp welcoming robot. Your safety is important to us!".to_string()),
+        Health{current: 2, max: 2},
+        Targetable{},
+        Position::with_pt(pos, layer),
+        PropertyValue(100)
+    ));
 }

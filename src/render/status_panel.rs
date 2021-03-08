@@ -16,6 +16,21 @@ pub fn render_status(ctx: &mut BTerm, ecs: &World, mut y: i32) -> i32 {
         );
         y += 1;
     });
+
+    let damage : i32 = <(&PropertyValue, &Position)>::query()
+        .filter(!component::<Health>())
+        .iter(ecs)
+        .map(|(v, _)| v.0)
+        .sum();
+    ctx.print_color(
+        x,
+        y,
+        WHITE,
+        BLACK,
+        format! {"Property Damage: {}", damage},
+    );
+    y += 1;
+
     ctx.print_color(x, y, GREY, BLACK, "----------------------------");
     y += 1;
     y
