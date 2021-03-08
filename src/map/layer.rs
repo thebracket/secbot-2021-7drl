@@ -40,7 +40,7 @@ impl Layer {
                     ctx.set(x + 1, y + 1, t.color.fg, t.color.bg, t.glyph);
                 } else if self.revealed[idx] {
                     let t = &self.tiles[idx];
-                    ctx.set(x + 1, y + 1, t.color.fg.to_greyscale(), t.color.bg, t.glyph);
+                    ctx.set(x + 1, y + 1, t.color.fg.to_greyscale(), BLACK, t.glyph);
                 }
                 idx += 1;
             }

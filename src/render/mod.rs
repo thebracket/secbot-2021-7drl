@@ -13,6 +13,7 @@ pub mod targeting_panel;
 pub use targeting_panel::*;
 pub mod status_panel;
 pub use status_panel::*;
+pub mod projectiles;
 
 pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map, target_pt: Option<Point>) {
     let mut player_point = Point::zero();
@@ -93,6 +94,22 @@ pub fn game_over_left(ctx: &mut BTerm) -> NewState {
         1,
         1,
         "Game over. You left the map. Haven't written the stuff to show here.",
+    );
+    ctx.print(
+        1,
+        2,
+        "You need to refresh or reload. Haven't done restarting yet.",
+    );
+    NewState::NoChange
+}
+
+
+pub fn game_over_decompression(ctx: &mut BTerm) -> NewState {
+    ctx.cls();
+    ctx.print(
+        1,
+        1,
+        "Game over. Shooting a window in a pressurized atmosphere turned out to be a bad idea.",
     );
     ctx.print(
         1,

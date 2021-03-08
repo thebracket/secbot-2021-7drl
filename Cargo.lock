@@ -1359,6 +1359,7 @@ dependencies = [
  "bracket-lib",
  "lazy_static",
  "legion",
+ "ultraviolet",
 ]
 
 [[package]]

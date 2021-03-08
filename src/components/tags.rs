@@ -9,3 +9,5 @@ pub struct Targetable;
 pub struct Active;
 
 pub struct CanBeActivated;
+
+pub struct Found;

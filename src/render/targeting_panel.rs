@@ -1,7 +1,7 @@
 use crate::components::*;
+use crate::game::player::hit_probability;
 use bracket_lib::prelude::*;
 use legion::*;
-use crate::game::player::hit_probability;
 
 use super::WIDTH;
 
@@ -43,7 +43,13 @@ pub fn render_targeting_panel(
         }
 
         let (probability, range) = hit_probability(ecs, target_entity);
-        ctx.print_color(x, y, WHITE, BLACK, format!("Hit probability: {}%", probability));
+        ctx.print_color(
+            x,
+            y,
+            WHITE,
+            BLACK,
+            format!("Hit probability: {}%", probability),
+        );
         y += 1;
         ctx.print_color(x, y, WHITE, BLACK, format!("Range          : {}", range));
         y += 1;

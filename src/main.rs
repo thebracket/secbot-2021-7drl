@@ -1,6 +1,7 @@
 use bracket_lib::prelude::*;
 use lazy_static::*;
 pub use legion::*;
+use render::projectiles::render_projectiles;
 use std::{collections::HashSet, sync::Mutex};
 mod components;
 pub mod game;
@@ -18,6 +19,7 @@ enum TurnState {
     EnemyTurn,
     Modal { title: String, body: String },
     GameOverLeft,
+    GameOverDecompression,
 }
 
 #[derive(PartialEq)]
@@ -27,6 +29,7 @@ pub enum NewState {
     Player,
     Enemy,
     LeftMap,
+    ShotWindow,
 }
 
 struct State {
@@ -76,8 +79,12 @@ impl State {
                 current_target: None,
                 index: 0,
             },
-            Health{max: 10, current: 10},
+            Health {
+                max: 10,
+                current: 10,
+            },
         ));
+        // TODO: Add blood
 
         // Trigger FOV for the first round
         game::player::update_fov(&NewState::Enemy, &mut self.ecs, &mut self.map);
@@ -95,6 +102,7 @@ impl GameState for State {
         self.map.render(ctx);
         render::render_glyphs(ctx, &self.ecs, &self.map, target_pt);
         render::speech::render_speech(ctx, &mut self.ecs, &self.map);
+        render::projectiles::render_projectiles(ctx, &mut self.ecs, &self.map);
 
         let new_state = match &self.turn {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),
@@ -104,6 +112,7 @@ impl GameState for State {
                 NewState::Wait
             }
             TurnState::GameOverLeft => render::game_over_left(ctx),
+            TurnState::GameOverDecompression => render::game_over_decompression(ctx),
             TurnState::PlayerTurn => NewState::Enemy, // Placeholder
         };
         match new_state {
@@ -112,6 +121,7 @@ impl GameState for State {
             NewState::Enemy => self.turn = TurnState::EnemyTurn,
             NewState::LeftMap => self.turn = TurnState::GameOverLeft,
             NewState::Player => self.turn = TurnState::PlayerTurn,
+            NewState::ShotWindow => self.turn = TurnState::GameOverDecompression,
         }
     }
 }
@@ -119,7 +129,7 @@ impl GameState for State {
 fn main() -> BError {
     let context = BTermBuilder::simple(112, 62)?
         .with_title("Secbot - 2021 7DRL")
-        .with_fps_cap(30.0)
+        .with_fps_cap(60.0)
         .build()?;
 
     main_loop(context, State::new())

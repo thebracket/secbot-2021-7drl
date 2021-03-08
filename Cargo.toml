@@ -9,3 +9,4 @@ bracket-lib = { path = "C:/Users/herbe/Documents/LearnRust/rltk_rs" }
 legion = { version = "0.3.1", default-features = false, features = ["wasm-bindgen"] }
 lazy_static = "1.4.0"
 Inflector = "0.11.4"
+ultraviolet = "0.7.5"

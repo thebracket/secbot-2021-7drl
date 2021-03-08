@@ -1,7 +1,7 @@
 use crate::components::*;
 use bracket_lib::prelude::*;
-use legion::{systems::CommandBuffer, *};
 use lazy_static::*;
+use legion::{systems::CommandBuffer, *};
 use std::sync::Mutex;
 
 fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
@@ -24,7 +24,14 @@ fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
     let mut rng = RandomNumberGenerator::new();
     let hp = rng.roll_dice(1, 6) + 3;
     let mut commands = CommandBuffer::new(ecs);
-    commands.add_component(entity, Health{max: hp, current: hp});
+    commands.add_component(
+        entity,
+        Health {
+            max: hp,
+            current: hp,
+        },
+    );
+    commands.add_component(entity, Blood(DARK_RED.into()));
     commands.flush(ecs);
 
     entity
@@ -63,9 +70,9 @@ pub fn spawn_first_colonist(ecs: &mut World, location: Point, layer: u32) {
 
 /* Name Generation */
 
-const FIRST_NAMES_1 : &str = include_str!("first_names_female.txt");
-const FIRST_NAMES_2 : &str = include_str!("first_names_male.txt");
-const LAST_NAMES : &str = include_str!("last_names.txt");
+const FIRST_NAMES_1: &str = include_str!("first_names_female.txt");
+const FIRST_NAMES_2: &str = include_str!("first_names_male.txt");
+const LAST_NAMES: &str = include_str!("last_names.txt");
 
 #[derive(Clone, Debug)]
 struct Names {

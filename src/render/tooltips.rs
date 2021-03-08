@@ -40,8 +40,15 @@ pub fn render_tooltips(ctx: &mut BTerm, ecs: &World, map: &Map) {
             } else {
                 my
             };
-            ctx.draw_box(tip_x, tip_y- (lines.len()/2) as i32, width, height, WHITE, BLACK);
-            let mut y = tip_y + 1 - (lines.len()/2) as i32;
+            ctx.draw_box(
+                tip_x,
+                tip_y - (lines.len() / 2) as i32,
+                width,
+                height,
+                WHITE,
+                BLACK,
+            );
+            let mut y = tip_y + 1 - (lines.len() / 2) as i32;
             lines.iter().for_each(|s| {
                 ctx.print_color(tip_x + 1, y, s.0, BLACK, &s.1);
                 y += 1;
