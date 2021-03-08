@@ -13,6 +13,7 @@ mod speech;
 mod tags;
 mod targeting;
 mod tile_trigger;
+mod hostile;
 
 pub use blood::*;
 pub use colonist::*;
@@ -29,3 +30,4 @@ pub use speech::*;
 pub use tags::*;
 pub use targeting::*;
 pub use tile_trigger::*;
+pub use hostile::*;

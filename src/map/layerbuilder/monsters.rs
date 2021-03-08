@@ -5,7 +5,11 @@ use legion::*;
 pub fn spawn_face_eater(ecs: &mut World, location: Point, layer: u32) {
     ecs.push((
         Name("Face Eater".to_string()),
-        Hostile {},
+        Hostile { 
+            aggro: AggroMode::Nearest,
+            ranged: Vec::new(),
+            melee: vec![ Melee{ damage: 1 } ],
+        },
         Targetable {},
         Position::with_pt(location, layer),
         Glyph {
