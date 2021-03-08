@@ -1,6 +1,7 @@
 use bracket_lib::prelude::*;
 use lazy_static::*;
 pub use legion::*;
+use legion::systems::CommandBuffer;
 use render::projectiles::render_projectiles;
 use std::{collections::HashSet, sync::Mutex};
 mod components;
@@ -58,7 +59,7 @@ impl State {
         use components::*;
 
         // Spawn the player
-        self.ecs.push((
+        let e = self.ecs.push((
             Player {},
             Name("SecBot".to_string()),
             Position::with_pt(
@@ -84,6 +85,9 @@ impl State {
                 current: 10,
             },
         ));
+        let mut commands = CommandBuffer::new(&self.ecs);
+        commands.add_component(e, Blood(RED.into()));
+        commands.flush(&mut self.ecs);
         // TODO: Add blood
 
         // Trigger FOV for the first round

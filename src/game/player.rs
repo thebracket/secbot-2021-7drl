@@ -4,6 +4,7 @@ use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
 use legion::*;
 use std::collections::HashSet;
+use super::combat::player_open_fire_at_target;
 
 pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState {
     render_tooltips(ctx, ecs, map);
@@ -19,7 +20,7 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
             VirtualKeyCode::Comma => go_up(ecs, map),
             VirtualKeyCode::Period => go_down(ecs, map),
             VirtualKeyCode::Space => NewState::Player, // Wait action
-            VirtualKeyCode::F => open_fire_at_target(ecs, map),
+            VirtualKeyCode::F => player_open_fire_at_target(ecs, map),
             _ => NewState::Wait,
         }
     } else {
@@ -221,175 +222,4 @@ pub fn hit_probability(ecs: &World, target: Entity) -> (u32, u32) {
     }
 
     (hit_chance, range)
-}
-
-fn open_fire_at_target(ecs: &mut World, map: &mut Map) -> NewState {
-    let mut commands = CommandBuffer::new(ecs);
-    let mut player_pos = Point::zero();
-    let mut target = None;
-    let mut current_layer = map.current_layer as u32;
-    <(&Player, &Position, &Targeting)>::query()
-        .iter(ecs)
-        .for_each(|(_, pos, targeting)| {
-            player_pos = pos.pt;
-            target = targeting.current_target;
-        });
-
-    // If there's nothing to fire at, return to waiting
-    if target.is_none() {
-        return NewState::Wait;
-    }
-
-    let pos_map = <(&Position, &Health)>::query()
-        .iter(ecs)
-        .map(|(pos, _)| pos.pt)
-        .collect::<HashSet<Point>>();
-
-    if let Some(target) = target {
-        if let Ok(target_ref) = ecs.entry_ref(target) {
-            if let Ok(target_position) = target_ref.get_component::<Position>() {
-                let target_pos = target_position.pt;
-                let mut power = 20;
-                let mut range = 0;
-                let mut projectile_path = Vec::new();
-                let mut splatter = None;
-
-                line2d_bresenham(player_pos, target_pos)
-                    .iter()
-                    .skip(1)
-                    .for_each(|pt| {
-                        projectile_path.push(*pt);
-                        if pos_map.contains(&pt) {
-                            power -= hit_tile_contents(
-                                ecs,
-                                *pt,
-                                current_layer,
-                                &mut commands,
-                                &mut splatter,
-                            );
-                        }
-                        if let Some(bsplatter) = &mut splatter {
-                            let idx = map.get_current().point2d_to_index(*pt);
-                            map.get_current_mut().tiles[idx].color.bg = bsplatter.to_rgba(1.0);
-                            bsplatter.r = f32::max(0.0, bsplatter.r - 0.1);
-                            bsplatter.g = f32::max(0.0, bsplatter.g - 0.1);
-                            bsplatter.b = f32::max(0.0, bsplatter.b - 0.1);
-                            if bsplatter.r + bsplatter.g + bsplatter.b < 0.1 {
-                                splatter = None;
-                            }
-                        }
-                        range += 1;
-                        if range > 5 {
-                            power -= 1;
-                        }
-                    });
-                use ultraviolet::Vec2;
-                let mut projectile_pos: Vec2 = Vec2::new(target_pos.x as f32, target_pos.y as f32);
-                let slope = (projectile_pos - Vec2::new(player_pos.x as f32, player_pos.y as f32))
-                    .normalized();
-                while range < 25 && power > 0 {
-                    projectile_pos += slope;
-                    let pt = Point::new(projectile_pos.x as i32, projectile_pos.y as i32);
-                    projectile_path.push(pt);
-                    if pos_map.contains(&pt) {
-                        power -=
-                            hit_tile_contents(ecs, pt, current_layer, &mut commands, &mut splatter);
-                    }
-                    if let Some(bsplatter) = &mut splatter {
-                        let idx = map.get_current().point2d_to_index(pt);
-                        map.get_current_mut().tiles[idx].color.bg = bsplatter.to_rgba(1.0);
-                        bsplatter.r = f32::max(0.0, bsplatter.r - 0.1);
-                        bsplatter.g = f32::max(0.0, bsplatter.g - 0.1);
-                        bsplatter.b = f32::max(0.0, bsplatter.b - 0.1);
-                        if bsplatter.r + bsplatter.g + bsplatter.b < 0.1 {
-                            splatter = None;
-                        }
-                    }
-                    let idx = map.get_current().point2d_to_index(pt);
-                    if map.get_current().tiles[idx].tile_type == TileType::Wall {
-                        range += 100;
-                        power = 0;
-                    }
-                    if !map.get_current().tiles[idx].opaque && power > 5 {
-                        // TODO: End the game because you broke a window
-                    }
-                    range += 1;
-                    if range > 5 {
-                        power -= 1;
-                    }
-                }
-
-                commands.push((
-                    Projectile {
-                        path: projectile_path,
-                        layer: current_layer as usize,
-                    },
-                    Glyph {
-                        glyph: to_cp437('*'),
-                        color: ColorPair::new(RED, BLACK),
-                    },
-                ));
-            } else {
-                // Unable to fire
-                return NewState::Wait;
-            }
-        } else {
-            // Unable to fire
-            return NewState::Wait;
-        }
-    }
-
-    commands.flush(ecs);
-    NewState::Player
-}
-
-fn hit_tile_contents(
-    ecs: &mut World,
-    pt: Point,
-    layer: u32,
-    commands: &mut CommandBuffer,
-    splatter: &mut Option<RGB>,
-) -> i32 {
-    let mut rng_lock = crate::RNG.lock();
-    let rng = rng_lock.as_mut().unwrap();
-
-    let mut power_loss = 0;
-    let mut dead_entities = Vec::new();
-    <(Entity, &Position, &mut Health)>::query()
-        .iter_mut(ecs)
-        .filter(|(_, pos, _)| pos.layer == layer && pos.pt == pt)
-        .for_each(|(entity, _, hp)| {
-            let damage = rng.range(1, 5) + 10; // TODO: Complexity, please
-            hp.current -= damage;
-            if hp.current < 0 {
-                hp.current = 0;
-                dead_entities.push(*entity);
-            }
-            power_loss += hp.current;
-        });
-
-    dead_entities.iter().for_each(|entity| {
-        if let Ok(mut er) = ecs.entry_mut(*entity) {
-            if let Ok(_colonist) = er.get_component_mut::<ColonistStatus>() {
-                commands.add_component(*entity, ColonistStatus::DiedAfterStart);
-            }
-            if let Ok(g) = er.get_component_mut::<Glyph>() {
-                g.color.bg = DARK_RED.into();
-                g.color.fg = DARK_GRAY.into();
-            }
-            if let Ok(n) = er.get_component_mut::<Name>() {
-                n.0 = format!("Corpse: {}", n.0);
-            }
-            if let Ok(b) = er.get_component::<Blood>() {
-                *splatter = Some(b.0);
-            }
-        }
-        commands.remove_component::<Health>(*entity);
-        commands.remove_component::<Active>(*entity);
-        commands.remove_component::<CanBeActivated>(*entity);
-        commands.remove_component::<Blood>(*entity);
-        commands.remove_component::<Targetable>(*entity);
-    });
-
-    power_loss
 }
