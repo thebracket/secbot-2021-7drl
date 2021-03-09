@@ -88,7 +88,9 @@ impl State {
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         render::clear_all_consoles(ctx);
-        render::render_gui(&mut self.ecs, &self.map);
+        ctx.set_active_console(0);
+        let (mouse_x, mouse_y) = ctx.mouse_pos();
+        render::render_gui(&mut self.ecs, &self.map, mouse_x, mouse_y);
         render_draw_buffer(ctx).expect("Render error");
         /*render::render_ui_skeleton(ctx);
         let y = render::render_status(ctx, &self.ecs, 2);
