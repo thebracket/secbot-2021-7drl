@@ -74,7 +74,7 @@ impl Tile {
     pub fn stairs_down() -> Self {
         Self {
             glyph: to_cp437('>'),
-            color: ColorPair::new(YELLOW, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
             blocked: false,
             opaque: false,
             tile_type: TileType::StairsDown,
@@ -84,7 +84,7 @@ impl Tile {
     pub fn stairs_up() -> Self {
         Self {
             glyph: to_cp437('<'),
-            color: ColorPair::new(YELLOW, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
             blocked: false,
             opaque: false,
             tile_type: TileType::StairsUp,
