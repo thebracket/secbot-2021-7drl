@@ -529,7 +529,7 @@ fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
     let mut commands = CommandBuffer::new(ecs);
     commands.add_component(e, Dialog {
         lines: vec![
-            "Welcome to Outpost 294!".to_string(),
+            "Welcome to Bracket 394!".to_string(),
             "Your safety is important to us.".to_string(),
             "Please wear a hard hat at all times.".to_string(),
             "We hope you enjoy your mining experience!".to_string(),
