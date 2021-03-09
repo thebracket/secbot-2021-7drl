@@ -131,6 +131,16 @@ impl Tile {
         }
     }
 
+    pub fn healing() -> Self {
+        Self {
+            glyph: to_cp437('+'),
+            color: ColorPair::new(RED, WHITE),
+            blocked: false,
+            opaque: false,
+            tile_type: TileType::Floor,
+        }
+    }
+
     pub fn alien_landscape(height: f32) -> Self {
         let fg = if height < 0.0 {
             if height < -0.25 {

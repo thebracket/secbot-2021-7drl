@@ -382,7 +382,7 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
     }
 }
 
-const MAX_ROOM_TYPES: usize = 5;
+const MAX_ROOM_TYPES: usize = 6;
 
 fn spawn_room(
     rt: usize,
@@ -397,6 +397,7 @@ fn spawn_room(
         2 => bedroom_not_so_nice(room, map, ecs, rng),
         3 => charnel_house_with_fe(room, map, ecs),
         4 => hidey_boom(room, ecs),
+        5 => med_bay(room, ecs, map),
         _ => {}
     }
 }
@@ -459,4 +460,19 @@ fn hidey_boom(room: &Rect, ecs: &mut World) {
         }
         spawn_hiding_colonist(ecs, room.center(), 0);
     });
+}
+
+fn med_bay(room: &Rect, ecs: &mut World, map: &mut Layer) {
+    let c = room.center();
+    let idx = map.point2d_to_index(c);
+    map.tiles[idx] = Tile::healing();
+    spawn_random_colonist(ecs, c + Point::new(1, 0), 0);
+    ecs.push((
+        Position::with_pt(c, 0),
+        Description(
+            "This auto-doc loves healing SecBots!"
+                .to_string(),
+        ),
+        TileTrigger(crate::components::TriggerType::Healing),
+    ));
 }

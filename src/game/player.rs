@@ -73,13 +73,22 @@ fn tile_triggers(new_state: &mut NewState, ecs: &mut World, _map: &mut Map) {
     let mut find_player = <(&Player, &Position)>::query();
     let player_pos = find_player.iter(ecs).map(|(_, pos)| *pos).nth(0).unwrap();
 
+    let mut healing = false;
     let mut find_triggers = <(&TileTrigger, &Position)>::query();
     find_triggers
         .iter(ecs)
         .filter(|(_, pos)| **pos == player_pos)
         .for_each(|(tt, _)| match tt.0 {
             TriggerType::EndGame => *new_state = NewState::LeftMap,
-        });
+            TriggerType::Healing => {
+                healing = true;
+            }
+        }
+    );
+    if healing {
+        <(&Player, &mut Health)>::query()
+            .for_each_mut(ecs, |(_, hp)| hp.current = hp.max);
+    }
 }
 
 pub fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
