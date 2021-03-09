@@ -3,7 +3,6 @@ use bracket_lib::prelude::*;
 use legion::*;
 mod gui;
 pub mod modal;
-pub mod tooltips;
 pub use modal::*;
 mod camera;
 

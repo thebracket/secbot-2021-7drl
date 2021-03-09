@@ -92,15 +92,6 @@ impl GameState for State {
         let (mouse_x, mouse_y) = ctx.mouse_pos();
         render::render_gui(&mut self.ecs, &self.map, mouse_x, mouse_y);
         render_draw_buffer(ctx).expect("Render error");
-        /*render::render_ui_skeleton(ctx);
-        let y = render::render_status(ctx, &self.ecs, 2);
-        let y = render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer, y);
-        let (_y, target_pt) =
-            render::render_targeting_panel(y, ctx, &self.ecs, self.map.current_layer);
-        self.map.render(ctx);
-        render::render_glyphs(ctx, &self.ecs, &self.map, target_pt);
-        render::speech::render_speech(ctx, &mut self.ecs, &self.map);
-        render::projectiles::render_projectiles(ctx, &mut self.ecs, &self.map);*/
 
         let new_state = match &self.turn {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),
