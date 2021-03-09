@@ -1,8 +1,8 @@
-use legion::*;
-use crate::{ map::Map, text, components::*, game, render };
+use crate::{components::*, game, map::Map, render, text};
 use bracket_lib::prelude::*;
-use std::collections::HashSet;
 use legion::systems::CommandBuffer;
+use legion::*;
+use std::collections::HashSet;
 
 pub enum TurnState {
     WaitingForInput,
@@ -88,7 +88,7 @@ impl State {
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         render::clear_all_consoles(ctx);
-        render::render_gui(&self.ecs, &self.map);
+        render::render_gui(&mut self.ecs, &self.map);
         render_draw_buffer(ctx).expect("Render error");
         /*render::render_ui_skeleton(ctx);
         let y = render::render_status(ctx, &self.ecs, 2);

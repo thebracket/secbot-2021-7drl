@@ -1,15 +1,9 @@
-use crate::{
-    components::{Glyph, Position},
-    map::{Map, HEIGHT, WIDTH},
-    NewState,
-};
+use crate::{map::Map, NewState};
 use bracket_lib::prelude::*;
 use legion::*;
-pub mod tooltips;
-pub mod speech;
-pub mod projectiles;
 mod gui;
 pub mod modal;
+pub mod tooltips;
 pub use modal::*;
 mod camera;
 
@@ -21,7 +15,7 @@ pub fn clear_all_consoles(ctx: &mut BTerm) {
     ctx.set_active_console(0);
 }
 
-pub fn render_gui(ecs: &World, map: &Map) {
+pub fn render_gui(ecs: &mut World, map: &Map) {
     let status = gui::PlayerStatus::query(ecs, map.current_layer);
 
     let camera = camera::Camera::new(ecs);
@@ -34,34 +28,10 @@ pub fn render_gui(ecs: &World, map: &Map) {
     gui_batch.submit(50_000).expect("Batch error"); // On top of everything
 
     camera.render_map(map);
-}
-
-pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map, target_pt: Option<Point>) {
-    let mut player_point = Point::zero();
-    let mut query = <(&Position, &Glyph)>::query();
-    query.for_each(ecs, |(pos, glyph)| {
-        if pos.layer == map.current_layer as u32 {
-            let idx = map.get_current().point2d_to_index(pos.pt);
-            if map.get_current().visible[idx] {
-                ctx.set(
-                    pos.pt.x + 1,
-                    pos.pt.y + 1,
-                    glyph.color.fg,
-                    glyph.color.bg,
-                    glyph.glyph,
-                );
-                if glyph.glyph == to_cp437('@') {
-                    player_point = pos.pt;
-                }
-            }
-        }
-    });
-
-    if let Some(pt) = target_pt {
-        ctx.set(pt.x, pt.y + 1, RED, BLACK, to_cp437('['));
-        ctx.set(pt.x + 2, pt.y + 1, RED, BLACK, to_cp437(']'));
-        //ctx.set_bg(pt.x + 1, pt.y + 1, GOLD);
-    }
+    camera.render_glyphs(map, ecs);
+    camera.render_speech(ecs, map);
+    camera.render_projectiles(ecs, map);
+    camera.render_targeting(&status.target);
 }
 
 pub fn game_over_left(ctx: &mut BTerm) -> NewState {

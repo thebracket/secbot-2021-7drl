@@ -61,7 +61,7 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                 if !dialog.lines.is_empty() {
                     let line = dialog.lines[0].clone();
                     dialog.lines.remove(0);
-                    commands.push((Speech { lifetime: 20 }, pos.clone(), Description(line)));
+                    commands.push((Speech { lifetime: 40 }, pos.clone(), Description(line)));
                 }
             }
         });
