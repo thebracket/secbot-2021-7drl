@@ -4,7 +4,7 @@ use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
 use legion::*;
 
-pub fn process_explosions(ecs: &mut World, map: &Map) {
+pub fn process_explosions(ecs: &mut World, map: &mut Map) {
     let mut commands = CommandBuffer::new(ecs);
     let mut damage_tiles = Vec::new();
     // Find explosions
@@ -15,20 +15,19 @@ pub fn process_explosions(ecs: &mut World, map: &Map) {
         let target_tiles = field_of_view(pos.pt, explosion.range, map.get_current());
         // Add projectile effects for each boom tile
         target_tiles.iter().for_each(|pt| {
+            let idx = map.get_current().point2d_to_index(*pt);
+            map.get_current_mut().tiles[idx].color.fg = (50, 50, 50).into();
             damage_tiles.push(*pt);
-            let line = line2d_bresenham(pos.pt, *pt);
-            line.iter().for_each(|_lpt| {
-                commands.push((
-                    Projectile {
-                        path: line.clone(),
-                        layer: map.current_layer,
-                    },
-                    Glyph {
-                        glyph: to_cp437('░'),
-                        color: ColorPair::new(ORANGE, BLACK),
-                    },
-                ));
-            });
+            commands.push((
+                Projectile {
+                    path: line2d_bresenham(pos.pt, *pt),
+                    layer: map.current_layer,
+                },
+                Glyph {
+                    glyph: to_cp437('░'),
+                    color: ColorPair::new(ORANGE, BLACK),
+                },
+            ));
         });
     });
 
