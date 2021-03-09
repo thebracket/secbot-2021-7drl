@@ -7,3 +7,5 @@ pub use monsters::monsters_turn;
 pub mod combat;
 pub mod utils;
 pub use utils::*;
+pub mod dialog;
+pub use dialog::*;

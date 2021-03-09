@@ -4,7 +4,7 @@ use crate::{
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
-use legion::*;
+use legion::{*, systems::CommandBuffer};
 
 pub fn build_entrance(ecs: &mut World) -> Layer {
     let mut layer = Layer::new(std::usize::MAX, ecs); // Gets a default layer
@@ -513,7 +513,7 @@ fn spawn_table(ecs: &mut World, pos: Point, layer: u32) {
 }
 
 fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
-    ecs.push((
+    let e = ecs.push((
         Glyph {
             glyph: to_cp437('♥'),
             color: ColorPair::new(PINK, BLACK),
@@ -526,6 +526,17 @@ fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
         PropertyValue(100),
         SetDecoration {},
     ));
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(e, Dialog {
+        lines: vec![
+            "Welcome to Outpost 294!".to_string(),
+            "Your safety is important to us.".to_string(),
+            "Please wear a hard hat at all times.".to_string(),
+            "We hope you enjoy your mining experience!".to_string(),
+        ],
+    });
+    commands.add_component(e, CanBeActivated{});
+    commands.flush(ecs);
 }
 
 fn spawn_bed(ecs: &mut World, pos: Point, layer: u32) {

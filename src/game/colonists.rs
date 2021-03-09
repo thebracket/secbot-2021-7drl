@@ -4,6 +4,7 @@ use bracket_lib::prelude::{a_star_search, Algorithm2D};
 use legion::{systems::CommandBuffer, *};
 
 pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
+    super::dialog::spawn_dialog(ecs);
     let mut commands = CommandBuffer::new(ecs);
 
     let mut colonists = <(
@@ -11,13 +12,12 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
         &mut Colonist,
         &mut ColonistStatus,
         &mut Position,
-        &mut Dialog,
         &Active,
     )>::query();
     colonists
         .iter_mut(ecs)
-        .filter(|(_, _, status, _, _, _)| **status == ColonistStatus::Alive)
-        .for_each(|(entity, colonist, status, pos, dialog, _)| {
+        .filter(|(_, _, status, _, _)| **status == ColonistStatus::Alive)
+        .for_each(|(entity, colonist, status, pos, _)| {
             let mut should_move = true;
 
             // Check basics like "am I dead?"
@@ -55,13 +55,6 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                     } else {
                         println!("Failed to find the path");
                     }
-                }
-
-                // If the actor has dialogue, emit it
-                if !dialog.lines.is_empty() {
-                    let line = dialog.lines[0].clone();
-                    dialog.lines.remove(0);
-                    commands.push((Speech { lifetime: 40 }, pos.clone(), Description(line)));
                 }
             }
         });
