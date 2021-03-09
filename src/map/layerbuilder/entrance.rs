@@ -1,10 +1,10 @@
-use super::{all_space, colonists::*, edge_filler, spawn_face_eater, spawn_random_colonist};
+use super::{all_space, colonists::*, edge_filler, spawn_face_eater, spawn_random_colonist, props::*};
 use crate::{
     components::*,
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
-use legion::{*, systems::CommandBuffer};
+use legion::*;
 
 pub fn build_entrance(ecs: &mut World) -> Layer {
     let mut layer = Layer::new(std::usize::MAX, ecs); // Gets a default layer
@@ -444,113 +444,4 @@ fn bedroom_not_so_nice(
     spawn_face_eater(ecs, Point::new(room.x1, room.y1), 0);
     spawn_face_eater(ecs, Point::new(room.x2, room.y1), 0);
     spawn_face_eater(ecs, Point::new(room.x1, room.y2), 0);
-}
-
-///////// Spawners
-
-fn spawn_soda_machine(ecs: &mut World, pos: Point, layer: u32) {
-    ecs.push((
-        Glyph {
-            glyph: to_cp437('◘'),
-            color: ColorPair::new(YELLOW, BLACK),
-        },
-        Name("Soda Machine".to_string()),
-        Description("A powered-down soda machine".to_string()),
-        Health { current: 3, max: 3 },
-        Targetable {},
-        Position::with_pt(pos, layer),
-        PropertyValue(100),
-        SetDecoration {},
-    ));
-}
-
-fn spawn_snack_machine(ecs: &mut World, pos: Point, layer: u32) {
-    ecs.push((
-        Glyph {
-            glyph: to_cp437('◘'),
-            color: ColorPair::new(MAGENTA, BLACK),
-        },
-        Name("Snack Machine".to_string()),
-        Description("A powered-down snack machine".to_string()),
-        Health { current: 3, max: 3 },
-        Targetable {},
-        Position::with_pt(pos, layer),
-        PropertyValue(100),
-        SetDecoration {},
-    ));
-}
-
-fn spawn_chair(ecs: &mut World, pos: Point, layer: u32) {
-    ecs.push((
-        Glyph {
-            glyph: to_cp437('╓'),
-            color: ColorPair::new(GRAY, BLACK),
-        },
-        Name("Plastic Chair".to_string()),
-        Description("A plastic chair".to_string()),
-        Health { current: 1, max: 1 },
-        Targetable {},
-        Position::with_pt(pos, layer),
-        PropertyValue(5),
-        SetDecoration {},
-    ));
-}
-
-fn spawn_table(ecs: &mut World, pos: Point, layer: u32) {
-    ecs.push((
-        Glyph {
-            glyph: to_cp437('╥'),
-            color: ColorPair::new(GRAY, BLACK),
-        },
-        Name("Plastic Table".to_string()),
-        Description("A plastic table".to_string()),
-        Health { current: 2, max: 2 },
-        Targetable {},
-        Position::with_pt(pos, layer),
-        PropertyValue(10),
-        SetDecoration {},
-    ));
-}
-
-fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
-    let e = ecs.push((
-        Glyph {
-            glyph: to_cp437('♥'),
-            color: ColorPair::new(PINK, BLACK),
-        },
-        Name("GreeterBot".to_string()),
-        Description("Bracket Corp welcoming robot. Your safety is important to us!".to_string()),
-        Health { current: 2, max: 2 },
-        Targetable {},
-        Position::with_pt(pos, layer),
-        PropertyValue(100),
-        SetDecoration {},
-    ));
-    let mut commands = CommandBuffer::new(ecs);
-    commands.add_component(e, Dialog {
-        lines: vec![
-            "Welcome to Bracket 394!".to_string(),
-            "Your safety is important to us.".to_string(),
-            "Please wear a hard hat at all times.".to_string(),
-            "We hope you enjoy your mining experience!".to_string(),
-        ],
-    });
-    commands.add_component(e, CanBeActivated{});
-    commands.flush(ecs);
-}
-
-fn spawn_bed(ecs: &mut World, pos: Point, layer: u32) {
-    ecs.push((
-        Glyph {
-            glyph: to_cp437('ß'),
-            color: ColorPair::new(YELLOW, BLACK),
-        },
-        Name("Comfy Bed".to_string()),
-        Description("A really comfortable bed".to_string()),
-        Health { current: 5, max: 5 },
-        Targetable {},
-        Position::with_pt(pos, layer),
-        PropertyValue(100),
-        SetDecoration {},
-    ));
 }

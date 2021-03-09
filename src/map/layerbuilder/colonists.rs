@@ -103,9 +103,9 @@ pub fn spawn_dead_colonist(ecs: &mut World, location: Point, layer: u32) {
 
 /* Name Generation */
 
-const FIRST_NAMES_1: &str = include_str!("first_names_female.txt");
-const FIRST_NAMES_2: &str = include_str!("first_names_male.txt");
-const LAST_NAMES: &str = include_str!("last_names.txt");
+const FIRST_NAMES_1: &str = include_str!("../../../resources/first_names_female.txt");
+const FIRST_NAMES_2: &str = include_str!("../../../resources/first_names_male.txt");
+const LAST_NAMES: &str = include_str!("../../../resources/last_names.txt");
 
 #[derive(Clone, Debug)]
 struct Names {

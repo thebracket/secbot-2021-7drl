@@ -12,6 +12,7 @@ pub use mine_top::build_mine_top;
 mod monsters;
 use bracket_lib::prelude::{to_cp437, Algorithm2D, Point};
 use monsters::*;
+mod props;
 
 fn all_space(layer: &mut Layer) {
     layer.tiles.iter_mut().for_each(|t| {
