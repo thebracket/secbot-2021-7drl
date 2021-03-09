@@ -382,7 +382,7 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
     }
 }
 
-const MAX_ROOM_TYPES: usize = 6;
+const MAX_ROOM_TYPES: usize = 10;
 
 fn spawn_room(
     rt: usize,
@@ -398,6 +398,9 @@ fn spawn_room(
         3 => charnel_house_with_fe(room, map, ecs),
         4 => hidey_boom(room, ecs),
         5 => med_bay(room, ecs, map),
+        7 => hydroponics(room, ecs, map, rng),
+        8 => hydroponics(room, ecs, map, rng),
+        9 => hydroponic_monstrous(room, ecs, map, rng),
         _ => {}
     }
 }
@@ -475,4 +478,46 @@ fn med_bay(room: &Rect, ecs: &mut World, map: &mut Layer) {
         ),
         TileTrigger(crate::components::TriggerType::Healing),
     ));
+}
+
+fn hydroponics(room: &Rect, ecs: &mut World, map: &mut Layer, rng: &mut RandomNumberGenerator) {
+    room.for_each(|pt| {
+        let idx = map.point2d_to_index(pt);
+        map.tiles[idx].color.fg = GREEN.into();
+    });
+    let mut open_space = Vec::new();
+    room.for_each(|p| {
+        if p != map.starting_point {
+            open_space.push(p)
+        }
+    });
+    for _ in 0..10 {
+        if !open_space.is_empty() {
+            let pt = get_random_point(&mut open_space, rng);
+            spawn_tree(ecs, pt, 0);
+        }
+    }
+}
+
+fn hydroponic_monstrous(room: &Rect, ecs: &mut World, map: &mut Layer, rng: &mut RandomNumberGenerator) {
+    room.for_each(|pt| {
+        let idx = map.point2d_to_index(pt);
+        map.tiles[idx].color.fg = RED.into();
+    });
+    let mut open_space = Vec::new();
+    room.for_each(|p| {
+        if p != map.starting_point {
+            open_space.push(p)
+        }
+    });
+    for _ in 0..10 {
+        if !open_space.is_empty() {
+            let pt = get_random_point(&mut open_space, rng);
+            if rng.range(1, 10) < 5 {
+                spawn_tree(ecs, pt, 0)
+            } else {
+                spawn_face_eater(ecs, pt, 0);
+            }
+        }
+    }
 }

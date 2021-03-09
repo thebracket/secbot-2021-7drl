@@ -113,6 +113,22 @@ pub fn spawn_bed(ecs: &mut World, pos: Point, layer: u32) {
     ));
 }
 
+pub fn spawn_tree(ecs: &mut World, pos: Point, layer: u32) {
+    ecs.push((
+        Glyph {
+            glyph: to_cp437('♣'),
+            color: ColorPair::new(GREEN, BLACK),
+        },
+        Name("Bonsai Tree".to_string()),
+        Description("A small tree, providing oxygenation.".to_string()),
+        Health { current: 5, max: 5 },
+        Targetable {},
+        Position::with_pt(pos, layer),
+        PropertyValue(10_000),
+        SetDecoration {},
+    ));
+}
+
 pub fn spawn_explosive_barrel(ecs: &mut World, pos: Point, layer: u32) {
     let e = ecs.push((
         Glyph {
