@@ -5,6 +5,8 @@ pub use colonists::colonists_turn;
 pub mod monsters;
 pub use monsters::monsters_turn;
 pub mod combat;
+pub mod utils;
+pub use utils::*;
 
 use crate::components::*;
 use legion::*;

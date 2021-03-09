@@ -365,13 +365,20 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
     }
 }
 
-const MAX_ROOM_TYPES : usize = 3;
+const MAX_ROOM_TYPES: usize = 4;
 
-fn spawn_room(rt: usize, room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+fn spawn_room(
+    rt: usize,
+    room: &Rect,
+    map: &mut Layer,
+    ecs: &mut World,
+    rng: &mut RandomNumberGenerator,
+) {
     match rt {
         0 => charnel_house(room, map, ecs),
         1 => bedroom(room, map, ecs, rng),
         2 => bedroom_not_so_nice(room, map, ecs, rng),
+        4 => charnel_house_with_fe(room, map, ecs),
         _ => {}
     }
 }
@@ -383,6 +390,16 @@ fn charnel_house(room: &Rect, map: &mut Layer, ecs: &mut World) {
     });
     spawn_dead_colonist(ecs, room.center() + Point::new(-1, 0), 0);
     spawn_dead_colonist(ecs, room.center() + Point::new(1, 0), 0);
+}
+
+fn charnel_house_with_fe(room: &Rect, map: &mut Layer, ecs: &mut World) {
+    room.for_each(|pt| {
+        let idx = map.point2d_to_index(pt);
+        map.tiles[idx].color.bg = DARK_RED.into();
+    });
+    spawn_dead_colonist(ecs, room.center() + Point::new(-1, 0), 0);
+    spawn_dead_colonist(ecs, room.center() + Point::new(1, 0), 0);
+    spawn_face_eater(ecs, room.center(), 0);
 }
 
 fn bedroom(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
@@ -397,7 +414,12 @@ fn bedroom(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumber
     spawn_bed(ecs, pt, 0);
 }
 
-fn bedroom_not_so_nice(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+fn bedroom_not_so_nice(
+    room: &Rect,
+    map: &mut Layer,
+    ecs: &mut World,
+    rng: &mut RandomNumberGenerator,
+) {
     let mut open_space = Vec::new();
     room.for_each(|p| {
         if p != map.starting_point {

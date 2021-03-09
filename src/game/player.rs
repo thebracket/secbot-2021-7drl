@@ -1,4 +1,4 @@
-use super::combat::player_open_fire_at_target;
+use super::{combat::player_open_fire_at_target, targeting_weight};
 use crate::{components::*, render::tooltips::render_tooltips};
 use crate::{map::Map, map::TileType, NewState};
 use bracket_lib::prelude::*;
@@ -130,7 +130,13 @@ pub fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
         let mut targets = possible_targets
             .iter(ecs)
             .filter(|(_, _, pos)| pos.layer == map.current_layer as u32 && vt.contains(&pos.pt))
-            .map(|(e, _, pos)| (*e, DistanceAlg::Pythagoras.distance2d(player_pos, pos.pt)))
+            .map(|(e, _, pos)| {
+                (
+                    *e,
+                    DistanceAlg::Pythagoras.distance2d(player_pos, pos.pt)
+                        + targeting_weight(*e, ecs),
+                )
+            })
             .collect::<Vec<(Entity, f32)>>();
 
         targets.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());

@@ -97,7 +97,7 @@ pub fn spawn_dead_colonist(ecs: &mut World, location: Point, layer: u32) {
         Description("This colonist was dead when you arrived.".to_string()),
         ColonistStatus::StartedDead,
         Name(format!("Corpse: {}", name)),
-        CanBeActivated{},
+        CanBeActivated {},
     ));
 }
 

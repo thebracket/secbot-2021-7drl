@@ -14,7 +14,7 @@ pub fn spawn_face_eater(ecs: &mut World, location: Point, layer: u32) {
         Targetable {},
         Position::with_pt(location, layer),
         Glyph {
-            glyph: to_cp437('f'),
+            glyph: 157, // Yen symbol
             color: ColorPair::new(RED, BLACK),
         },
         Description("Nasty eight-legged beastie that likes to eat faces.".to_string()),
