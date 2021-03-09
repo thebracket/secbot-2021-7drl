@@ -398,7 +398,7 @@ fn spawn_room(
 fn charnel_house(room: &Rect, map: &mut Layer, ecs: &mut World) {
     room.for_each(|pt| {
         let idx = map.point2d_to_index(pt);
-        map.tiles[idx].color.bg = DARK_RED.into();
+        map.tiles[idx].color.fg = DARK_RED.into();
     });
     spawn_dead_colonist(ecs, room.center() + Point::new(-1, 0), 0);
     spawn_dead_colonist(ecs, room.center() + Point::new(1, 0), 0);
@@ -407,7 +407,7 @@ fn charnel_house(room: &Rect, map: &mut Layer, ecs: &mut World) {
 fn charnel_house_with_fe(room: &Rect, map: &mut Layer, ecs: &mut World) {
     room.for_each(|pt| {
         let idx = map.point2d_to_index(pt);
-        map.tiles[idx].color.bg = DARK_RED.into();
+        map.tiles[idx].color.fg = DARK_RED.into();
     });
     spawn_dead_colonist(ecs, room.center() + Point::new(-1, 0), 0);
     spawn_dead_colonist(ecs, room.center() + Point::new(1, 0), 0);
