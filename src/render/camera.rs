@@ -201,6 +201,6 @@ impl Camera {
             });
         }
 
-        batch.submit(35_000).expect("Error batching map");
+        batch.submit(100_000).expect("Error batching map");
     }
 }

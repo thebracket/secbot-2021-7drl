@@ -9,3 +9,5 @@ pub struct Active;
 pub struct CanBeActivated;
 
 pub struct Found;
+
+pub struct SetDecoration;

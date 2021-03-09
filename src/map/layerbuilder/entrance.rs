@@ -145,6 +145,8 @@ fn add_door(map: &mut Layer, ecs: &mut World, pt: Point) {
         Door {},
     ));
     map.tiles[idx] = Tile::wall();
+    map.tiles[idx].glyph = to_cp437('+');
+    map.tiles[idx].color.fg = CYAN.into();
     map.is_door[idx] = true;
 }
 
@@ -448,6 +450,7 @@ fn spawn_soda_machine(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
+        SetDecoration{},
     ));
 }
 
@@ -463,6 +466,7 @@ fn spawn_snack_machine(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
+        SetDecoration{},
     ));
 }
 
@@ -478,6 +482,7 @@ fn spawn_chair(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(5),
+        SetDecoration{},
     ));
 }
 
@@ -493,6 +498,7 @@ fn spawn_table(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(10),
+        SetDecoration{},
     ));
 }
 
@@ -508,6 +514,7 @@ fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
+        SetDecoration{},
     ));
 }
 
@@ -523,5 +530,6 @@ fn spawn_bed(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
+        SetDecoration{},
     ));
 }

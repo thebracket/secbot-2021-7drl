@@ -215,6 +215,7 @@ fn kill_things(
     splatter: &mut Option<RGB>,
 ) {
     dead_entities.iter().for_each(|entity| {
+        let mut was_decor = false;
         if let Ok(mut er) = ecs.entry_mut(*entity) {
             let mut was_colonist = false;
             if let Ok(_colonist) = er.get_component_mut::<ColonistStatus>() {
@@ -243,11 +244,19 @@ fn kill_things(
             if let Ok(b) = er.get_component::<Blood>() {
                 *splatter = Some(b.0);
             }
+            if let Ok(_) = er.get_component::<SetDecoration>() {
+                was_decor = true;
+            }
         }
         commands.remove_component::<Health>(*entity);
         commands.remove_component::<Active>(*entity);
         commands.remove_component::<CanBeActivated>(*entity);
         commands.remove_component::<Blood>(*entity);
         commands.remove_component::<Targetable>(*entity);
+        if was_decor {
+            commands.remove_component::<Glyph>(*entity);
+            commands.remove_component::<Position>(*entity);
+            commands.remove_component::<Description>(*entity);
+        }
     });
 }
