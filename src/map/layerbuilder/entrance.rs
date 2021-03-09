@@ -81,7 +81,7 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     add_door(map, ecs, Point::new(RIGHT + 1, MIDDLE));
     let start_room = add_entryway(map, ecs, Point::new(RIGHT + 1, MIDDLE));
     let mut rooms = vec![start_room];
-    while rooms.len() < 24 {
+    while rooms.len() < 12 {
         try_random_room(map, ecs, &mut rooms);
     }
 

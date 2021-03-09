@@ -124,7 +124,7 @@ pub fn spawn_tree(ecs: &mut World, pos: Point, layer: u32) {
         Health { current: 5, max: 5 },
         Targetable {},
         Position::with_pt(pos, layer),
-        PropertyValue(10_000),
+        PropertyValue(500),
         SetDecoration {},
     ));
 }
