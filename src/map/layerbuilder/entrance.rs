@@ -95,6 +95,16 @@ fn add_docking_capsule(map: &mut Layer, ecs: &mut World) {
     // Populate rooms
     populate_rooms(&mut rooms, map, ecs);
 
+    // Smooth the walls
+    super::smooth_walls(map);
+
+    // Outside is revealed - you saw it while landing
+    for (i, t) in map.tiles.iter_mut().enumerate() {
+        if t.tile_type == TileType::Outside {
+            map.revealed[i] = true;
+        }
+    }
+
     map.starting_point = Point::new(LEFT + 1, MIDDLE);
 }
 
@@ -450,7 +460,7 @@ fn spawn_soda_machine(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
-        SetDecoration{},
+        SetDecoration {},
     ));
 }
 
@@ -466,7 +476,7 @@ fn spawn_snack_machine(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
-        SetDecoration{},
+        SetDecoration {},
     ));
 }
 
@@ -482,7 +492,7 @@ fn spawn_chair(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(5),
-        SetDecoration{},
+        SetDecoration {},
     ));
 }
 
@@ -498,7 +508,7 @@ fn spawn_table(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(10),
-        SetDecoration{},
+        SetDecoration {},
     ));
 }
 
@@ -514,7 +524,7 @@ fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
-        SetDecoration{},
+        SetDecoration {},
     ));
 }
 
@@ -530,6 +540,6 @@ fn spawn_bed(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         PropertyValue(100),
-        SetDecoration{},
+        SetDecoration {},
     ));
 }
