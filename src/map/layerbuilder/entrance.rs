@@ -499,7 +499,7 @@ fn spawn_chair(ecs: &mut World, pos: Point, layer: u32) {
 fn spawn_table(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
         Glyph {
-            glyph: to_cp437('╓'),
+            glyph: to_cp437('╥'),
             color: ColorPair::new(GRAY, BLACK),
         },
         Name("Plastic Table".to_string()),

@@ -1,4 +1,4 @@
-use bracket_lib::prelude::{ColorPair, FontCharType, Point};
+use bracket_lib::prelude::Point;
 
 pub struct Projectile {
     pub path: Vec<Point>,
