@@ -1,5 +1,5 @@
 use super::{combat::player_open_fire_at_target, targeting_weight};
-use crate::{components::*, render::tooltips::render_tooltips};
+use crate::components::*;
 use crate::{map::Map, map::TileType, NewState};
 use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
@@ -7,8 +7,6 @@ use legion::*;
 use std::collections::HashSet;
 
 pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState {
-    render_tooltips(ctx, ecs, map);
-
     // Check for input
     let mut new_state = if let Some(key) = ctx.key {
         match key {
