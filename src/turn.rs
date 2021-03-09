@@ -87,8 +87,10 @@ impl State {
 
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
-        ctx.cls();
-        render::render_ui_skeleton(ctx);
+        render::clear_all_consoles(ctx);
+        render::render_gui(&self.ecs, &self.map);
+        render_draw_buffer(ctx).expect("Render error");
+        /*render::render_ui_skeleton(ctx);
         let y = render::render_status(ctx, &self.ecs, 2);
         let y = render::render_colonist_panel(ctx, &self.ecs, self.map.current_layer, y);
         let (_y, target_pt) =
@@ -96,7 +98,7 @@ impl GameState for State {
         self.map.render(ctx);
         render::render_glyphs(ctx, &self.ecs, &self.map, target_pt);
         render::speech::render_speech(ctx, &mut self.ecs, &self.map);
-        render::projectiles::render_projectiles(ctx, &mut self.ecs, &self.map);
+        render::projectiles::render_projectiles(ctx, &mut self.ecs, &self.map);*/
 
         let new_state = match &self.turn {
             TurnState::Modal { title, body } => render::modal(ctx, title, body),

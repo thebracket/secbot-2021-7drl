@@ -5,15 +5,36 @@ use crate::{
 };
 use bracket_lib::prelude::*;
 use legion::*;
-pub mod colonist_panel;
 pub mod tooltips;
-pub use colonist_panel::*;
 pub mod speech;
-pub mod targeting_panel;
-pub use targeting_panel::*;
-pub mod status_panel;
-pub use status_panel::*;
 pub mod projectiles;
+mod gui;
+pub mod modal;
+pub use modal::*;
+mod camera;
+
+pub fn clear_all_consoles(ctx: &mut BTerm) {
+    for layer in 0..5 {
+        ctx.set_active_console(layer);
+        ctx.cls();
+    }
+    ctx.set_active_console(0);
+}
+
+pub fn render_gui(ecs: &World, map: &Map) {
+    let status = gui::PlayerStatus::query(ecs, map.current_layer);
+
+    let camera = camera::Camera::new(ecs);
+
+    let mut gui_batch = DrawBatch::new();
+    gui::render_panels(&mut gui_batch);
+    gui::render_status(&mut gui_batch, &status);
+    gui::render_colony_info(&mut gui_batch, &status.colony);
+    gui::render_targeting(&mut gui_batch, &status.target);
+    gui_batch.submit(50_000).expect("Batch error"); // On top of everything
+
+    camera.render_map(map);
+}
 
 pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map, target_pt: Option<Point>) {
     let mut player_point = Point::zero();
@@ -40,51 +61,6 @@ pub fn render_glyphs(ctx: &mut BTerm, ecs: &World, map: &Map, target_pt: Option<
         ctx.set(pt.x, pt.y + 1, RED, BLACK, to_cp437('['));
         ctx.set(pt.x + 2, pt.y + 1, RED, BLACK, to_cp437(']'));
         //ctx.set_bg(pt.x + 1, pt.y + 1, GOLD);
-    }
-}
-
-pub fn render_ui_skeleton(ctx: &mut BTerm) {
-    ctx.draw_hollow_box(0, 0, WIDTH + 1, HEIGHT + 1, GRAY, BLACK);
-    ctx.print_color(2, 0, WHITE, BLACK, "┤ SecBot 2021 7DRL ├");
-    ctx.draw_hollow_box(WIDTH + 1, 0, 30, HEIGHT + 1, GRAY, BLACK);
-    ctx.set(WIDTH + 1, 0, GRAY, BLACK, to_cp437('┬'));
-    ctx.set(WIDTH + 1, HEIGHT + 1, GRAY, BLACK, to_cp437('┴'));
-}
-
-pub fn modal(ctx: &mut BTerm, title: &String, body: &String) -> NewState {
-    let mut draw_batch = DrawBatch::new();
-    draw_batch.draw_double_box(Rect::with_size(19, 14, 71, 12), ColorPair::new(CYAN, BLACK));
-    let mut buf = TextBuilder::empty();
-    buf.ln()
-        .fg(YELLOW)
-        .bg(BLACK)
-        .centered(title)
-        .fg(CYAN)
-        .bg(BLACK)
-        .ln()
-        .ln()
-        .line_wrap(body)
-        .ln()
-        .ln()
-        .fg(YELLOW)
-        .bg(BLACK)
-        .centered("PRESS ENTER TO CONTINUE")
-        .reset();
-
-    let mut block = TextBlock::new(21, 15, 69, 11);
-    block.print(&buf).expect("Overflow occurred");
-    block.render_to_draw_batch(&mut draw_batch);
-    draw_batch.submit(0).expect("Batch error");
-    render_draw_buffer(ctx).expect("Render error");
-
-    if let Some(key) = ctx.key {
-        match key {
-            VirtualKeyCode::Return => NewState::Wait,
-            VirtualKeyCode::Space => NewState::Wait,
-            _ => NewState::NoChange,
-        }
-    } else {
-        NewState::NoChange
     }
 }
 

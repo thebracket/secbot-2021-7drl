@@ -14,6 +14,12 @@ use turn::State;
 
 embedded_resource!(TILE_FONT, "../resources/font-16x16.png");
 
+pub const LAYER_MAP : usize = 0;
+pub const LAYER_DECOR : usize = 1;
+pub const LAYER_ITEMS : usize = 2;
+pub const LAYER_CHR : usize = 3;
+pub const LAYER_TEXT : usize = 4;
+
 fn main() -> BError {
     let context = BTermBuilder::new()
         .with_title("Secbot - 2021 7DRL") // Set Window Title
