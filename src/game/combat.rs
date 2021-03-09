@@ -275,7 +275,6 @@ fn kill_things(
         }
         if was_decor {
             commands.remove_component::<Glyph>(*entity);
-            commands.remove_component::<Position>(*entity);
             commands.remove_component::<Description>(*entity);
         }
     });
