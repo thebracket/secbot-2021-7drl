@@ -53,7 +53,7 @@ pub fn player_open_fire_at_target(ecs: &mut World, map: &mut Map) -> NewState {
                         }
                         if let Some(bsplatter) = &mut splatter {
                             let idx = map.get_current().point2d_to_index(*pt);
-                            map.get_current_mut().tiles[idx].color.bg = bsplatter.to_rgba(1.0);
+                            map.get_current_mut().tiles[idx].color.fg = bsplatter.to_rgba(1.0);
                             bsplatter.r = f32::max(0.0, bsplatter.r - 0.1);
                             bsplatter.g = f32::max(0.0, bsplatter.g - 0.1);
                             bsplatter.b = f32::max(0.0, bsplatter.b - 0.1);
@@ -80,7 +80,7 @@ pub fn player_open_fire_at_target(ecs: &mut World, map: &mut Map) -> NewState {
                     }
                     if let Some(bsplatter) = &mut splatter {
                         let idx = map.get_current().point2d_to_index(pt);
-                        map.get_current_mut().tiles[idx].color.bg = bsplatter.to_rgba(1.0);
+                        map.get_current_mut().tiles[idx].color.fg = bsplatter.to_rgba(1.0);
                         bsplatter.r = f32::max(0.0, bsplatter.r - 0.1);
                         bsplatter.g = f32::max(0.0, bsplatter.g - 0.1);
                         bsplatter.b = f32::max(0.0, bsplatter.b - 0.1);
@@ -196,7 +196,7 @@ pub fn melee(ecs: &mut World, map: &mut Map, attacker: Entity, victim: Entity, m
         }
         if let Ok(blood) = v.get_component::<Blood>() {
             let idx = map.get_layer(dpos.layer as usize).point2d_to_index(dpos.pt);
-            map.get_layer_mut(dpos.layer as usize).tiles[idx].color.bg = blood.0.into();
+            map.get_layer_mut(dpos.layer as usize).tiles[idx].color.fg = blood.0.into();
         }
     }
 
