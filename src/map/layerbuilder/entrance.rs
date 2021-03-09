@@ -472,10 +472,7 @@ fn med_bay(room: &Rect, ecs: &mut World, map: &mut Layer) {
     spawn_random_colonist(ecs, c + Point::new(1, 0), 0);
     ecs.push((
         Position::with_pt(c, 0),
-        Description(
-            "This auto-doc loves healing SecBots!"
-                .to_string(),
-        ),
+        Description("This auto-doc loves healing SecBots!".to_string()),
         TileTrigger(crate::components::TriggerType::Healing),
     ));
 }
@@ -499,7 +496,12 @@ fn hydroponics(room: &Rect, ecs: &mut World, map: &mut Layer, rng: &mut RandomNu
     }
 }
 
-fn hydroponic_monstrous(room: &Rect, ecs: &mut World, map: &mut Layer, rng: &mut RandomNumberGenerator) {
+fn hydroponic_monstrous(
+    room: &Rect,
+    ecs: &mut World,
+    map: &mut Layer,
+    rng: &mut RandomNumberGenerator,
+) {
     room.for_each(|pt| {
         let idx = map.point2d_to_index(pt);
         map.tiles[idx].color.fg = RED.into();

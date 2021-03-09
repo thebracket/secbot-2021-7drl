@@ -83,11 +83,9 @@ fn tile_triggers(new_state: &mut NewState, ecs: &mut World, _map: &mut Map) {
             TriggerType::Healing => {
                 healing = true;
             }
-        }
-    );
+        });
     if healing {
-        <(&Player, &mut Health)>::query()
-            .for_each_mut(ecs, |(_, hp)| hp.current = hp.max);
+        <(&Player, &mut Health)>::query().for_each_mut(ecs, |(_, hp)| hp.current = hp.max);
     }
 }
 
