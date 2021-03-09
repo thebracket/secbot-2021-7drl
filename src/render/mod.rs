@@ -1,5 +1,5 @@
-use crate::components::{Glyph, Position};
 use crate::{
+    components::{Glyph, Position},
     map::{Map, HEIGHT, WIDTH},
     NewState,
 };
