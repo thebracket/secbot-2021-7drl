@@ -84,6 +84,19 @@ pub fn spawn_napping_colonist(ecs: &mut World, location: Point, layer: u32) {
     commands.flush(ecs);
 }
 
+pub fn spawn_hiding_colonist(ecs: &mut World, location: Point, layer: u32) {
+    let entity = build_base_colonist(ecs, location, layer);
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(
+        entity,
+        Dialog {
+            lines: vec!["Nobody will find me in here!".to_string()],
+        },
+    );
+    commands.add_component(entity, Description("Colonist senior manager.".to_string()));
+    commands.flush(ecs);
+}
+
 pub fn spawn_dead_colonist(ecs: &mut World, location: Point, layer: u32) {
     let name_lock = NAMES.lock();
     let name = name_lock.unwrap().random_human_name();

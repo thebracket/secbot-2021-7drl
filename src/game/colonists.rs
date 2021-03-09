@@ -53,7 +53,7 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                     if finder.success {
                         colonist.path = Some(finder.steps);
                     } else {
-                        println!("Failed to find the path");
+                        //println!("Failed to find the path");
                     }
                 }
             }

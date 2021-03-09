@@ -1,7 +1,7 @@
-use legion::*;
-use bracket_lib::prelude::*;
 use crate::components::*;
+use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
+use legion::*;
 
 pub fn spawn_soda_machine(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
@@ -82,15 +82,18 @@ pub fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
         SetDecoration {},
     ));
     let mut commands = CommandBuffer::new(ecs);
-    commands.add_component(e, Dialog {
-        lines: vec![
-            "Welcome to Bracket 394!".to_string(),
-            "Your safety is important to us.".to_string(),
-            "Please wear a hard hat at all times.".to_string(),
-            "We hope you enjoy your mining experience!".to_string(),
-        ],
-    });
-    commands.add_component(e, CanBeActivated{});
+    commands.add_component(
+        e,
+        Dialog {
+            lines: vec![
+                "Welcome to Bracket 394!".to_string(),
+                "Your safety is important to us.".to_string(),
+                "Please wear a hard hat at all times.".to_string(),
+                "We hope you enjoy your mining experience!".to_string(),
+            ],
+        },
+    );
+    commands.add_component(e, CanBeActivated {});
     commands.flush(ecs);
 }
 
@@ -108,4 +111,23 @@ pub fn spawn_bed(ecs: &mut World, pos: Point, layer: u32) {
         PropertyValue(100),
         SetDecoration {},
     ));
+}
+
+pub fn spawn_explosive_barrel(ecs: &mut World, pos: Point, layer: u32) {
+    let e = ecs.push((
+        Glyph {
+            glyph: to_cp437('O'),
+            color: ColorPair::new(ORANGE, BLACK),
+        },
+        Name("Explosive Barrel".to_string()),
+        Description("Why do people ALWAYS leave these lying around?".to_string()),
+        Health { current: 5, max: 5 },
+        Targetable {},
+        Position::with_pt(pos, layer),
+        PropertyValue(50),
+        SetDecoration {},
+    ));
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(e, Explosive { range: 3 });
+    commands.flush(ecs);
 }

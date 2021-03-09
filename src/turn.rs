@@ -113,6 +113,7 @@ impl GameState for State {
             TurnState::EnemyTurn => {
                 game::colonists_turn(&mut self.ecs, &mut self.map);
                 game::monsters_turn(&mut self.ecs, &mut self.map);
+                game::explosions::process_explosions(&mut self.ecs, &mut self.map);
                 NewState::Wait
             }
             TurnState::GameOverLeft => render::game_over_left(ctx),

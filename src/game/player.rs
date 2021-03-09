@@ -220,10 +220,10 @@ pub fn hit_probability(ecs: &World, target: Entity) -> (u32, u32) {
     let range = DistanceAlg::Pythagoras.distance2d(player_pos, target_pos) as u32;
 
     // TODO: More complexity here
-    let mut hit_chance = 90;
+    let mut hit_chance: i32 = 90;
     if range > 5 {
-        hit_chance -= (range - 5) * 5;
+        hit_chance -= (range as i32 - 5) * 5;
     }
 
-    (hit_chance, range)
+    (hit_chance as u32, range)
 }

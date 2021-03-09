@@ -19,6 +19,8 @@ pub fn targeting_weight(entity: Entity, ecs: &World) -> f32 {
         weight -= 50.0;
     } else if has_component::<Colonist>(entity, ecs) {
         weight += 50.0;
+    } else if has_component::<Explosive>(entity, ecs) {
+        weight -= 25.0;
     }
     weight
 }

@@ -1,4 +1,6 @@
-use super::{all_space, colonists::*, edge_filler, spawn_face_eater, spawn_random_colonist, props::*};
+use super::{
+    all_space, colonists::*, edge_filler, props::*, spawn_face_eater, spawn_random_colonist,
+};
 use crate::{
     components::*,
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -365,6 +367,9 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
 
     // Spawn the colonist who greets you
     spawn_first_colonist(ecs, get_random_point(&mut open_space, rng), 0);
+    let tmp = get_random_point(&mut open_space, rng);
+    spawn_explosive_barrel(ecs, tmp, 0);
+    spawn_explosive_barrel(ecs, tmp + Point::new(2, 0), 0);
     spawn_soda_machine(ecs, get_random_point(&mut open_space, rng), 0);
     spawn_snack_machine(ecs, get_random_point(&mut open_space, rng), 0);
     spawn_greeter(ecs, get_random_point(&mut open_space, rng), 0);
@@ -377,7 +382,7 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
     }
 }
 
-const MAX_ROOM_TYPES: usize = 4;
+const MAX_ROOM_TYPES: usize = 5;
 
 fn spawn_room(
     rt: usize,
@@ -390,7 +395,8 @@ fn spawn_room(
         0 => charnel_house(room, map, ecs),
         1 => bedroom(room, map, ecs, rng),
         2 => bedroom_not_so_nice(room, map, ecs, rng),
-        4 => charnel_house_with_fe(room, map, ecs),
+        3 => charnel_house_with_fe(room, map, ecs),
+        4 => hidey_boom(room, ecs),
         _ => {}
     }
 }
@@ -444,4 +450,13 @@ fn bedroom_not_so_nice(
     spawn_face_eater(ecs, Point::new(room.x1, room.y1), 0);
     spawn_face_eater(ecs, Point::new(room.x2, room.y1), 0);
     spawn_face_eater(ecs, Point::new(room.x1, room.y2), 0);
+}
+
+fn hidey_boom(room: &Rect, ecs: &mut World) {
+    room.for_each(|pt| {
+        if pt != room.center() {
+            spawn_explosive_barrel(ecs, pt, 0);
+        }
+        spawn_hiding_colonist(ecs, room.center(), 0);
+    });
 }

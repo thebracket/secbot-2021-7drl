@@ -1,4 +1,5 @@
 use super::queries::PlayerStatus;
+use super::safe_print_color;
 use crate::LAYER_TEXT;
 use bracket_lib::prelude::*;
 
@@ -16,7 +17,8 @@ pub fn render_status(batch: &mut DrawBatch, status: &PlayerStatus) {
         format!("HP: {} / {}", status.current_hp, status.max_hp),
         ColorPair::new(WHITE, RED),
     );
-    batch.print_color(
+    safe_print_color(
+        batch,
         Point::new(82, 4),
         format!("Property Damage: {}", status.property_damage),
         ColorPair::new(GRAY, BLACK),
@@ -40,12 +42,14 @@ pub fn render_status(batch: &mut DrawBatch, status: &PlayerStatus) {
         (GREEN, "Ecstatic")
     };
 
-    batch.print_color(
+    safe_print_color(
+        batch,
         Point::new(82, 5),
         "Human Resources Status:".to_string(),
         ColorPair::new(GRAY, BLACK),
     );
-    batch.print_color(
+    safe_print_color(
+        batch,
         Point::new(82, 6),
         phrase.to_string(),
         ColorPair::new(color, BLACK),

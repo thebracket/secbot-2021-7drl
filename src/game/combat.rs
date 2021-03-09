@@ -126,7 +126,7 @@ pub fn player_open_fire_at_target(ecs: &mut World, map: &mut Map) -> NewState {
     NewState::Player
 }
 
-fn hit_tile_contents(
+pub fn hit_tile_contents(
     ecs: &mut World,
     pt: Point,
     layer: u32,
@@ -150,6 +150,19 @@ fn hit_tile_contents(
             }
             power_loss += hp.current;
         });
+
+    dead_entities.iter().for_each(|e| {
+        if let Ok(er) = ecs.entry_ref(*e) {
+            if let Ok(boom) = er.get_component::<Explosive>() {
+                if let Ok(pos) = er.get_component::<Position>() {
+                    commands.push((
+                        Position::with_pt(pos.pt, pos.layer),
+                        Boom { range: boom.range },
+                    ));
+                }
+            }
+        }
+    });
 
     kill_things(ecs, commands, dead_entities, splatter);
 
@@ -216,6 +229,7 @@ fn kill_things(
 ) {
     dead_entities.iter().for_each(|entity| {
         let mut was_decor = false;
+        let mut was_player = false;
         if let Ok(mut er) = ecs.entry_mut(*entity) {
             let mut was_colonist = false;
             if let Ok(_colonist) = er.get_component_mut::<ColonistStatus>() {
@@ -247,12 +261,18 @@ fn kill_things(
             if let Ok(_) = er.get_component::<SetDecoration>() {
                 was_decor = true;
             }
+            if let Ok(_) = er.get_component::<Player>() {
+                was_player = true;
+            }
         }
-        commands.remove_component::<Health>(*entity);
-        commands.remove_component::<Active>(*entity);
-        commands.remove_component::<CanBeActivated>(*entity);
-        commands.remove_component::<Blood>(*entity);
-        commands.remove_component::<Targetable>(*entity);
+        if !was_player {
+            commands.remove_component::<Health>(*entity);
+            commands.remove_component::<Active>(*entity);
+            commands.remove_component::<CanBeActivated>(*entity);
+            commands.remove_component::<Blood>(*entity);
+            commands.remove_component::<Targetable>(*entity);
+            commands.remove_component::<Explosive>(*entity);
+        }
         if was_decor {
             commands.remove_component::<Glyph>(*entity);
             commands.remove_component::<Position>(*entity);

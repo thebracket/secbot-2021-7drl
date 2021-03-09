@@ -1,4 +1,4 @@
-use super::gui::TargetInfo;
+use super::{gui::safe_print_color, gui::TargetInfo};
 use crate::{
     components::*,
     map::{Map, HEIGHT, WIDTH},
@@ -99,7 +99,12 @@ impl Camera {
                     speech_pos.x -= (desc.0.len() / 2) as i32;
                     speech_pos.y -= 1;
 
-                    batch.print_color(speech_pos, &desc.0, ColorPair::new(GREEN, BLACK));
+                    safe_print_color(
+                        &mut batch,
+                        speech_pos,
+                        &desc.0,
+                        ColorPair::new(GREEN, BLACK),
+                    );
 
                     speech.lifetime -= 1;
                     if speech.lifetime == 0 {
@@ -115,11 +120,19 @@ impl Camera {
 
     pub fn render_targeting(&self, target: &TargetInfo) {
         if let Some(pt) = target.point {
+            if pt.x < 1 || pt.x > WIDTH as i32 - 2 {
+                return;
+            }
             let mut batch = DrawBatch::new();
             batch.target(LAYER_CHR);
 
             let screen = self.world_to_screen(pt);
-            batch.print_color(screen + Point::new(-1, 0), "[+]", ColorPair::new(RED, RED));
+            safe_print_color(
+                &mut batch,
+                screen + Point::new(-1, 0),
+                "[+]",
+                ColorPair::new(RED, RED),
+            );
 
             batch.submit(40_000).expect("Error batching map");
         }
@@ -196,7 +209,12 @@ impl Camera {
             );
             let mut y = tip_y + 1 - (lines.len() / 2) as i32;
             lines.iter().for_each(|s| {
-                batch.print_color(Point::new(tip_x + 1, y), &s.1, ColorPair::new(s.0, BLACK));
+                safe_print_color(
+                    &mut batch,
+                    Point::new(tip_x + 1, y),
+                    &s.1,
+                    ColorPair::new(s.0, BLACK),
+                );
                 y += 1;
             });
         }

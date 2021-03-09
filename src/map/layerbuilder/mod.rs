@@ -57,9 +57,7 @@ fn smooth_walls(map: &mut Layer) {
     for y in 1..HEIGHT - 1 {
         for x in 1..WIDTH - 1 {
             let idx = map.point2d_to_index(Point::new(x, y));
-            if map.tiles[idx].tile_type == TileType::Wall
-                && map.tiles[idx].glyph != to_cp437('+')
-            {
+            if map.tiles[idx].tile_type == TileType::Wall && map.tiles[idx].glyph != to_cp437('+') {
                 let mut mask: u8 = 0;
                 if is_wall_for_smoothing(idx - WIDTH, map) {
                     mask += 1;

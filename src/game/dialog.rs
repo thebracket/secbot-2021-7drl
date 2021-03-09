@@ -1,6 +1,6 @@
-use legion::*;
-use legion::systems::CommandBuffer;
 use crate::components::*;
+use legion::systems::CommandBuffer;
+use legion::*;
 
 pub fn spawn_dialog(ecs: &mut World) {
     let mut commands = CommandBuffer::new(ecs);
@@ -12,7 +12,6 @@ pub fn spawn_dialog(ecs: &mut World) {
                 dialog.lines.remove(0);
                 commands.push((Speech { lifetime: 40 }, pos.clone(), Description(line)));
             }
-        }
-    );
+        });
     commands.flush(ecs);
 }
