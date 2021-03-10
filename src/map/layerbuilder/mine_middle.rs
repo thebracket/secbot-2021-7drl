@@ -1,8 +1,7 @@
 use super::{
-    all_wall, colonists::spawn_first_colonist, edge_filler, spawn_face_eater, spawn_random_colonist,
+    all_wall, colonists::*, edge_filler, monsters::*, props::*,
 };
 use crate::{
-    components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, TILES, WIDTH},
 };
 use bracket_lib::prelude::*;
@@ -52,6 +51,31 @@ pub fn build_mine_middle(ecs: &mut World) -> Layer {
     }
 
     edge_filler(&mut layer);
+    super::smooth_walls(&mut layer);
+
+    // Go with a simple approach for now
+    let mut n = 0;
+    while n < 30 {
+        let mut rng_lock = crate::RNG.lock();
+        let mut rng = rng_lock.as_mut().unwrap();
+        let pt = Point::new(rng.range(0, WIDTH), rng.range(0, HEIGHT));
+        let idx = layer.point2d_to_index(pt);
+        let d = DistanceAlg::Pythagoras.distance2d(center_pt, pt);
+        if layer.tiles[idx].tile_type == TileType::Floor && d > 12.0 {
+            n += 1;
+            match rng.range(0, 8) {
+                0 => spawn_random_colonist(ecs, pt, 2),
+                1 => spawn_marine_colonist(ecs, pt, 2, &mut rng),
+                2 => spawn_explosive_barrel(ecs, pt, 2),
+                3 => spawn_dead_colonist(ecs, pt, 2),
+                4 => spawn_face_eater(ecs, pt, 2),
+                5 => spawn_xeno_egg(ecs, pt, 2, rng.roll_dice(1, 6)),
+                6 => spawn_quill_worm(ecs, pt, 2),
+                7 => spawn_xenomorph(ecs,pt, 2),
+                _ => {}
+            }
+        }
+    }
 
     layer
 }

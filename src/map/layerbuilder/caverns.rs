@@ -1,8 +1,7 @@
 use super::{
-    all_wall, colonists::spawn_first_colonist, edge_filler, spawn_face_eater, spawn_random_colonist,
+    edge_filler_lava,
 };
 use crate::{
-    components::{Description, Door, Glyph, Position, TileTrigger},
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
@@ -15,7 +14,7 @@ pub fn build_caverns(ecs: &mut World) -> Layer {
     for _ in 0..15 {
         iteration(&mut layer);
     }
-    edge_filler(&mut layer);
+    edge_filler_lava(&mut layer);
 
     let desired_start = Point::new(2, HEIGHT / 2);
     let mut possible_starts: Vec<(usize, f32)> = layer
@@ -47,7 +46,7 @@ fn random_noise_map(map: &mut Layer) {
         if roll > 55 {
             *t = Tile::floor();
         } else {
-            *t = Tile::wall();
+            *t = Tile::lava();
         }
     });
 }
@@ -72,7 +71,7 @@ fn iteration(map: &mut Layer) {
             let neighbors = count_neighbours(map, x as i32, y as i32);
             let idx = map.point2d_to_index(Point::new(x, y));
             if neighbors > 4 || neighbors == 0 {
-                new_tiles[idx] = Tile::wall();
+                new_tiles[idx] = Tile::lava();
             } else {
                 new_tiles[idx] = Tile::floor();
             }

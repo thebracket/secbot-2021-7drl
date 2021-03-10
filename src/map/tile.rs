@@ -61,6 +61,16 @@ impl Tile {
         }
     }
 
+    pub fn lava() -> Self {
+        Self {
+            glyph: to_cp437('!'),
+            color: ColorPair::new(DARK_GRAY, BLACK),
+            blocked: true,
+            opaque: true,
+            tile_type: TileType::Wall,
+        }
+    }
+
     pub fn window() -> Self {
         Self {
             glyph: to_cp437('#'),
