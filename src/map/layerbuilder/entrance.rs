@@ -1,5 +1,6 @@
 use super::{
-    all_space, colonists::*, edge_filler, props::*, spawn_face_eater, spawn_random_colonist,
+    all_space, colonists::*, edge_filler, props::*, spawn_face_eater,
+    spawn_quill_worm
 };
 use crate::{
     components::*,
@@ -381,7 +382,7 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
     }
 }
 
-const MAX_ROOM_TYPES: usize = 11;
+const MAX_ROOM_TYPES: usize = 12;
 
 fn spawn_room(
     rt: usize,
@@ -401,6 +402,7 @@ fn spawn_room(
         8 => hydroponics(room, ecs, map, rng),
         9 => hydroponic_monstrous(room, ecs, map, rng),
         10 => suicidal_colonist_room(room, ecs),
+        11 => hydroponic_ranged_monstrous(room, ecs, map, rng),
         _ => {}
     }
 }
@@ -519,6 +521,38 @@ fn hydroponic_monstrous(
                 spawn_tree(ecs, pt, 0)
             } else {
                 spawn_face_eater(ecs, pt, 0);
+            }
+        }
+    }
+}
+
+fn hydroponic_ranged_monstrous(
+    room: &Rect,
+    ecs: &mut World,
+    map: &mut Layer,
+    rng: &mut RandomNumberGenerator,
+) {
+    room.for_each(|pt| {
+        let idx = map.point2d_to_index(pt);
+        map.tiles[idx].color.fg = RED.into();
+    });
+    let mut open_space = Vec::new();
+    room.for_each(|p| {
+        if p != map.starting_point {
+            open_space.push(p)
+        }
+    });
+    let mut n = 0;
+    for _ in 0..10 {
+        if !open_space.is_empty() {
+            let pt = get_random_point(&mut open_space, rng);
+            if rng.range(1, 10) < 5 {
+                spawn_tree(ecs, pt, 0)
+            } else {
+                if n < 2 {
+                    spawn_quill_worm(ecs, pt, 0);
+                    n += 1;
+                }
             }
         }
     }

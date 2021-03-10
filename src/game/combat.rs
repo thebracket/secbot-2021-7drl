@@ -74,7 +74,7 @@ pub fn ranged_attack(
         .for_each(|pt| {
             projectile_path.push(*pt);
             if pos_map.contains(&pt) {
-                power -= hit_tile_contents(ecs, *pt, current_layer, &mut commands, &mut splatter);
+                power -= hit_tile_contents(ecs, *pt, current_layer, &mut commands, &mut splatter, power);
             }
             if let Some(bsplatter) = &mut splatter {
                 let idx = map.get_current().point2d_to_index(*pt);
@@ -102,7 +102,7 @@ pub fn ranged_attack(
         let pt = Point::new(projectile_pos.x as i32, projectile_pos.y as i32);
         projectile_path.push(pt);
         if pos_map.contains(&pt) {
-            power -= hit_tile_contents(ecs, pt, current_layer, &mut commands, &mut splatter);
+            power -= hit_tile_contents(ecs, pt, current_layer, &mut commands, &mut splatter, power);
         }
         if let Some(bsplatter) = &mut splatter {
             let idx = map.get_current().point2d_to_index(pt);
@@ -145,6 +145,7 @@ pub fn hit_tile_contents(
     layer: u32,
     commands: &mut CommandBuffer,
     splatter: &mut Option<RGB>,
+    power: i32
 ) -> i32 {
     let mut rng_lock = crate::RNG.lock();
     let rng = rng_lock.as_mut().unwrap();
@@ -155,7 +156,7 @@ pub fn hit_tile_contents(
         .iter_mut(ecs)
         .filter(|(_, pos, _)| pos.layer == layer && pos.pt == pt)
         .for_each(|(entity, _, hp)| {
-            let damage = rng.range(1, 5) + 10; // TODO: Complexity, please
+            let damage = power + rng.roll_dice(1, 4) - 2;
             hp.current -= damage;
             if hp.current < 0 {
                 hp.current = 0;

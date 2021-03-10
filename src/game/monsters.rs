@@ -17,6 +17,7 @@ pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
 
     let mut commands = CommandBuffer::new(ecs);
     let mut melee_buffer = Vec::<(Entity, Entity, i32)>::new();
+    let mut ranged_buffer = Vec::<(Entity, Entity, i32)>::new();
     <(Entity, &Active, &Hostile, &Position, &mut FieldOfView)>::query()
         .iter_mut(ecs)
         .for_each(|(entity, _, hostile, pos, fov)| {
@@ -50,7 +51,8 @@ pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
                 // Can I shoot?
                 // If so, is there anything in range?
                 hostile.ranged.iter().for_each(|ranged| {
-                    // Fire!
+                    attacked = true;
+                    ranged_buffer.push((*entity, target_subset[0].2, ranged.power));
                 });
             }
 
@@ -72,7 +74,7 @@ pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
                             }
                         }
                     }
-                    AggroMode::Nearest => {}
+                    AggroMode::_Nearest => {}
                 }
                 // If its the player, follow them
                 // If its nearest, look for something to kill
@@ -80,7 +82,11 @@ pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
         });
     commands.flush(ecs);
 
+    // Perform combat
     melee_buffer.iter().for_each(|(a, d, dmg)| {
         super::combat::melee(ecs, map, *a, *d, *dmg);
+    });
+    ranged_buffer.iter().for_each(|(a, d, dmg)| {
+        super::combat::ranged_attack(ecs, map, *a, *d, *dmg);
     });
 }

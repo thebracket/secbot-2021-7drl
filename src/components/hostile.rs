@@ -1,5 +1,5 @@
 pub enum AggroMode {
-    Nearest,
+    _Nearest,
     Player,
 }
 
@@ -14,6 +14,5 @@ pub struct Melee {
 }
 
 pub struct Ranged {
-    pub range: i32,
     pub power: i32,
 }

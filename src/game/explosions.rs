@@ -39,6 +39,7 @@ pub fn process_explosions(ecs: &mut World, map: &mut Map) {
             map.current_layer as u32,
             &mut commands,
             &mut ignore_me,
+            6,
         );
     });
 
