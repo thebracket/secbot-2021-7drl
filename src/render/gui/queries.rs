@@ -102,12 +102,12 @@ impl PlayerStatus {
         let mut human_resources = 50;
 
         // Pay for what you break
-        human_resources -= property_damage / 100;
+        human_resources -= property_damage / 1000;
 
         // Colonist status
-        human_resources += colony.rescued * 3;
+        human_resources += colony.rescued * 10;
         human_resources -= colony.located_dead;
-        human_resources -= colony.died_in_rescue * 10;
+        human_resources -= colony.died_in_rescue * 2;
         human_resources += colony.located_alive * 2;
 
         human_resources

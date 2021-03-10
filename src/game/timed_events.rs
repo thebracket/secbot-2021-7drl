@@ -5,6 +5,7 @@ use legion::*;
 
 pub fn manage_event_timers(ecs: &mut World, _map: &Map) {
     let mut commands = CommandBuffer::new(ecs);
+    let mut spawn_list: Vec<Position> = Vec::new();
 
     <(Entity, &mut TimedEvent, &Position, &Active)>::query()
         .iter_mut(ecs)
@@ -15,7 +16,14 @@ pub fn manage_event_timers(ecs: &mut World, _map: &Map) {
                 commands.remove(*entity);
 
                 // Create an explosion (TODO: Conditional if we need more timers)
-                commands.push((Position::with_pt(pos.pt, pos.layer), Boom { range: 3 }));
+                match timer.event {
+                    EventType::Boom => {
+                        commands.push((Position::with_pt(pos.pt, pos.layer), Boom { range: 3 }));
+                    }
+                    EventType::HatchXenomorph => {
+                        spawn_list.push(pos.clone());
+                    }
+                };
             } else {
                 commands.push((
                     Speech { lifetime: 40 },
@@ -24,6 +32,10 @@ pub fn manage_event_timers(ecs: &mut World, _map: &Map) {
                 ));
             }
         });
+
+    spawn_list.iter().for_each(|pos| {
+        crate::map::layerbuilder::spawn_xenomorph(ecs, pos.pt, pos.layer);
+    });
 
     commands.flush(ecs);
 }

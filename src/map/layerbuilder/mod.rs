@@ -9,9 +9,9 @@ use colonists::*;
 pub use entrance::build_entrance;
 pub use mine_middle::build_mine_middle;
 pub use mine_top::build_mine_top;
-mod monsters;
+pub mod monsters;
 use bracket_lib::prelude::{to_cp437, Algorithm2D, Point};
-use monsters::*;
+pub use monsters::*;
 mod props;
 
 fn all_space(layer: &mut Layer) {

@@ -163,6 +163,37 @@ pub fn spawn_live_grenade(ecs: &mut World, pos: Point, layer: u32) {
         CanBeActivated {},
     ));
     let mut commands = CommandBuffer::new(ecs);
-    commands.add_component(e, TimedEvent { timer: 3 });
+    commands.add_component(
+        e,
+        TimedEvent {
+            timer: 3,
+            event: EventType::Boom,
+        },
+    );
+    commands.flush(ecs);
+}
+
+pub fn spawn_xeno_egg(ecs: &mut World, pos: Point, layer: u32, timer: i32) {
+    let e = ecs.push((
+        Glyph {
+            glyph: to_cp437('○'),
+            color: ColorPair::new(LIME_GREEN, BLACK),
+        },
+        Name("Pulsing Egg".to_string()),
+        Description("A green egg. It pulses menacingly.".to_string()),
+        Health { current: 1, max: 1 },
+        Targetable {},
+        Position::with_pt(pos, layer),
+        SetDecoration {},
+        CanBeActivated {},
+    ));
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(
+        e,
+        TimedEvent {
+            timer,
+            event: EventType::HatchXenomorph,
+        },
+    );
     commands.flush(ecs);
 }

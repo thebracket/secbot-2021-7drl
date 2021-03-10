@@ -62,3 +62,36 @@ pub fn spawn_quill_worm(ecs: &mut World, location: Point, layer: u32) {
     commands.add_component(entity, CanBeActivated {});
     commands.flush(ecs);
 }
+
+pub fn spawn_xenomorph(ecs: &mut World, location: Point, layer: u32) {
+    let entity = ecs.push((
+        Name("Xenomorph".to_string()),
+        Hostile {
+            aggro: AggroMode::Player,
+            ranged: vec![Ranged { power: 2 }],
+            melee: Vec::new(),
+        },
+        Targetable {},
+        Position::with_pt(location, layer),
+        Glyph {
+            glyph: to_cp437('X'),
+            color: ColorPair::new(RED, BLACK),
+        },
+        Description("A dog-like creature, if dogs had human faces and spat acid.".to_string()),
+        Health {
+            max: 10,
+            current: 10,
+        },
+        Blood(DARK_GREEN.into()),
+    ));
+    let mut commands = legion::systems::CommandBuffer::new(ecs);
+    commands.add_component(
+        entity,
+        FieldOfView {
+            radius: 6,
+            visible_tiles: HashSet::new(),
+        },
+    );
+    commands.add_component(entity, CanBeActivated {});
+    commands.flush(ecs);
+}

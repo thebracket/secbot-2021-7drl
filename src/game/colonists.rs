@@ -51,17 +51,20 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
             if let Some(damage) = colonist.weapon {
                 if rng.range(0, 10) < 5 {
                     let visible_tiles = field_of_view_set(pos.pt, 8, map.get_current());
-                    let targets = <(Entity, &Position, &Hostile, &Active, &Health)>::query()
-                        .iter(ecs)
-                        .filter(|(_, pos, _, _, _)| {
-                            pos.layer == map.current_layer as u32 && visible_tiles.contains(&pos.pt)
-                        })
-                        .map(|(e, _, _, _, _)| *e)
-                        .collect::<Vec<Entity>>();
-                    if !targets.is_empty() {
-                        should_move = false;
-                        let target = rng.random_slice_entry(&targets).unwrap();
-                        ranged_buffer.push((*entity, *target, damage));
+                    if !visible_tiles.is_empty() {
+                        let targets = <(Entity, &Position, &Hostile, &Active, &Health)>::query()
+                            .iter(ecs)
+                            .filter(|(_, pos, _, _, _)| {
+                                pos.layer == map.current_layer as u32
+                                    && visible_tiles.contains(&pos.pt)
+                            })
+                            .map(|(e, _, _, _, _)| *e)
+                            .collect::<Vec<Entity>>();
+                        if !targets.is_empty() {
+                            should_move = false;
+                            let target = rng.random_slice_entry(&targets).unwrap();
+                            ranged_buffer.push((*entity, *target, damage));
+                        }
                     }
                 }
             }

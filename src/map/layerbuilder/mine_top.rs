@@ -1,4 +1,4 @@
-use super::{all_wall, colonists::*, edge_filler, monsters::*};
+use super::{all_wall, colonists::*, edge_filler, monsters::*, props::*};
 use crate::{
     components::*,
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -172,7 +172,7 @@ fn get_random_point(points: &mut Vec<Point>, rng: &mut RandomNumberGenerator) ->
     result
 }
 
-const MAX_ROOM_TYPES: usize = 1;
+const MAX_ROOM_TYPES: usize = 6;
 
 fn spawn_room(
     rt: usize,
@@ -183,6 +183,11 @@ fn spawn_room(
 ) {
     match rt {
         0 => charnel_house(room, map, ecs, rng),
+        1 => med_bay(room, ecs, map, rng),
+        2 => improvised_boomer(room, ecs, rng),
+        3 => hydroponics(room, ecs, map, rng),
+        4 => hydroponic_eggs(room, ecs, map, rng),
+        5 => enter_the_xeno(room, ecs),
         _ => {}
     }
 }
@@ -195,4 +200,73 @@ fn charnel_house(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut Random
             spawn_dead_colonist(ecs, pt, 1);
         }
     });
+}
+
+fn med_bay(room: &Rect, ecs: &mut World, map: &mut Layer, rng: &mut RandomNumberGenerator) {
+    let c = room.center();
+    let idx = map.point2d_to_index(c);
+    map.tiles[idx] = Tile::healing();
+    spawn_marine_colonist(ecs, c + Point::new(1, 0), 0, rng);
+    ecs.push((
+        Position::with_pt(c, 0),
+        Description("This auto-doc loves healing SecBots!".to_string()),
+        TileTrigger(crate::components::TriggerType::Healing),
+    ));
+}
+
+fn improvised_boomer(room: &Rect, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    room.for_each(|pt| match rng.range(0, 5) {
+        0 => spawn_explosive_barrel(ecs, pt, 1),
+        1 => spawn_face_eater(ecs, pt, 1),
+        2 => spawn_live_grenade(ecs, pt, 1),
+        _ => {}
+    });
+}
+
+fn hydroponics(room: &Rect, ecs: &mut World, map: &mut Layer, rng: &mut RandomNumberGenerator) {
+    room.for_each(|pt| {
+        let idx = map.point2d_to_index(pt);
+        map.tiles[idx].color.fg = GREEN.into();
+    });
+    let mut open_space = Vec::new();
+    room.for_each(|p| {
+        if p != map.starting_point {
+            open_space.push(p)
+        }
+    });
+    for _ in 0..10 {
+        if !open_space.is_empty() {
+            let pt = get_random_point(&mut open_space, rng);
+            spawn_tree(ecs, pt, 1);
+        }
+    }
+}
+
+fn hydroponic_eggs(room: &Rect, ecs: &mut World, map: &mut Layer, rng: &mut RandomNumberGenerator) {
+    room.for_each(|pt| {
+        let idx = map.point2d_to_index(pt);
+        map.tiles[idx].color.fg = GREEN.into();
+    });
+    let mut open_space = Vec::new();
+    room.for_each(|p| {
+        if p != map.starting_point {
+            open_space.push(p)
+        }
+    });
+    for _ in 0..10 {
+        if !open_space.is_empty() {
+            let pt = get_random_point(&mut open_space, rng);
+            if rng.range(0, 2) == 0 {
+                spawn_tree(ecs, pt, 1);
+            } else {
+                spawn_xeno_egg(ecs, pt, 1, rng.range(3, 10));
+            }
+        }
+    }
+}
+
+fn enter_the_xeno(room: &Rect, ecs: &mut World) {
+    spawn_random_colonist(ecs, room.center(), 1);
+    spawn_xenomorph(ecs, room.center() + Point::new(1, 0), 1);
+    spawn_dead_colonist(ecs, room.center() + Point::new(-1, 0), 1);
 }

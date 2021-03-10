@@ -9,5 +9,5 @@ mod layer;
 use layer::Layer;
 mod map;
 pub use map::Map;
-mod layerbuilder;
+pub mod layerbuilder;
 pub use tile::TileType;
