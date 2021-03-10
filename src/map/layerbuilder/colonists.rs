@@ -103,15 +103,20 @@ pub fn spawn_suicidal_colonist(ecs: &mut World, location: Point, layer: u32) {
     commands.add_component(
         entity,
         Dialog {
-            lines: vec!["Game Over, Man!".to_string(),
+            lines: vec![
+                "Game Over, Man!".to_string(),
                 "Game Over!".to_string(),
-                "Wait, I'm not dead?".to_string()],
+                "Wait, I'm not dead?".to_string(),
+            ],
         },
     );
-    commands.add_component(entity, Description("Colonist security manager.".to_string()));
+    commands.add_component(
+        entity,
+        Description("Colonist security manager.".to_string()),
+    );
     commands.flush(ecs);
 
-    super::props::spawn_live_grenade(ecs, location + Point::new(-1,-1), layer);
+    super::props::spawn_live_grenade(ecs, location + Point::new(-1, -1), layer);
 }
 
 pub fn spawn_dead_colonist(ecs: &mut World, location: Point, layer: u32) {

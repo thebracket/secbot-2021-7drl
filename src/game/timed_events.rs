@@ -1,7 +1,7 @@
-use legion::*;
-use legion::systems::CommandBuffer;
 use crate::components::*;
 use crate::map::Map;
+use legion::systems::CommandBuffer;
+use legion::*;
 
 pub fn manage_event_timers(ecs: &mut World, _map: &Map) {
     let mut commands = CommandBuffer::new(ecs);
@@ -15,15 +15,15 @@ pub fn manage_event_timers(ecs: &mut World, _map: &Map) {
                 commands.remove(*entity);
 
                 // Create an explosion (TODO: Conditional if we need more timers)
-                commands.push((
-                    Position::with_pt(pos.pt, pos.layer),
-                    Boom { range: 3 },
-                ));
+                commands.push((Position::with_pt(pos.pt, pos.layer), Boom { range: 3 }));
             } else {
-                commands.push((Speech { lifetime: 40 }, pos.clone(), Description(format!("Timer: {}", timer.timer))));
+                commands.push((
+                    Speech { lifetime: 40 },
+                    pos.clone(),
+                    Description(format!("Timer: {}", timer.timer)),
+                ));
             }
-        }
-    );
+        });
 
     commands.flush(ecs);
 }

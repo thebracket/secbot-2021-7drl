@@ -7,15 +7,13 @@ use legion::*;
 use std::collections::HashSet;
 
 pub fn player_open_fire_at_target(ecs: &mut World, map: &mut Map) -> NewState {
-    let mut commands = CommandBuffer::new(ecs);
-    let mut player_pos = Point::zero();
+    let mut player_entity = None;
     let mut target = None;
-    let current_layer = map.current_layer as u32;
-    <(&Player, &Position, &Targeting)>::query()
+    <(Entity, &Player, &Targeting)>::query()
         .iter(ecs)
-        .for_each(|(_, pos, targeting)| {
-            player_pos = pos.pt;
+        .for_each(|(entity, _, targeting)| {
             target = targeting.current_target;
+            player_entity = Some(*entity);
         });
 
     // If there's nothing to fire at, return to waiting
@@ -23,107 +21,122 @@ pub fn player_open_fire_at_target(ecs: &mut World, map: &mut Map) -> NewState {
         return NewState::Wait;
     }
 
+    ranged_attack(ecs, map, player_entity.unwrap(), target.unwrap(), 20);
+
+    NewState::Player
+}
+
+pub fn ranged_attack(
+    ecs: &mut World,
+    map: &mut Map,
+    attacker: Entity,
+    victim: Entity,
+    ranged_power: i32,
+) {
+    let mut attacker_pos = None;
+    let mut victim_pos = None;
+
+    // Find positions for the start and end
+    if let Ok(ae) = ecs.entry_ref(attacker) {
+        if let Ok(pos) = ae.get_component::<Position>() {
+            attacker_pos = Some(pos.clone());
+        }
+    }
+    if let Ok(ae) = ecs.entry_ref(victim) {
+        if let Ok(pos) = ae.get_component::<Position>() {
+            victim_pos = Some(pos.clone());
+        }
+    }
+    if attacker_pos.is_none() || victim_pos.is_none() {
+        return;
+    }
+    let attacker_pos = attacker_pos.unwrap();
+    let victim_pos = victim_pos.unwrap();
+
+    // Set state for the projectile path
+    let mut power = ranged_power;
+    let mut range = 0;
+    let mut projectile_path = Vec::new();
+    let mut splatter = None;
+    let mut commands = CommandBuffer::new(ecs);
+    let current_layer = attacker_pos.layer;
+
+    // Map of entity locations. Rebuilt every time because it might change.
     let pos_map = <(&Position, &Health)>::query()
         .iter(ecs)
         .map(|(pos, _)| pos.pt)
         .collect::<HashSet<Point>>();
 
-    if let Some(target) = target {
-        if let Ok(target_ref) = ecs.entry_ref(target) {
-            if let Ok(target_position) = target_ref.get_component::<Position>() {
-                let target_pos = target_position.pt;
-                let mut power = 20;
-                let mut range = 0;
-                let mut projectile_path = Vec::new();
-                let mut splatter = None;
-
-                line2d_bresenham(player_pos, target_pos)
-                    .iter()
-                    .skip(1)
-                    .for_each(|pt| {
-                        projectile_path.push(*pt);
-                        if pos_map.contains(&pt) {
-                            power -= hit_tile_contents(
-                                ecs,
-                                *pt,
-                                current_layer,
-                                &mut commands,
-                                &mut splatter,
-                            );
-                        }
-                        if let Some(bsplatter) = &mut splatter {
-                            let idx = map.get_current().point2d_to_index(*pt);
-                            map.get_current_mut().tiles[idx].color.fg = bsplatter.to_rgba(1.0);
-                            bsplatter.r = f32::max(0.0, bsplatter.r - 0.1);
-                            bsplatter.g = f32::max(0.0, bsplatter.g - 0.1);
-                            bsplatter.b = f32::max(0.0, bsplatter.b - 0.1);
-                            if bsplatter.r + bsplatter.g + bsplatter.b < 0.1 {
-                                splatter = None;
-                            }
-                        }
-                        range += 1;
-                        if range > 5 {
-                            power -= 1;
-                        }
-                    });
-                use ultraviolet::Vec2;
-                let mut projectile_pos: Vec2 = Vec2::new(target_pos.x as f32, target_pos.y as f32);
-                let slope = (projectile_pos - Vec2::new(player_pos.x as f32, player_pos.y as f32))
-                    .normalized();
-                while range < 25 && power > 0 {
-                    projectile_pos += slope;
-                    let pt = Point::new(projectile_pos.x as i32, projectile_pos.y as i32);
-                    projectile_path.push(pt);
-                    if pos_map.contains(&pt) {
-                        power -=
-                            hit_tile_contents(ecs, pt, current_layer, &mut commands, &mut splatter);
-                    }
-                    if let Some(bsplatter) = &mut splatter {
-                        let idx = map.get_current().point2d_to_index(pt);
-                        map.get_current_mut().tiles[idx].color.fg = bsplatter.to_rgba(1.0);
-                        bsplatter.r = f32::max(0.0, bsplatter.r - 0.1);
-                        bsplatter.g = f32::max(0.0, bsplatter.g - 0.1);
-                        bsplatter.b = f32::max(0.0, bsplatter.b - 0.1);
-                        if bsplatter.r + bsplatter.g + bsplatter.b < 0.1 {
-                            splatter = None;
-                        }
-                    }
-                    let idx = map.get_current().point2d_to_index(pt);
-                    if map.get_current().tiles[idx].tile_type == TileType::Wall {
-                        range += 100;
-                        power = 0;
-                    }
-                    if !map.get_current().tiles[idx].opaque && power > 5 {
-                        // TODO: End the game because you broke a window
-                    }
-                    range += 1;
-                    if range > 5 {
-                        power -= 1;
-                    }
-                }
-
-                commands.push((
-                    Projectile {
-                        path: projectile_path,
-                        layer: current_layer as usize,
-                    },
-                    Glyph {
-                        glyph: to_cp437('*'),
-                        color: ColorPair::new(RED, BLACK),
-                    },
-                ));
-            } else {
-                // Unable to fire
-                return NewState::Wait;
+    // Plot the initial trajectory
+    line2d_bresenham(attacker_pos.pt, victim_pos.pt)
+        .iter()
+        .skip(1)
+        .for_each(|pt| {
+            projectile_path.push(*pt);
+            if pos_map.contains(&pt) {
+                power -= hit_tile_contents(ecs, *pt, current_layer, &mut commands, &mut splatter);
             }
-        } else {
-            // Unable to fire
-            return NewState::Wait;
+            if let Some(bsplatter) = &mut splatter {
+                let idx = map.get_current().point2d_to_index(*pt);
+                map.get_current_mut().tiles[idx].color.fg = bsplatter.to_rgba(1.0);
+                bsplatter.r = f32::max(0.0, bsplatter.r - 0.1);
+                bsplatter.g = f32::max(0.0, bsplatter.g - 0.1);
+                bsplatter.b = f32::max(0.0, bsplatter.b - 0.1);
+                if bsplatter.r + bsplatter.g + bsplatter.b < 0.1 {
+                    splatter = None;
+                }
+            }
+            range += 1;
+            if range > 5 {
+                power -= 1;
+            }
+        });
+
+    // The trajectory can continue if we have power left
+    use ultraviolet::Vec2;
+    let mut projectile_pos: Vec2 = Vec2::new(victim_pos.pt.x as f32, victim_pos.pt.y as f32);
+    let slope = (projectile_pos - Vec2::new(attacker_pos.pt.x as f32, attacker_pos.pt.y as f32))
+        .normalized();
+    while range < 25 && power > 0 {
+        projectile_pos += slope;
+        let pt = Point::new(projectile_pos.x as i32, projectile_pos.y as i32);
+        projectile_path.push(pt);
+        if pos_map.contains(&pt) {
+            power -= hit_tile_contents(ecs, pt, current_layer, &mut commands, &mut splatter);
+        }
+        if let Some(bsplatter) = &mut splatter {
+            let idx = map.get_current().point2d_to_index(pt);
+            map.get_current_mut().tiles[idx].color.fg = bsplatter.to_rgba(1.0);
+            bsplatter.r = f32::max(0.0, bsplatter.r - 0.1);
+            bsplatter.g = f32::max(0.0, bsplatter.g - 0.1);
+            bsplatter.b = f32::max(0.0, bsplatter.b - 0.1);
+            if bsplatter.r + bsplatter.g + bsplatter.b < 0.1 {
+                splatter = None;
+            }
+        }
+        let idx = map.get_current().point2d_to_index(pt);
+        if map.get_current().tiles[idx].tile_type == TileType::Wall {
+            range += 100;
+            power = 0;
+        }
+        range += 1;
+        if range > 5 {
+            power -= 1;
         }
     }
 
+    commands.push((
+        Projectile {
+            path: projectile_path,
+            layer: current_layer as usize,
+        },
+        Glyph {
+            glyph: to_cp437('*'),
+            color: ColorPair::new(RED, BLACK),
+        },
+    ));
+
     commands.flush(ecs);
-    NewState::Player
 }
 
 pub fn hit_tile_contents(

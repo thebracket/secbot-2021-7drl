@@ -1,3 +1,3 @@
 pub struct TimedEvent {
-    pub timer : i32,
+    pub timer: i32,
 }

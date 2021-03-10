@@ -160,7 +160,7 @@ pub fn spawn_live_grenade(ecs: &mut World, pos: Point, layer: u32) {
         Targetable {},
         Position::with_pt(pos, layer),
         SetDecoration {},
-        CanBeActivated{},
+        CanBeActivated {},
     ));
     let mut commands = CommandBuffer::new(ecs);
     commands.add_component(e, TimedEvent { timer: 3 });
