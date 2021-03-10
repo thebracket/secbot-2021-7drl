@@ -190,6 +190,44 @@ pub fn spawn_dead_colonist(ecs: &mut World, location: Point, layer: u32) {
     ));
 }
 
+pub fn spawn_dead_doctor(ecs: &mut World, location: Point, layer: u32) {
+    let name_lock = NAMES.lock();
+    let name = name_lock.unwrap().random_human_name();
+    ecs.push((
+        Colonist {
+            path: None,
+            weapon: None,
+        },
+        Position::with_pt(location, layer),
+        Glyph {
+            glyph: to_cp437('☺'),
+            color: ColorPair::new(GRAY, DARK_RED),
+        },
+        Description("They appear to have been dissecting an alien.".to_string()),
+        ColonistStatus::StartedDead,
+        Name(format!("Corpse: Dr. {}", name)),
+        CanBeActivated {},
+    ));
+}
+
+pub fn spawn_dead_xeno(ecs: &mut World, location: Point, layer: u32) {
+    ecs.push((
+        Colonist {
+            path: None,
+            weapon: None,
+        },
+        Position::with_pt(location, layer),
+        Glyph {
+            glyph: to_cp437('x'),
+            color: ColorPair::new(GRAY, DARK_RED),
+        },
+        Description("Dissecting a creature with acid blood is a bad idea".to_string()),
+        ColonistStatus::StartedDead,
+        Name("Corpse: Xenomorph".to_string()),
+        CanBeActivated {},
+    ));
+}
+
 /* Name Generation */
 
 const FIRST_NAMES_1: &str = include_str!("../../../resources/first_names_female.txt");

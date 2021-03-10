@@ -172,7 +172,7 @@ fn get_random_point(points: &mut Vec<Point>, rng: &mut RandomNumberGenerator) ->
     result
 }
 
-const MAX_ROOM_TYPES: usize = 6;
+const MAX_ROOM_TYPES: usize = 9;
 
 fn spawn_room(
     rt: usize,
@@ -188,6 +188,9 @@ fn spawn_room(
         3 => hydroponics(room, ecs, map, rng),
         4 => hydroponic_eggs(room, ecs, map, rng),
         5 => enter_the_xeno(room, ecs),
+        6 => break_room(room, ecs, rng),
+        7 => doctor_evil(room, ecs, map),
+        8 => volatile_storage(room, ecs, rng),
         _ => {}
     }
 }
@@ -269,4 +272,44 @@ fn enter_the_xeno(room: &Rect, ecs: &mut World) {
     spawn_random_colonist(ecs, room.center(), 1);
     spawn_xenomorph(ecs, room.center() + Point::new(1, 0), 1);
     spawn_dead_colonist(ecs, room.center() + Point::new(-1, 0), 1);
+}
+
+fn break_room(room: &Rect, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    let mut open_space = Vec::new();
+    room.for_each(|p| {
+        open_space.push(p)
+    });
+
+    // Spawn the colonist who greets you
+    spawn_soda_machine(ecs, get_random_point(&mut open_space, rng), 1);
+    spawn_snack_machine(ecs, get_random_point(&mut open_space, rng), 1);
+    spawn_greeter(ecs, get_random_point(&mut open_space, rng), 1);
+    for _ in 0..10 {
+        let point = get_random_point(&mut open_space, rng);
+        if open_space.contains(&(point + Point::new(1, 1))) {
+            spawn_chair(ecs, point, 0);
+            spawn_table(ecs, point + Point::new(1, 0), 1);
+        }
+    }
+}
+
+fn doctor_evil(room: &Rect, ecs: &mut World, map: &mut Layer) {
+    let c = room.center();
+    let idx = map.point2d_to_index(c);
+    map.tiles[idx] = Tile::healing();
+    spawn_dead_doctor(ecs, c + Point::new(-1, 0), 1);
+    spawn_dead_xeno(ecs, c + Point::new(-1, -1), 1);
+    ecs.push((
+        Position::with_pt(c, 0),
+        Description("This auto-doc loves healing SecBots!".to_string()),
+        TileTrigger(crate::components::TriggerType::Healing),
+    ));
+}
+
+fn volatile_storage(room: &Rect, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    room.for_each(|pt| {
+        if rng.range(0,3) == 0 {
+            spawn_explosive_barrel(ecs, pt, 1);
+        }
+    });
 }
