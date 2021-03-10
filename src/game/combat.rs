@@ -272,6 +272,7 @@ fn kill_things(
             commands.remove_component::<Blood>(*entity);
             commands.remove_component::<Targetable>(*entity);
             commands.remove_component::<Explosive>(*entity);
+            commands.remove_component::<TimedEvent>(*entity);
         }
         if was_decor {
             commands.remove_component::<Glyph>(*entity);

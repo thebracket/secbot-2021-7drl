@@ -97,6 +97,23 @@ pub fn spawn_hiding_colonist(ecs: &mut World, location: Point, layer: u32) {
     commands.flush(ecs);
 }
 
+pub fn spawn_suicidal_colonist(ecs: &mut World, location: Point, layer: u32) {
+    let entity = build_base_colonist(ecs, location, layer);
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(
+        entity,
+        Dialog {
+            lines: vec!["Game Over, Man!".to_string(),
+                "Game Over!".to_string(),
+                "Wait, I'm not dead?".to_string()],
+        },
+    );
+    commands.add_component(entity, Description("Colonist security manager.".to_string()));
+    commands.flush(ecs);
+
+    super::props::spawn_live_grenade(ecs, location + Point::new(-1,-1), layer);
+}
+
 pub fn spawn_dead_colonist(ecs: &mut World, location: Point, layer: u32) {
     let name_lock = NAMES.lock();
     let name = name_lock.unwrap().random_human_name();

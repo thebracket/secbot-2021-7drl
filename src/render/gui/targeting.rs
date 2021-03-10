@@ -9,7 +9,7 @@ pub fn render_targeting(batch: &mut DrawBatch, target: &TargetInfo) {
         safe_print_color(
             batch,
             Point::new(82, 15),
-            format!("Target: {}", target.name.as_ref().unwrap()),
+            format!("Target: {}", target.name.as_ref().unwrap_or(&"n/a".to_string())),
             ColorPair::new(target.color.unwrap(), BLACK),
         );
         safe_print_color(

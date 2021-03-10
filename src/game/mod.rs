@@ -11,3 +11,5 @@ pub mod dialog;
 pub use dialog::*;
 pub mod explosions;
 pub use explosions::*;
+pub mod timed_events;
+pub use timed_events::*;

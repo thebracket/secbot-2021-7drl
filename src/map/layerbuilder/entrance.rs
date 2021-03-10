@@ -367,9 +367,8 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
 
     // Spawn the colonist who greets you
     spawn_first_colonist(ecs, get_random_point(&mut open_space, rng), 0);
-    let tmp = get_random_point(&mut open_space, rng);
-    spawn_explosive_barrel(ecs, tmp, 0);
-    spawn_explosive_barrel(ecs, tmp + Point::new(2, 0), 0);
+    spawn_explosive_barrel(ecs, get_random_point(&mut open_space, rng), 0);
+    spawn_explosive_barrel(ecs, get_random_point(&mut open_space, rng), 0);
     spawn_soda_machine(ecs, get_random_point(&mut open_space, rng), 0);
     spawn_snack_machine(ecs, get_random_point(&mut open_space, rng), 0);
     spawn_greeter(ecs, get_random_point(&mut open_space, rng), 0);
@@ -382,7 +381,7 @@ fn entryway(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumbe
     }
 }
 
-const MAX_ROOM_TYPES: usize = 10;
+const MAX_ROOM_TYPES: usize = 11;
 
 fn spawn_room(
     rt: usize,
@@ -401,6 +400,7 @@ fn spawn_room(
         7 => hydroponics(room, ecs, map, rng),
         8 => hydroponics(room, ecs, map, rng),
         9 => hydroponic_monstrous(room, ecs, map, rng),
+        10 => suicidal_colonist_room(room, ecs),
         _ => {}
     }
 }
@@ -522,4 +522,13 @@ fn hydroponic_monstrous(
             }
         }
     }
+}
+
+fn suicidal_colonist_room(room: &Rect, ecs: &mut World) {
+    let c = room.center();
+    spawn_suicidal_colonist(ecs, c, 0);
+    spawn_face_eater(ecs, Point::new(room.x1, room.y1), 0);
+    spawn_face_eater(ecs, Point::new(room.x2, room.y1), 0);
+    spawn_face_eater(ecs, Point::new(room.x1, room.y2), 0);
+    spawn_face_eater(ecs, Point::new(room.x2, room.y2), 0);
 }

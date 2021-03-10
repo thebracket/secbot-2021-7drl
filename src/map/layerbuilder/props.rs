@@ -147,3 +147,22 @@ pub fn spawn_explosive_barrel(ecs: &mut World, pos: Point, layer: u32) {
     commands.add_component(e, Explosive { range: 3 });
     commands.flush(ecs);
 }
+
+pub fn spawn_live_grenade(ecs: &mut World, pos: Point, layer: u32) {
+    let e = ecs.push((
+        Glyph {
+            glyph: to_cp437('g'),
+            color: ColorPair::new(ORANGE, BLACK),
+        },
+        Name("Live Grenade".to_string()),
+        Description("Ticking time-bomg, counting down to an explosion.".to_string()),
+        Health { current: 1, max: 1 },
+        Targetable {},
+        Position::with_pt(pos, layer),
+        SetDecoration {},
+        CanBeActivated{},
+    ));
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(e, TimedEvent { timer: 3 });
+    commands.flush(ecs);
+}

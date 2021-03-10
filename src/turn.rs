@@ -1,4 +1,4 @@
-use crate::{components::*, game, map::Map, render, text};
+use crate::{components::*, game::{self, timed_events}, map::Map, render, text};
 use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
 use legion::*;
@@ -118,6 +118,7 @@ impl GameState for State {
                 NewState::WrapUp
             },
             TurnState::WrapUpTurn => {
+                game::timed_events::manage_event_timers(&mut self.ecs, &self.map);
                 game::explosions::process_explosions(&mut self.ecs, &mut self.map);
                 game::dialog::spawn_dialog(&mut self.ecs);
                 NewState::Wait
