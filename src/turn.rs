@@ -1,6 +1,6 @@
 use crate::{
     components::*,
-    game::{self, timed_events},
+    game,
     map::Map,
     render, text,
 };
