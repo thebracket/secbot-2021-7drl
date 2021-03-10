@@ -1,8 +1,8 @@
 use super::{
-    all_wall, colonists::spawn_first_colonist, edge_filler, spawn_face_eater, spawn_random_colonist,
+    all_wall, colonists::*, edge_filler, monsters::*,
 };
 use crate::{
-    components::{Description, Door, Glyph, Position, TileTrigger},
+    components::*,
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
 };
 use bracket_lib::prelude::*;
@@ -24,7 +24,7 @@ pub fn build_mine_top(ecs: &mut World) -> Layer {
                 layer.tiles[idx] = Tile::floor();
             }
 
-            if y == center_pt.y || y == center_pt.y + 1 || y == center_pt.y - 1 {
+            if x == center_pt.x || x == center_pt.x + 1 || x == center_pt.x - 1 {
                 layer.tiles[idx] = Tile::floor();
             }
         }
@@ -66,13 +66,30 @@ pub fn build_mine_top(ecs: &mut World) -> Layer {
     });
 
     edge_filler(&mut layer);
-    std::mem::drop(rng);
 
     super::smooth_walls(&mut layer);
 
-    rooms.iter().for_each(|r| {
-        spawn_random_colonist(ecs, r.center(), 1);
-    });
+    // Start by building the melee that greets your arrival
+    for x in center_pt.x - 6 ..= center_pt.x+6 {
+        if rng.range(0, 4) == 0 {
+            spawn_quill_worm(ecs, Point::new(x, center_pt.y - 10), 1);
+            spawn_quill_worm(ecs, Point::new(x, center_pt.y + 10), 1);
+        }
+        if rng.range(0, 3) == 0 {
+            spawn_face_eater(ecs, Point::new(x, center_pt.y - 9), 1);
+            spawn_face_eater(ecs, Point::new(x, center_pt.y + 9), 1);
+        }
+    }
+
+    // Spawn the defense squads
+    for x in center_pt.x - 1 ..= center_pt.x+1 {
+        spawn_marine_colonist(ecs, Point::new(x, center_pt.y - 5), 1, rng);
+        spawn_marine_colonist(ecs, Point::new(x, center_pt.y + 5), 1, rng);
+    }
+    spawn_marine_leader(ecs, Point::new(center_pt.x, center_pt.y - 2), 1);
+
+    // Room-based population
+    populate_rooms(&rooms, &mut layer, ecs, rng);
 
     layer
 }
@@ -117,4 +134,62 @@ fn apply_vertical_tunnel(map: &mut Layer, y1: i32, y2: i32, x: i32) {
             map.tiles[idx as usize] = Tile::floor();
         }
     }
+}
+
+fn populate_rooms(rooms: &Vec<Rect>, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    // Each room after that can be random. This is an initial, very boring spawn to get
+    // the colonist functionality going.
+    let mut room_types = Vec::new();
+    for i in 0..MAX_ROOM_TYPES {
+        room_types.push(i);
+    }
+    let stairs = map.find_down_stairs();
+    rooms.iter().for_each(|r| {
+        if !r.point_set().contains(&stairs) {
+            if !room_types.is_empty() {
+                let room_index = rng.random_slice_index(&room_types).unwrap();
+                let ri = room_types[room_index];
+                room_types.remove(room_index);
+                spawn_room(ri, r, map, ecs, rng);
+            } else {
+                if rng.range(0, 5) == 0 {
+                    spawn_random_colonist(ecs, r.center(), 0);
+                } else {
+                    spawn_face_eater(ecs, r.center(), 0);
+                }
+            }
+        }
+    });
+}
+
+fn get_random_point(points: &mut Vec<Point>, rng: &mut RandomNumberGenerator) -> Point {
+    let index = rng.random_slice_index(&points).unwrap();
+    let result = points[index];
+    points.remove(index);
+    result
+}
+
+const MAX_ROOM_TYPES: usize = 1;
+
+fn spawn_room(
+    rt: usize,
+    room: &Rect,
+    map: &mut Layer,
+    ecs: &mut World,
+    rng: &mut RandomNumberGenerator,
+) {
+    match rt {
+        0 => charnel_house(room, map, ecs, rng),
+        _ => {}
+    }
+}
+
+fn charnel_house(room: &Rect, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+    room.for_each(|pt| {
+        let idx = map.point2d_to_index(pt);
+        map.tiles[idx].color.fg = DARK_RED.into();
+        if rng.range(0, 10) == 0 {
+            spawn_dead_colonist(ecs, pt, 1);
+        }
+    });
 }

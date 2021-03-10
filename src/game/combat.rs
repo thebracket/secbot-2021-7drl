@@ -75,6 +75,10 @@ pub fn ranged_attack(
             projectile_path.push(*pt);
             if pos_map.contains(&pt) {
                 power -= hit_tile_contents(ecs, *pt, current_layer, &mut commands, &mut splatter, power);
+                if power < 0 {
+                    power = 0;
+                    range += 200;
+                }
             }
             if let Some(bsplatter) = &mut splatter {
                 let idx = map.get_current().point2d_to_index(*pt);
@@ -89,6 +93,9 @@ pub fn ranged_attack(
             range += 1;
             if range > 5 {
                 power -= 1;
+                if power == 0 {
+                    power = 0;
+                }
             }
         });
 
@@ -103,6 +110,10 @@ pub fn ranged_attack(
         projectile_path.push(pt);
         if pos_map.contains(&pt) {
             power -= hit_tile_contents(ecs, pt, current_layer, &mut commands, &mut splatter, power);
+            if power < 0 {
+                power = 0;
+                range += 200;
+            }
         }
         if let Some(bsplatter) = &mut splatter {
             let idx = map.get_current().point2d_to_index(pt);
@@ -122,6 +133,10 @@ pub fn ranged_attack(
         range += 1;
         if range > 5 {
             power -= 1;
+            if power == 0 {
+                power = 0;
+                range += 100;
+            }
         }
     }
 
@@ -156,13 +171,17 @@ pub fn hit_tile_contents(
         .iter_mut(ecs)
         .filter(|(_, pos, _)| pos.layer == layer && pos.pt == pt)
         .for_each(|(entity, _, hp)| {
-            let damage = power + rng.roll_dice(1, 4) - 2;
+            power_loss += hp.current;
+            if power_loss < 0 {
+                power_loss = 0;
+            }
+            let damage = i32::max(0, power + rng.roll_dice(1, 4) - 2);
+            //println!("{}", damage);
             hp.current -= damage;
             if hp.current < 0 {
                 hp.current = 0;
                 dead_entities.push(*entity);
             }
-            power_loss += hp.current;
         });
 
     dead_entities.iter().for_each(|e| {

@@ -4,11 +4,11 @@ use lazy_static::*;
 use legion::{systems::CommandBuffer, *};
 use std::sync::Mutex;
 
-fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
+fn build_base_colonist(ecs: &mut World, location: Point, layer: u32, weapon: Option<i32>) -> Entity {
     let name_lock = NAMES.lock();
     let name = name_lock.unwrap().random_human_name();
     let entity = ecs.push((
-        Colonist { path: None },
+        Colonist { path: None, weapon },
         Position::with_pt(location, layer),
         Glyph {
             glyph: to_cp437('☺'),
@@ -39,7 +39,7 @@ fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
 
 pub fn spawn_random_colonist(ecs: &mut World, location: Point, layer: u32) {
     // Using this pattern because Legion has a limit to how many components it takes in a push
-    let entity = build_base_colonist(ecs, location, layer);
+    let entity = build_base_colonist(ecs, location, layer, None);
     let mut commands = CommandBuffer::new(ecs);
     commands.add_component(
         entity,
@@ -51,7 +51,7 @@ pub fn spawn_random_colonist(ecs: &mut World, location: Point, layer: u32) {
 }
 
 pub fn spawn_first_colonist(ecs: &mut World, location: Point, layer: u32) {
-    let entity = build_base_colonist(ecs, location, layer);
+    let entity = build_base_colonist(ecs, location, layer, None);
     let mut commands = CommandBuffer::new(ecs);
     commands.add_component(
         entity,
@@ -69,7 +69,7 @@ pub fn spawn_first_colonist(ecs: &mut World, location: Point, layer: u32) {
 }
 
 pub fn spawn_napping_colonist(ecs: &mut World, location: Point, layer: u32) {
-    let entity = build_base_colonist(ecs, location, layer);
+    let entity = build_base_colonist(ecs, location, layer, None);
     let mut commands = CommandBuffer::new(ecs);
     commands.add_component(
         entity,
@@ -85,7 +85,7 @@ pub fn spawn_napping_colonist(ecs: &mut World, location: Point, layer: u32) {
 }
 
 pub fn spawn_hiding_colonist(ecs: &mut World, location: Point, layer: u32) {
-    let entity = build_base_colonist(ecs, location, layer);
+    let entity = build_base_colonist(ecs, location, layer, None);
     let mut commands = CommandBuffer::new(ecs);
     commands.add_component(
         entity,
@@ -98,7 +98,7 @@ pub fn spawn_hiding_colonist(ecs: &mut World, location: Point, layer: u32) {
 }
 
 pub fn spawn_suicidal_colonist(ecs: &mut World, location: Point, layer: u32) {
-    let entity = build_base_colonist(ecs, location, layer);
+    let entity = build_base_colonist(ecs, location, layer, None);
     let mut commands = CommandBuffer::new(ecs);
     commands.add_component(
         entity,
@@ -119,11 +119,48 @@ pub fn spawn_suicidal_colonist(ecs: &mut World, location: Point, layer: u32) {
     super::props::spawn_live_grenade(ecs, location + Point::new(-1, -1), layer);
 }
 
+pub fn spawn_marine_colonist(ecs: &mut World, location: Point, layer: u32, rng: &mut RandomNumberGenerator) {
+    let entity = build_base_colonist(ecs, location, layer, Some(5));
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(
+        entity,
+        Dialog {
+            lines: match rng.range(0,5) {
+                0 => vec!["Better part of valor!".to_string()],
+                1 => vec![String::new(), "There's too many of them!".to_string()],
+                2 => vec![String::new(), String::new(), "Run for your lives!".to_string()],
+                3 => vec![String::new(), "Anyone bring some ammo?".to_string()],
+                _ => vec!["And so it ends...".to_string()],
+            }
+        },
+    );
+    commands.add_component(entity, Description("Colonist defense squad.".to_string()));
+    commands.flush(ecs);
+}
+
+pub fn spawn_marine_leader(ecs: &mut World, location: Point, layer: u32) {
+    let entity = build_base_colonist(ecs, location, layer, Some(5));
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(
+        entity,
+        Dialog {
+            lines: vec![
+                "Fire when you see the whites of ... whatever that is".to_string(),
+                "Hold the line!".to_string(),
+                "Death or Glory!".to_string(),
+                "Not looking so good for glory, now.".to_string()
+            ],
+        },
+    );
+    commands.add_component(entity, Description("Chief of Security.".to_string()));
+    commands.flush(ecs);
+}
+
 pub fn spawn_dead_colonist(ecs: &mut World, location: Point, layer: u32) {
     let name_lock = NAMES.lock();
     let name = name_lock.unwrap().random_human_name();
     ecs.push((
-        Colonist { path: None },
+        Colonist { path: None, weapon: None },
         Position::with_pt(location, layer),
         Glyph {
             glyph: to_cp437('☺'),

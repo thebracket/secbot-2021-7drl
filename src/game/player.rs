@@ -123,7 +123,7 @@ pub fn update_fov(new_state: &NewState, ecs: &mut World, map: &mut Map) {
         can_be_activated.for_each_mut(ecs, |(entity, _, pos)| {
             if pos.layer == map.current_layer as u32 && vt.contains(&pos.pt) {
                 commands.add_component(*entity, Found {});
-                if DistanceAlg::Pythagoras.distance2d(player_pos, pos.pt) < 6.0 {
+                if DistanceAlg::Pythagoras.distance2d(player_pos, pos.pt) < 10.0 {
                     commands.remove_component::<CanBeActivated>(*entity);
                     commands.add_component(*entity, Active {});
                 }
