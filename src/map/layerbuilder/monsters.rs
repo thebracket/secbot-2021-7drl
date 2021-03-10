@@ -38,7 +38,7 @@ pub fn spawn_quill_worm(ecs: &mut World, location: Point, layer: u32) {
         Name("Quill Worm".to_string()),
         Hostile {
             aggro: AggroMode::Player,
-            ranged: vec![ Ranged{ power: 1 } ],
+            ranged: vec![Ranged { power: 1 }],
             melee: Vec::new(),
         },
         Targetable {},

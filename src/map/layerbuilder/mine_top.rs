@@ -1,6 +1,4 @@
-use super::{
-    all_wall, colonists::*, edge_filler, monsters::*,
-};
+use super::{all_wall, colonists::*, edge_filler, monsters::*};
 use crate::{
     components::*,
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
@@ -70,7 +68,7 @@ pub fn build_mine_top(ecs: &mut World) -> Layer {
     super::smooth_walls(&mut layer);
 
     // Start by building the melee that greets your arrival
-    for x in center_pt.x - 6 ..= center_pt.x+6 {
+    for x in center_pt.x - 6..=center_pt.x + 6 {
         if rng.range(0, 4) == 0 {
             spawn_quill_worm(ecs, Point::new(x, center_pt.y - 10), 1);
             spawn_quill_worm(ecs, Point::new(x, center_pt.y + 10), 1);
@@ -82,7 +80,7 @@ pub fn build_mine_top(ecs: &mut World) -> Layer {
     }
 
     // Spawn the defense squads
-    for x in center_pt.x - 1 ..= center_pt.x+1 {
+    for x in center_pt.x - 1..=center_pt.x + 1 {
         spawn_marine_colonist(ecs, Point::new(x, center_pt.y - 5), 1, rng);
         spawn_marine_colonist(ecs, Point::new(x, center_pt.y + 5), 1, rng);
     }
@@ -136,7 +134,12 @@ fn apply_vertical_tunnel(map: &mut Layer, y1: i32, y2: i32, x: i32) {
     }
 }
 
-fn populate_rooms(rooms: &Vec<Rect>, map: &mut Layer, ecs: &mut World, rng: &mut RandomNumberGenerator) {
+fn populate_rooms(
+    rooms: &Vec<Rect>,
+    map: &mut Layer,
+    ecs: &mut World,
+    rng: &mut RandomNumberGenerator,
+) {
     // Each room after that can be random. This is an initial, very boring spawn to get
     // the colonist functionality going.
     let mut room_types = Vec::new();

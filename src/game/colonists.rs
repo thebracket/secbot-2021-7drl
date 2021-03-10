@@ -1,6 +1,9 @@
 use crate::components::*;
 use crate::map::Map;
-use bracket_lib::{prelude::{Algorithm2D, a_star_search, field_of_view_set}, random::RandomNumberGenerator};
+use bracket_lib::{
+    prelude::{a_star_search, field_of_view_set, Algorithm2D},
+    random::RandomNumberGenerator,
+};
 use legion::{systems::CommandBuffer, *};
 
 pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
@@ -8,13 +11,7 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
 
     let mut ranged_buffer = Vec::<(Entity, Entity, i32)>::new();
 
-    let mut colonists = <(
-        Entity,
-        &Colonist,
-        &ColonistStatus,
-        &Position,
-        &Active,
-    )>::query();
+    let mut colonists = <(Entity, &Colonist, &ColonistStatus, &Position, &Active)>::query();
     colonists
         .iter(ecs)
         .filter(|(_, _, status, _, _)| **status == ColonistStatus::Alive)
@@ -32,8 +29,20 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                     commands.remove_component::<Glyph>(*entity);
                     commands.remove_component::<Description>(*entity);
                 } else {
-                    commands.add_component(*entity, Position::with_pt(map.get_layer(pos.layer as usize).find_down_stairs(), pos.layer-1));
-                    commands.add_component(*entity, Colonist{ path: None, weapon: colonist.weapon });
+                    commands.add_component(
+                        *entity,
+                        Position::with_pt(
+                            map.get_layer(pos.layer as usize).find_down_stairs(),
+                            pos.layer - 1,
+                        ),
+                    );
+                    commands.add_component(
+                        *entity,
+                        Colonist {
+                            path: None,
+                            weapon: colonist.weapon,
+                        },
+                    );
                 }
             }
 
@@ -44,7 +53,9 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                     let visible_tiles = field_of_view_set(pos.pt, 8, map.get_current());
                     let targets = <(Entity, &Position, &Hostile, &Active, &Health)>::query()
                         .iter(ecs)
-                        .filter(|(_, pos, _, _, _)| pos.layer == map.current_layer as u32 && visible_tiles.contains(&pos.pt))
+                        .filter(|(_, pos, _, _, _)| {
+                            pos.layer == map.current_layer as u32 && visible_tiles.contains(&pos.pt)
+                        })
                         .map(|(e, _, _, _, _)| *e)
                         .collect::<Vec<Entity>>();
                     if !targets.is_empty() {
@@ -61,9 +72,15 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                 if let Some(path) = &colonist.path {
                     if !path.is_empty() {
                         let next_step = path[0];
-                        let mut  new_path = path.clone();
+                        let mut new_path = path.clone();
                         new_path.remove(0);
-                        commands.add_component(*entity, Colonist{ path: Some(new_path), weapon: colonist.weapon });
+                        commands.add_component(
+                            *entity,
+                            Colonist {
+                                path: Some(new_path),
+                                weapon: colonist.weapon,
+                            },
+                        );
                         let mut new_pos = pos.clone();
                         new_pos.pt = current_map.index_to_point2d(next_step);
                         commands.add_component(*entity, new_pos);
@@ -73,7 +90,13 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                     let end = current_map.point2d_to_index(current_map.colonist_exit);
                     let finder = a_star_search(start, end, current_map);
                     if finder.success {
-                        commands.add_component(*entity, Colonist{ path: Some(finder.steps), weapon: colonist.weapon });
+                        commands.add_component(
+                            *entity,
+                            Colonist {
+                                path: Some(finder.steps),
+                                weapon: colonist.weapon,
+                            },
+                        );
                     } else {
                         //println!("Failed to find the path");
                     }

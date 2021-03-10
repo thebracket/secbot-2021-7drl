@@ -74,7 +74,8 @@ pub fn ranged_attack(
         .for_each(|pt| {
             projectile_path.push(*pt);
             if pos_map.contains(&pt) {
-                power -= hit_tile_contents(ecs, *pt, current_layer, &mut commands, &mut splatter, power);
+                power -=
+                    hit_tile_contents(ecs, *pt, current_layer, &mut commands, &mut splatter, power);
                 if power < 0 {
                     power = 0;
                     range += 200;
@@ -160,7 +161,7 @@ pub fn hit_tile_contents(
     layer: u32,
     commands: &mut CommandBuffer,
     splatter: &mut Option<RGB>,
-    power: i32
+    power: i32,
 ) -> i32 {
     let mut rng_lock = crate::RNG.lock();
     let rng = rng_lock.as_mut().unwrap();

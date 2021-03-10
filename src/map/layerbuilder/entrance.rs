@@ -1,7 +1,4 @@
-use super::{
-    all_space, colonists::*, edge_filler, props::*, spawn_face_eater,
-    spawn_quill_worm
-};
+use super::{all_space, colonists::*, edge_filler, props::*, spawn_face_eater, spawn_quill_worm};
 use crate::{
     components::*,
     map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
