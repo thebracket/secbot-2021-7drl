@@ -1,9 +1,5 @@
-use super::{
-    all_wall, colonists::*, edge_filler, monsters::*, props::*,
-};
-use crate::{
-    map::{tile::TileType, Layer, Tile, HEIGHT, TILES, WIDTH},
-};
+use super::{all_wall, colonists::*, edge_filler, monsters::*, props::*};
+use crate::map::{tile::TileType, Layer, Tile, HEIGHT, TILES, WIDTH};
 use bracket_lib::prelude::*;
 use legion::*;
 
@@ -71,7 +67,7 @@ pub fn build_mine_middle(ecs: &mut World) -> Layer {
                 4 => spawn_face_eater(ecs, pt, 2),
                 5 => spawn_xeno_egg(ecs, pt, 2, rng.roll_dice(1, 6)),
                 6 => spawn_quill_worm(ecs, pt, 2),
-                7 => spawn_xenomorph(ecs,pt, 2),
+                7 => spawn_xenomorph(ecs, pt, 2),
                 _ => {}
             }
         }

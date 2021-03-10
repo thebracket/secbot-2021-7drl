@@ -1,9 +1,5 @@
-use super::{
-    edge_filler_lava,
-};
-use crate::{
-    map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH},
-};
+use super::edge_filler_lava;
+use crate::map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH};
 use bracket_lib::prelude::*;
 use legion::*;
 

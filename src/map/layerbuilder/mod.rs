@@ -5,7 +5,6 @@ mod mine_top;
 use super::{tile::TileType, Layer, Tile, HEIGHT, WIDTH};
 mod colonists;
 pub use caverns::build_caverns;
-use colonists::*;
 pub use entrance::build_entrance;
 pub use mine_middle::build_mine_middle;
 pub use mine_top::build_mine_top;
@@ -54,7 +53,7 @@ fn edge_filler_lava(map: &mut Layer) {
         let idx = map.point2d_to_index(Point::new(0, y));
         map.tiles[idx] = Tile::lava();
         let idx = map.point2d_to_index(Point::new(WIDTH - 1, y));
-            map.tiles[idx] = Tile::lava();
+        map.tiles[idx] = Tile::lava();
     }
     for x in 0..WIDTH {
         let idx = map.point2d_to_index(Point::new(x, 0));

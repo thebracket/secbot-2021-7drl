@@ -276,9 +276,7 @@ fn enter_the_xeno(room: &Rect, ecs: &mut World) {
 
 fn break_room(room: &Rect, ecs: &mut World, rng: &mut RandomNumberGenerator) {
     let mut open_space = Vec::new();
-    room.for_each(|p| {
-        open_space.push(p)
-    });
+    room.for_each(|p| open_space.push(p));
 
     // Spawn the colonist who greets you
     spawn_soda_machine(ecs, get_random_point(&mut open_space, rng), 1);
@@ -308,7 +306,7 @@ fn doctor_evil(room: &Rect, ecs: &mut World, map: &mut Layer) {
 
 fn volatile_storage(room: &Rect, ecs: &mut World, rng: &mut RandomNumberGenerator) {
     room.for_each(|pt| {
-        if rng.range(0,3) == 0 {
+        if rng.range(0, 3) == 0 {
             spawn_explosive_barrel(ecs, pt, 1);
         }
     });
