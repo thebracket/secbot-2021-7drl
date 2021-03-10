@@ -4,7 +4,6 @@ use bracket_lib::prelude::{a_star_search, Algorithm2D};
 use legion::{systems::CommandBuffer, *};
 
 pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
-    super::dialog::spawn_dialog(ecs);
     let mut commands = CommandBuffer::new(ecs);
 
     let mut colonists = <(

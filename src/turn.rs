@@ -8,6 +8,7 @@ pub enum TurnState {
     WaitingForInput,
     PlayerTurn,
     EnemyTurn,
+    WrapUpTurn,
     Modal { title: String, body: String },
     GameOverLeft,
     GameOverDecompression,
@@ -20,6 +21,7 @@ pub enum NewState {
     Wait,
     Player,
     Enemy,
+    WrapUp,
     LeftMap,
     ShotWindow,
     Dead,
@@ -113,7 +115,11 @@ impl GameState for State {
             TurnState::EnemyTurn => {
                 game::colonists_turn(&mut self.ecs, &mut self.map);
                 game::monsters_turn(&mut self.ecs, &mut self.map);
+                NewState::WrapUp
+            },
+            TurnState::WrapUpTurn => {
                 game::explosions::process_explosions(&mut self.ecs, &mut self.map);
+                game::dialog::spawn_dialog(&mut self.ecs);
                 NewState::Wait
             }
             TurnState::GameOverLeft => render::game_over_left(ctx),
@@ -124,6 +130,7 @@ impl GameState for State {
             NewState::NoChange => {}
             NewState::Wait => self.turn = TurnState::WaitingForInput,
             NewState::Enemy => self.turn = TurnState::EnemyTurn,
+            NewState::WrapUp => self.turn = TurnState::WrapUpTurn,
             NewState::LeftMap => self.turn = TurnState::GameOverLeft,
             NewState::Player => self.turn = TurnState::PlayerTurn,
             NewState::ShotWindow => self.turn = TurnState::GameOverDecompression,
