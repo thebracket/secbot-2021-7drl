@@ -124,15 +124,23 @@ impl Camera {
                 return;
             }
             let mut batch = DrawBatch::new();
-            batch.target(LAYER_CHR);
+            batch.target(LAYER_MAP);
 
             let screen = self.world_to_screen(pt);
-            safe_print_color(
-                &mut batch,
-                screen + Point::new(-1, 0),
-                "[+]",
-                ColorPair::new(RED, RED),
-            );
+            if (screen + Point::new(-1, 0)).x > 0 && (screen + Point::new(-1, 0)).x < 50 {
+                safe_print_color(
+                    &mut batch,
+                    screen + Point::new(-1, 0),
+                    "[",
+                    ColorPair::new(RED, BLACK),
+                );
+                safe_print_color(
+                    &mut batch,
+                    screen + Point::new(1, 0),
+                    "]",
+                    ColorPair::new(RED, BLACK),
+                );
+            }
 
             batch.submit(40_000).expect("Error batching map");
         }

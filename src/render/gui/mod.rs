@@ -8,11 +8,12 @@ pub use queries::*;
 pub mod colony_info;
 pub use colony_info::*;
 pub mod targeting;
-use crate::map::WIDTH;
 pub use targeting::*;
 
 pub fn safe_print_color<T: ToString>(batch: &mut DrawBatch, pos: Point, text: T, color: ColorPair) {
-    if pos.x > 0 && pos.y > 0 {
+    let len = text.to_string().len();
+    if pos.x > 0 && pos.y > 0 && len > 0 {
+        //println!("Batched text[{}] at {:?}", text.to_string(), pos);
         batch.print_color(pos, text, color);
     }
 }

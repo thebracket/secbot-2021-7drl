@@ -52,23 +52,15 @@ fn edge_filler(map: &mut Layer) {
 fn edge_filler_lava(map: &mut Layer) {
     for y in 0..HEIGHT {
         let idx = map.point2d_to_index(Point::new(0, y));
-        if map.tiles[idx].tile_type == TileType::Floor {
-            map.tiles[idx] = Tile::lava();
-        }
+        map.tiles[idx] = Tile::lava();
         let idx = map.point2d_to_index(Point::new(WIDTH - 1, y));
-        if map.tiles[idx].tile_type == TileType::Floor {
             map.tiles[idx] = Tile::lava();
-        }
     }
     for x in 0..WIDTH {
         let idx = map.point2d_to_index(Point::new(x, 0));
-        if map.tiles[idx].tile_type == TileType::Floor {
-            map.tiles[idx] = Tile::lava();
-        }
+        map.tiles[idx] = Tile::lava();
         let idx = map.point2d_to_index(Point::new(x, HEIGHT - 1));
-        if map.tiles[idx].tile_type == TileType::Floor {
-            map.tiles[idx] = Tile::lava();
-        }
+        map.tiles[idx] = Tile::lava();
     }
 }
 

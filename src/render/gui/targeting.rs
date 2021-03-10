@@ -6,15 +6,17 @@ use bracket_lib::prelude::*;
 pub fn render_targeting(batch: &mut DrawBatch, target: &TargetInfo) {
     batch.target(LAYER_TEXT); // Draw on the text layer
     if let Some(_t) = &target.target {
-        safe_print_color(
-            batch,
-            Point::new(82, 15),
-            format!(
-                "Target: {}",
-                target.name.as_ref().unwrap_or(&"n/a".to_string())
-            ),
-            ColorPair::new(target.color.unwrap(), BLACK),
-        );
+        if !(target.name.is_none() || target.color.is_none()) {
+            safe_print_color(
+                batch,
+                Point::new(82, 15),
+                format!(
+                    "Target: {}",
+                    target.name.as_ref().unwrap_or(&"n/a".to_string())
+                ),
+                ColorPair::new(target.color.unwrap(), BLACK),
+            );
+        }
         safe_print_color(
             batch,
             Point::new(82, 16),
