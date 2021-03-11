@@ -25,7 +25,7 @@ pub fn game_over_left(ctx: &mut BTerm, ecs: &World) -> NewState {
 
     batch.print_color(Point::new(50, 7), format!("SecBot survived for {} turns.", stats.turns_elapsed), bw);
     batch.print_color(Point::new(50, 8), format!("A total of {} things were killed/destroyed.", stats.total_dead), bw);
-    batch.print_color(Point::new(50, 9), format!("{} props were smashed.", stats.total_dead), bw);
+    batch.print_color(Point::new(50, 9), format!("{} props were smashed.", stats.total_props_smashed), bw);
     batch.print_color(Point::new(50, 10), format!("{} monsters died.", stats.total_dead), bw);
 
     batch.print_color(Point::new(50, 11), format!("Caused ${} in property damage.", status.property_damage), bw);
