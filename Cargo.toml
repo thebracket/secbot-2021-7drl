@@ -5,7 +5,7 @@ authors = ["Herbert Wolverson <herberticus@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-bracket-lib = { path = "C:/Users/herbe/Documents/LearnRust/rltk_rs" }
+bracket-lib = { git = "https://github.com/amethyst/bracket-lib.git" }
 legion = { version = "0.3.1", default-features = false, features = ["wasm-bindgen"] }
 lazy_static = "1.4.0"
 Inflector = "0.11.4"
