@@ -192,7 +192,7 @@ impl Camera {
                             }
                         }
                         if clicked {
-                            println!("Set new target");
+                            //println!("Set new target");
                             new_target = Some(*entity);
                         }
                     }
