@@ -228,6 +228,38 @@ pub fn spawn_dead_xeno(ecs: &mut World, location: Point, layer: u32) {
     ));
 }
 
+pub fn spawn_colony_secbot(ecs: &mut World, location: Point, layer: u32) {
+    let e = ecs.push((
+        Friendly {},
+        Position::with_pt(location, layer),
+        Glyph {
+            glyph: to_cp437('@'),
+            color: ColorPair::new(GREEN, BLACK),
+        },
+        Description("Security bot model 2, charged with defending the outpost.".to_string()),
+        Name("Colony SecBot".to_string()),
+        Targetable {},
+        CanBeActivated {},
+        Dialog {
+            lines: vec![
+                "Follow me - To The Queen!".to_string(),
+                "I know the way.".to_string(),
+                "Cover me.".to_string(),
+                "LEEROY JENKINS!".to_string(),
+            ],
+        },
+    ));
+    let mut commands = CommandBuffer::new(ecs);
+    commands.add_component(
+        e,
+        Health {
+            current: 10,
+            max: 10,
+        },
+    );
+    commands.flush(ecs);
+}
+
 /* Name Generation */
 
 const FIRST_NAMES_1: &str = include_str!("../../../resources/first_names_female.txt");

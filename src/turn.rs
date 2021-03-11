@@ -132,6 +132,7 @@ impl GameState for State {
                 // TODO: Extra turns for speed boosts could go here
             }
             TurnState::EnemyTurn => {
+                game::friendly_turn(&mut self.ecs, &mut self.map);
                 game::colonists_turn(&mut self.ecs, &mut self.map);
                 game::monsters_turn(&mut self.ecs, &mut self.map);
                 NewState::WrapUp

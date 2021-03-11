@@ -1,10 +1,4 @@
-pub enum AggroMode {
-    _Nearest,
-    Player,
-}
-
 pub struct Hostile {
-    pub aggro: AggroMode,
     pub melee: Vec<Melee>,
     pub ranged: Vec<Ranged>,
 }

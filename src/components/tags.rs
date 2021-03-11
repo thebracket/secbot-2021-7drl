@@ -11,3 +11,5 @@ pub struct CanBeActivated;
 pub struct Found;
 
 pub struct SetDecoration;
+
+pub struct Friendly;

@@ -7,7 +7,6 @@ pub fn spawn_face_eater(ecs: &mut World, location: Point, layer: u32) {
     let entity = ecs.push((
         Name("Face Eater".to_string()),
         Hostile {
-            aggro: AggroMode::Player,
             ranged: Vec::new(),
             melee: vec![Melee { damage: 1 }],
         },
@@ -37,7 +36,6 @@ pub fn spawn_quill_worm(ecs: &mut World, location: Point, layer: u32) {
     let entity = ecs.push((
         Name("Quill Worm".to_string()),
         Hostile {
-            aggro: AggroMode::Player,
             ranged: vec![Ranged { power: 1 }],
             melee: Vec::new(),
         },
@@ -67,7 +65,6 @@ pub fn spawn_xenomorph(ecs: &mut World, location: Point, layer: u32) {
     let entity = ecs.push((
         Name("Xenomorph".to_string()),
         Hostile {
-            aggro: AggroMode::Player,
             ranged: vec![Ranged { power: 2 }],
             melee: Vec::new(),
         },
@@ -100,8 +97,7 @@ pub fn spawn_queen(ecs: &mut World, location: Point, layer: u32) {
     let entity = ecs.push((
         Name("Alien Queen".to_string()),
         Hostile {
-            aggro: AggroMode::Player,
-            ranged: vec![Ranged { power: 2 }],
+            ranged: vec![Ranged { power: 5 }],
             melee: Vec::new(),
         },
         Targetable {},
@@ -112,8 +108,8 @@ pub fn spawn_queen(ecs: &mut World, location: Point, layer: u32) {
         },
         Description("A strangely beautiful giant alien".to_string()),
         Health {
-            max: 30,
-            current: 30,
+            max: 50,
+            current: 50,
         },
         Blood(DARK_GREEN.into()),
     ));

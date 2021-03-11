@@ -8,6 +8,12 @@ pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
         .iter(ecs)
         .map(|(e, _, _, pos)| (*pos, *e))
         .collect();
+    let targets2: Vec<(Position, Entity)> = <(Entity, &Friendly, &Health, &Position)>::query()
+        .iter(ecs)
+        .map(|(e, _, _, pos)| (*pos, *e))
+        .collect();
+    targets2.iter().for_each(|t| targets.push(*t));
+
     let ppos = <(Entity, &Player, &Position)>::query()
         .iter(ecs)
         .map(|(e, _, pos)| (*pos, *e))
@@ -59,25 +65,18 @@ pub fn monsters_turn(ecs: &mut World, map: &mut Map) {
             // Movement
             if !attacked {
                 // What's my aggro target?
-                match hostile.aggro {
-                    AggroMode::Player => {
-                        if ppos.0.layer != pos.layer {
-                            // TODO: Path a staircase! For now, sit there.
-                        } else {
-                            // Path at the player
-                            let start = map.get_current().point2d_to_index(pos.pt);
-                            let end = map.get_current().point2d_to_index(ppos.0.pt);
-                            let path = a_star_search(start, end, map.get_layer(pos.layer as usize));
-                            if path.success && path.steps.len() > 2 {
-                                let next = map.get_current().index_to_point2d(path.steps[1]);
-                                commands.add_component(*entity, Position::with_pt(next, pos.layer));
-                            }
-                        }
+                if ppos.0.layer != pos.layer {
+                    // TODO: Path a staircase! For now, sit there.
+                } else {
+                    // Path at the player
+                    let start = map.get_current().point2d_to_index(pos.pt);
+                    let end = map.get_current().point2d_to_index(ppos.0.pt);
+                    let path = a_star_search(start, end, map.get_layer(pos.layer as usize));
+                    if path.success && path.steps.len() > 2 {
+                        let next = map.get_current().index_to_point2d(path.steps[1]);
+                        commands.add_component(*entity, Position::with_pt(next, pos.layer));
                     }
-                    AggroMode::_Nearest => {}
                 }
-                // If its the player, follow them
-                // If its nearest, look for something to kill
             }
         });
     commands.flush(ecs);

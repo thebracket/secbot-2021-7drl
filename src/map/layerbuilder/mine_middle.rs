@@ -48,7 +48,13 @@ pub fn build_mine_middle(ecs: &mut World) -> Layer {
 
     // Cull unreachable areas
     let starting_points = vec![down_idx];
-    let dm = DijkstraMap::new(WIDTH, HEIGHT, &starting_points, &layer, (WIDTH*HEIGHT) as f32);
+    let dm = DijkstraMap::new(
+        WIDTH,
+        HEIGHT,
+        &starting_points,
+        &layer,
+        (WIDTH * HEIGHT) as f32,
+    );
     dm.map.iter().enumerate().for_each(|(i, distance)| {
         if *distance == std::f32::MAX && layer.tiles[i].tile_type == TileType::Floor {
             layer.tiles[i] = Tile::wall();
