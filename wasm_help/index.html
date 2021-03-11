@@ -4,16 +4,36 @@
   </head>
   <body style="background-color: black;">
     <h1 style="color: white; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">SecBot (2021 7DRL) - by Herbert Wolverson</h1>
+    <button onclick="document.getElementById('help').style.display = 'block'">Instructions</button> <br />
     <canvas id="canvas" width="896" height="496"></canvas>
-    <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">You can mouse over tiles to see what's there. Move with arrow keys or WASD.</p>
-    <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">T changes target. F fires at the current target (if there is one).</p>
-    <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">Shooting through windows is a bad idea.</p>
-    <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">&lt; and &gt; go up and down levels if you are on an appropriate staircase.</and>></p>
     <script src="./secbot.js"></script>
     <script>
       window.addEventListener("load", async () => {
         await wasm_bindgen("./secbot_bg.wasm");
       });
     </script>
+
+    <div id="help" style="position: absolute; left: 10px; right: 10px; bottom: 10px; top: 10px; display: none; z-index: 100; border: 1px cyan; background: #333377;">
+      <button onclick="document.getElementById('help').style.display = 'none'">Close Help</button>
+      <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">
+          SecBot is my 7-day Roguelike entry for 2021. Written in 7 days, using only techniques from my book <a style="color: white;" href="https://hands-on-rust.com/">Hands-On Rust</a>.
+      </p>
+      <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">
+        SecBot is the remains of a dead human, stuffed full of cybernetics, and forced into service with <em>Bracket Corp</em>.
+        SecBot is a pleasant fellow, and doesn't really want to kill everyone - but it's up to you if you want to honor that desire.
+      </p>
+      <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">
+        Move around with either the cursor keys or WASD. There is no diagonal movement.
+      </p>
+      <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">
+        You can mouse-over anything to see its description.
+      </p>
+      <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">
+        You can cycle between available targets by pressing <strong>T</strong>.
+      </p>
+      <p style="color: #55ff55; font-family: 'Courier New', Courier, monospace; font-size: 10pt;">
+        Fire your weapon by pressing <strong>F</strong>.
+      </p>
+  </div>
   </body>
 </html>
