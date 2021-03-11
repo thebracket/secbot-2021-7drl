@@ -204,9 +204,9 @@ impl Camera {
             let height = lines.len() + 1;
             let width = lines.iter().map(|s| s.1.len()).max().unwrap() + 2;
             let tip_x = if map_pos.x < WIDTH as i32 / 2 {
-                (mouse_x * 2) + 1
+                i32::min((mouse_x * 2) + 1, 111)
             } else {
-                (mouse_x * 2) - (width as i32 + 1)
+                i32::max(0, (mouse_x * 2) - (width as i32 + 1))
             };
             let tip_y = if map_pos.y > HEIGHT as i32 / 2 {
                 mouse_y - height as i32
