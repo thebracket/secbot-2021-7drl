@@ -4,6 +4,11 @@ use legion::*;
 
 pub fn spawn_dialog(ecs: &mut World) {
     let mut commands = CommandBuffer::new(ecs);
+    <(Entity, &Speech)>::query()
+        .for_each(ecs, |(e, _)| {
+            commands.remove(*e);
+        }
+    );
     <(&mut Dialog, &Position, &Active)>::query()
         .iter_mut(ecs)
         .for_each(|(dialog, pos, _)| {
