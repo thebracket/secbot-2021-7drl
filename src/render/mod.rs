@@ -5,6 +5,8 @@ mod gui;
 pub mod modal;
 pub use modal::*;
 mod camera;
+pub mod gameover;
+pub use gameover::*;
 
 pub fn clear_all_consoles(ctx: &mut BTerm) {
     for layer in 0..5 {
@@ -32,45 +34,4 @@ pub fn render_gui(ecs: &mut World, map: &Map, mouse_x: i32, mouse_y: i32) {
     camera.render_projectiles(ecs, map);
     camera.render_targeting(&status.target);
     camera.render_tooltips(ecs, map, mouse_x, mouse_y);
-}
-
-pub fn game_over_left(ctx: &mut BTerm) -> NewState {
-    ctx.cls();
-    ctx.print(
-        1,
-        1,
-        "Game over. You left the map. Haven't written the stuff to show here.",
-    );
-    ctx.print(
-        1,
-        2,
-        "You need to refresh or reload. Haven't done restarting yet.",
-    );
-    NewState::NoChange
-}
-
-pub fn game_over_decompression(ctx: &mut BTerm) -> NewState {
-    ctx.cls();
-    ctx.print(
-        1,
-        1,
-        "Game over. Shooting a window in a pressurized atmosphere turned out to be a bad idea.",
-    );
-    ctx.print(
-        1,
-        2,
-        "You need to refresh or reload. Haven't done restarting yet.",
-    );
-    NewState::NoChange
-}
-
-pub fn game_over_dead(ctx: &mut BTerm) -> NewState {
-    ctx.cls();
-    ctx.print(1, 1, "Game over. You ran out of hit points.");
-    ctx.print(
-        1,
-        2,
-        "You need to refresh or reload. Haven't done restarting yet.",
-    );
-    NewState::NoChange
 }

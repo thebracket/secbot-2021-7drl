@@ -1,13 +1,13 @@
-use crate::{
-    components::*,
-    game,
-    map::Map,
-    render, text,
-};
+use crate::{components::*, game, map::Map, render, text};
 use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
 use legion::*;
 use std::collections::HashSet;
+
+pub enum GameOverType {
+    Dead,
+    Left,
+}
 
 pub enum TurnState {
     WaitingForInput,
@@ -15,9 +15,7 @@ pub enum TurnState {
     EnemyTurn,
     WrapUpTurn,
     Modal { title: String, body: String },
-    GameOverLeft,
-    GameOverDecompression,
-    GameOverDead,
+    GameOver { reason: GameOverType },
 }
 
 #[derive(PartialEq)]
@@ -28,8 +26,8 @@ pub enum NewState {
     Enemy,
     WrapUp,
     LeftMap,
-    ShotWindow,
     Dead,
+    Restart,
 }
 
 pub struct State {
@@ -40,6 +38,7 @@ pub struct State {
 
 impl State {
     pub fn new() -> Self {
+        crate::stats::reset();
         let mut ecs = World::default();
         let map = Map::new(&mut ecs);
         let mut state = Self {
@@ -52,6 +51,21 @@ impl State {
         };
         state.new_game();
         state
+    }
+
+    fn restart_game(&mut self) -> TurnState {
+        crate::stats::reset();
+        let mut ecs = World::default();
+        let map = Map::new(&mut ecs);
+        self.ecs = ecs;
+        self.map = map;
+        self.new_game();
+
+        // Restart with the modal
+        TurnState::Modal {
+            title: "SecBot Has Landed".to_string(),
+            body: text::INTRO.to_string(),
+        }
     }
 
     fn new_game(&mut self) {
@@ -126,21 +140,32 @@ impl GameState for State {
                 game::timed_events::manage_event_timers(&mut self.ecs, &self.map);
                 game::explosions::process_explosions(&mut self.ecs, &mut self.map);
                 game::dialog::spawn_dialog(&mut self.ecs);
-                NewState::Wait
+                game::turn_check::end_of_turn(&mut self.ecs)
             }
-            TurnState::GameOverLeft => render::game_over_left(ctx),
-            TurnState::GameOverDecompression => render::game_over_decompression(ctx),
-            TurnState::GameOverDead => render::game_over_dead(ctx),
+            TurnState::GameOver { reason } => match reason {
+                GameOverType::Dead => render::game_over_dead(ctx, &self.ecs),
+                GameOverType::Left => render::game_over_left(ctx, &self.ecs),
+            },
         };
         match new_state {
             NewState::NoChange => {}
             NewState::Wait => self.turn = TurnState::WaitingForInput,
             NewState::Enemy => self.turn = TurnState::EnemyTurn,
             NewState::WrapUp => self.turn = TurnState::WrapUpTurn,
-            NewState::LeftMap => self.turn = TurnState::GameOverLeft,
             NewState::Player => self.turn = TurnState::PlayerTurn,
-            NewState::ShotWindow => self.turn = TurnState::GameOverDecompression,
-            NewState::Dead => self.turn = TurnState::GameOverDead,
+            NewState::LeftMap => {
+                self.turn = TurnState::GameOver {
+                    reason: GameOverType::Left,
+                }
+            }
+            NewState::Dead => {
+                self.turn = TurnState::GameOver {
+                    reason: GameOverType::Dead,
+                }
+            }
+            NewState::Restart => {
+                self.turn = self.restart_game();
+            }
         }
     }
 }

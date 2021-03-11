@@ -105,6 +105,7 @@ impl Camera {
                         &desc.0,
                         ColorPair::new(GREEN, BLACK),
                     );
+                    crate::stats::record_speech(&desc.0);
 
                     speech.lifetime -= 1;
                     if speech.lifetime == 0 {

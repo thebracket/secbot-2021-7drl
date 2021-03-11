@@ -262,6 +262,7 @@ fn kill_things(
     splatter: &mut Option<RGB>,
 ) {
     dead_entities.iter().for_each(|entity| {
+        crate::stats::record_death();
         let mut was_decor = false;
         let mut was_player = false;
         if let Ok(mut er) = ecs.entry_mut(*entity) {
@@ -289,6 +290,9 @@ fn kill_things(
                     }
                 }
             }
+            if er.get_component::<Hostile>().is_ok() {
+                crate::stats::record_monster_death();
+            }
             if let Ok(b) = er.get_component::<Blood>() {
                 *splatter = Some(b.0);
             }
@@ -309,6 +313,7 @@ fn kill_things(
             commands.remove_component::<TimedEvent>(*entity);
         }
         if was_decor {
+            crate::stats::record_prop_death();
             commands.remove_component::<Glyph>(*entity);
             commands.remove_component::<Description>(*entity);
         }

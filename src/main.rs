@@ -11,6 +11,7 @@ mod text;
 mod turn;
 pub use turn::NewState;
 use turn::State;
+pub mod stats;
 
 pub const LAYER_MAP: usize = 0;
 pub const LAYER_DECOR: usize = 1;
@@ -20,10 +21,14 @@ pub const LAYER_TEXT: usize = 4;
 
 embedded_resource!(TILE_FONT, "../resources/font.png");
 embedded_resource!(VGA_FONT, "../resources/vga.png");
+embedded_resource!(DEAD_SKULL, "../resources/skull.xp");
+embedded_resource!(ESCAPED, "../resources/takeoff.xp");
 
 fn main() -> BError {
     link_resource!(TILE_FONT, "resources/font.png");
     link_resource!(VGA_FONT, "resources/vga.png");
+    link_resource!(DEAD_SKULL, "resources/skull.xp");
+    link_resource!(ESCAPED, "resources/takeoff.xp");
 
     let context = BTermBuilder::new()
         .with_title("Secbot - 2021 7DRL") // Set Window Title
