@@ -28,6 +28,7 @@ pub enum NewState {
     LeftMap,
     Dead,
     Restart,
+    Help,
 }
 
 pub struct State {
@@ -166,6 +167,12 @@ impl GameState for State {
             }
             NewState::Restart => {
                 self.turn = self.restart_game();
+            }
+            NewState::Help => {
+                self.turn = TurnState::Modal{
+                    title: "Commands".to_string(),
+                    body: "WASD or Cursor Keys to move. T to cycle target. F to fire your gun at them. Mouse over entities for a description, click them to set them as the current target.".to_string()
+                };
             }
         }
     }

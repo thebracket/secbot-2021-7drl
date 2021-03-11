@@ -19,6 +19,7 @@ pub fn player_turn(ctx: &mut BTerm, ecs: &mut World, map: &mut Map) -> NewState 
             VirtualKeyCode::Period => go_down(ecs, map),
             VirtualKeyCode::Space => NewState::Player, // Wait action
             VirtualKeyCode::F => player_open_fire_at_target(ecs, map),
+            VirtualKeyCode::Slash => NewState::Help,
             _ => NewState::Wait,
         }
     } else {
