@@ -63,7 +63,6 @@ impl PlayerStatus {
     }
 
     fn colony_calculator(ecs: &World, current_layer: u32) -> ColonyInfo {
-        let mut query = <(Entity, &Colonist, &Position, &ColonistStatus)>::query();
         let mut total_colonists = 0;
         let mut colonists_on_layer = 0;
         let mut located_alive = 0;
@@ -71,12 +70,13 @@ impl PlayerStatus {
         let mut died_in_rescue = 0;
         let mut rescued = 0;
 
-        query.for_each(ecs, |(entity, _, pos, status)| {
+        <(Entity, &Colonist, &Position, &ColonistStatus)>::query()
+        .for_each(ecs, |(entity, _, pos, status)| {
             total_colonists += 1;
             if pos.layer == current_layer as u32
                 && *status != ColonistStatus::Rescued
                 && *status != ColonistStatus::DiedAfterStart
-                &&*status != ColonistStatus::StartedDead
+                && *status != ColonistStatus::StartedDead
             {
                 colonists_on_layer += 1;
             }
