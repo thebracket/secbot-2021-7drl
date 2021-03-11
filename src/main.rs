@@ -36,7 +36,7 @@ fn main() -> BError {
         .with_title("Secbot - 2021 7DRL") // Set Window Title
         .with_tile_dimensions(16, 16) // Calculate window size with this...
         .with_dimensions(56, 31) // ..Assuming a console of this size
-        .with_fps_cap(30.0) // Limit game speed
+        .with_fps_cap(60.0) // Limit game speed
         .with_font("font.png", 16, 16) // Load big font
         .with_font("vga.png", 8, 16) // Load easy-to-read font
         .with_simple_console(56, 31, "font.png") // Console 0: Base map

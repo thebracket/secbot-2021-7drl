@@ -76,8 +76,8 @@ pub fn ranged_attack(
             if pos_map.contains(&pt) {
                 power -=
                     hit_tile_contents(ecs, *pt, current_layer, &mut commands, &mut splatter, power);
-                if power < 0 {
-                    power = 0;
+                if power < 1 {
+                    power = 1;
                     range += 200;
                 }
             }
@@ -94,8 +94,8 @@ pub fn ranged_attack(
             range += 1;
             if range > 5 {
                 power -= 1;
-                if power == 0 {
-                    power = 0;
+                if power < 1 {
+                    power = 1;
                 }
             }
         });
@@ -111,8 +111,8 @@ pub fn ranged_attack(
         projectile_path.push(pt);
         if pos_map.contains(&pt) {
             power -= hit_tile_contents(ecs, pt, current_layer, &mut commands, &mut splatter, power);
-            if power < 0 {
-                power = 0;
+            if power < 1 {
+                power = 1;
                 range += 200;
             }
         }
@@ -134,8 +134,8 @@ pub fn ranged_attack(
         range += 1;
         if range > 5 {
             power -= 1;
-            if power == 0 {
-                power = 0;
+            if power < 1 {
+                power = 1;
                 range += 100;
             }
         }
