@@ -16,7 +16,7 @@ pub fn clear_all_consoles(ctx: &mut BTerm) {
     ctx.set_active_console(0);
 }
 
-pub fn render_gui(ecs: &mut World, map: &Map, mouse_x: i32, mouse_y: i32) {
+pub fn render_gui(ecs: &mut World, map: &Map, mouse_x: i32, mouse_y: i32, clicked: bool) {
     let status = gui::PlayerStatus::query(ecs, map.current_layer);
 
     let camera = camera::Camera::new(ecs);
@@ -33,5 +33,5 @@ pub fn render_gui(ecs: &mut World, map: &Map, mouse_x: i32, mouse_y: i32) {
     camera.render_speech(ecs, map);
     camera.render_projectiles(ecs, map);
     camera.render_targeting(&status.target);
-    camera.render_tooltips(ecs, map, mouse_x, mouse_y);
+    camera.render_tooltips(ecs, map, mouse_x, mouse_y, clicked);
 }

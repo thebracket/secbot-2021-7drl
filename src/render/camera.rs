@@ -170,10 +170,12 @@ impl Camera {
         batch.submit(30_000).expect("Error batching map");
     }
 
-    pub fn render_tooltips(&self, ecs: &World, map: &Map, mouse_x: i32, mouse_y: i32) {
+    pub fn render_tooltips(&self, ecs: &mut World, map: &Map, mouse_x: i32, mouse_y: i32, clicked: bool) {
         let mut batch = DrawBatch::new();
         batch.target(LAYER_TEXT);
         let map_pos = self.screen_to_world(mouse_x, mouse_y);
+
+        let mut new_target = None;
 
         let mut lines = Vec::new();
         <(Entity, &Position, &Description, &Name)>::query().for_each(
@@ -188,6 +190,10 @@ impl Camera {
                             if let Ok(hp) = er.get_component::<Health>() {
                                 lines.push((GRAY, format!("{}/{} hp", hp.current, hp.max)));
                             }
+                        }
+                        if clicked {
+                            println!("Set new target");
+                            new_target = Some(*entity);
                         }
                     }
                 }
@@ -228,6 +234,16 @@ impl Camera {
             });
         }
 
-        batch.submit(100_000).expect("Error batching map");
+        batch.submit(100_000).expect("Error batching tooltips");
+
+        if let Some(target) = new_target {
+            <(&Player, &mut Targeting)>::query().for_each_mut(ecs, |(_, t)| {
+                let tf = t.targets.iter().enumerate().find(|(_i, e)| e.0 == target);
+                if let Some((idx, _)) = tf {
+                    t.index = idx;
+                    t.current_target = Some(target);
+                }
+            });
+        }
     }
 }

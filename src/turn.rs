@@ -111,7 +111,7 @@ impl GameState for State {
         render::clear_all_consoles(ctx);
         ctx.set_active_console(0);
         let (mouse_x, mouse_y) = ctx.mouse_pos();
-        render::render_gui(&mut self.ecs, &self.map, mouse_x, mouse_y);
+        render::render_gui(&mut self.ecs, &self.map, mouse_x, mouse_y, ctx.left_click);
         render_draw_buffer(ctx).expect("Render error");
 
         let new_state = match &self.turn {
