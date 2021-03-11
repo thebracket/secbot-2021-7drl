@@ -209,9 +209,9 @@ fn med_bay(room: &Rect, ecs: &mut World, map: &mut Layer, rng: &mut RandomNumber
     let c = room.center();
     let idx = map.point2d_to_index(c);
     map.tiles[idx] = Tile::healing();
-    spawn_marine_colonist(ecs, c + Point::new(1, 0), 0, rng);
+    spawn_marine_colonist(ecs, c + Point::new(1, 0), 1, rng);
     ecs.push((
-        Position::with_pt(c, 0),
+        Position::with_pt(c, 1),
         Description("This auto-doc loves healing SecBots!".to_string()),
         TileTrigger(crate::components::TriggerType::Healing),
     ));
@@ -285,7 +285,7 @@ fn break_room(room: &Rect, ecs: &mut World, rng: &mut RandomNumberGenerator) {
     for _ in 0..10 {
         let point = get_random_point(&mut open_space, rng);
         if open_space.contains(&(point + Point::new(1, 1))) {
-            spawn_chair(ecs, point, 0);
+            spawn_chair(ecs, point, 1);
             spawn_table(ecs, point + Point::new(1, 0), 1);
         }
     }
@@ -298,7 +298,7 @@ fn doctor_evil(room: &Rect, ecs: &mut World, map: &mut Layer) {
     spawn_dead_doctor(ecs, c + Point::new(-1, 0), 1);
     spawn_dead_xeno(ecs, c + Point::new(-1, -1), 1);
     ecs.push((
-        Position::with_pt(c, 0),
+        Position::with_pt(c, 1),
         Description("This auto-doc loves healing SecBots!".to_string()),
         TileTrigger(crate::components::TriggerType::Healing),
     ));
