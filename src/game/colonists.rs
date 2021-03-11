@@ -19,6 +19,19 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
             let mut should_move = true;
 
             // Check basics like "am I dead?"
+            if let Ok(er) = ecs.entry_ref(*entity) {
+                if let Ok(health) = er.get_component::<Health>() {
+                    if health.current < 1 {
+                        commands.add_component(*entity, ColonistStatus::DiedAfterStart);
+                        commands.remove_component::<Active>(*entity);
+                        return;
+                    }
+                } else {
+                    commands.add_component(*entity, ColonistStatus::DiedAfterStart);
+                    commands.remove_component::<Active>(*entity);
+                    return;
+                }
+            }
 
             // Am I at the exit? If so, I can change my status to "rescued"
             // Am I at a level boundary? If so, go up it!
