@@ -1,4 +1,4 @@
-use crate::{map::Map, NewState};
+use crate::map::Map;
 use bracket_lib::prelude::*;
 use legion::*;
 mod gui;
