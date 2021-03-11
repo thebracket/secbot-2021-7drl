@@ -156,9 +156,9 @@ fn populate_rooms(
                 spawn_room(ri, r, map, ecs, rng);
             } else {
                 if rng.range(0, 5) == 0 {
-                    spawn_random_colonist(ecs, r.center(), 0);
+                    spawn_random_colonist(ecs, r.center(), 1);
                 } else {
-                    spawn_face_eater(ecs, r.center(), 0);
+                    spawn_face_eater(ecs, r.center(), 1);
                 }
             }
         }
