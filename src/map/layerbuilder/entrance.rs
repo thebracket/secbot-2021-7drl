@@ -460,8 +460,8 @@ fn hidey_boom(room: &Rect, ecs: &mut World) {
         if pt != room.center() {
             spawn_explosive_barrel(ecs, pt, 0);
         }
-        spawn_hiding_colonist(ecs, room.center(), 0);
     });
+    spawn_hiding_colonist(ecs, room.center(), 0);
 }
 
 fn med_bay(room: &Rect, ecs: &mut World, map: &mut Layer) {

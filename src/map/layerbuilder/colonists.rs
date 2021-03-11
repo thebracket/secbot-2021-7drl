@@ -98,7 +98,6 @@ pub fn spawn_hiding_colonist(ecs: &mut World, location: Point, layer: u32) {
             lines: vec!["Nobody will find me in here!".to_string()],
         },
     );
-    commands.add_component(entity, Description("Colonist senior manager.".to_string()));
     commands.flush(ecs);
 }
 
