@@ -2,6 +2,7 @@ use super::edge_filler_lava;
 use crate::map::{tile::TileType, Layer, Tile, HEIGHT, WIDTH};
 use bracket_lib::prelude::*;
 use legion::*;
+use super::{monsters::*, props::*, colonists::*};
 
 pub fn build_caverns(ecs: &mut World) -> Layer {
     let mut layer = Layer::new(std::usize::MAX, ecs); // Gets a default layer
@@ -10,6 +11,7 @@ pub fn build_caverns(ecs: &mut World) -> Layer {
     for _ in 0..15 {
         iteration(&mut layer);
     }
+
     edge_filler_lava(&mut layer);
 
     let desired_start = Point::new(2, HEIGHT / 2);
@@ -29,6 +31,27 @@ pub fn build_caverns(ecs: &mut World) -> Layer {
     layer.starting_point = layer.index_to_point2d(possible_starts[0].0);
     layer.colonist_exit = layer.starting_point;
     layer.tiles[possible_starts[0].0] = Tile::stairs_up();
+
+    // Cull unreachable areas
+    let starting_points = vec![possible_starts[0].0];
+    let dm = DijkstraMap::new(WIDTH, HEIGHT, &starting_points, &layer, (WIDTH*HEIGHT) as f32);
+    dm.map.iter().enumerate().for_each(|(i, distance)| {
+        if *distance == std::f32::MAX && layer.tiles[i].tile_type == TileType::Floor {
+            layer.tiles[i] = Tile::wall();
+        }
+    });
+
+    // Spawn the queen far away
+    let farthest_tile = layer.index_to_point2d(
+        dm.map
+            .iter()
+            .enumerate()
+            .filter(|(i, _)| layer.tiles[*i].tile_type == TileType::Floor)
+            .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap())
+            .unwrap()
+            .0
+    );
+    spawn_queen(ecs, farthest_tile, 3);
 
     layer
 }
