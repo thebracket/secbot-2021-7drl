@@ -7,7 +7,7 @@ lazy_static! {
 
 #[derive(Debug, Clone)]
 pub struct PlayStats {
-    pub turns_elapsed : usize,
+    pub turns_elapsed: usize,
     pub last_heard: String,
     pub total_dead: usize,
     pub total_props_smashed: usize,
@@ -17,8 +17,8 @@ pub struct PlayStats {
 impl PlayStats {
     fn new() -> Self {
         PlayStats {
-            turns_elapsed : 0,
-            last_heard : "Nothing".to_string(),
+            turns_elapsed: 0,
+            last_heard: "Nothing".to_string(),
             total_dead: 0,
             total_hostiles_killed: 0,
             total_props_smashed: 0,
