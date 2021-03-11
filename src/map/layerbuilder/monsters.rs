@@ -42,7 +42,7 @@ pub fn spawn_quill_worm(ecs: &mut World, location: Point, layer: u32) {
         Targetable {},
         Position::with_pt(location, layer),
         Glyph {
-            glyph: to_cp437('Q'),
+            glyph: to_cp437('q'),
             color: ColorPair::new(RED, BLACK),
         },
         Description("Kinda like a porcupine if H.R. Giger had designed it".to_string()),

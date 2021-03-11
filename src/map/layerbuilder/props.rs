@@ -39,7 +39,7 @@ pub fn spawn_chair(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
         Glyph {
             glyph: to_cp437('╓'),
-            color: ColorPair::new(GRAY, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
         },
         Name("Plastic Chair".to_string()),
         Description("A plastic chair".to_string()),
@@ -55,7 +55,7 @@ pub fn spawn_table(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
         Glyph {
             glyph: to_cp437('╥'),
-            color: ColorPair::new(GRAY, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
         },
         Name("Plastic Table".to_string()),
         Description("A plastic table".to_string()),
@@ -71,7 +71,7 @@ pub fn spawn_greeter(ecs: &mut World, pos: Point, layer: u32) {
     let e = ecs.push((
         Glyph {
             glyph: to_cp437('♥'),
-            color: ColorPair::new(PINK, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
         },
         Name("GreeterBot".to_string()),
         Description("Bracket Corp welcoming robot. Your safety is important to us!".to_string()),
@@ -101,7 +101,7 @@ pub fn spawn_bed(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
         Glyph {
             glyph: to_cp437('ß'),
-            color: ColorPair::new(YELLOW, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
         },
         Name("Comfy Bed".to_string()),
         Description("A really comfortable bed".to_string()),
@@ -117,7 +117,7 @@ pub fn spawn_tree(ecs: &mut World, pos: Point, layer: u32) {
     ecs.push((
         Glyph {
             glyph: to_cp437('♣'),
-            color: ColorPair::new(GREEN, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
         },
         Name("Bonsai Tree".to_string()),
         Description("A small tree, providing oxygenation.".to_string()),
@@ -133,7 +133,7 @@ pub fn spawn_explosive_barrel(ecs: &mut World, pos: Point, layer: u32) {
     let e = ecs.push((
         Glyph {
             glyph: to_cp437('O'),
-            color: ColorPair::new(ORANGE, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
         },
         Name("Explosive Barrel".to_string()),
         Description("Why do people ALWAYS leave these lying around?".to_string()),

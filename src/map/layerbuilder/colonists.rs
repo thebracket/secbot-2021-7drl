@@ -17,7 +17,7 @@ fn build_base_colonist(
         Position::with_pt(location, layer),
         Glyph {
             glyph: to_cp437('☺'),
-            color: ColorPair::new(LIME_GREEN, BLACK),
+            color: ColorPair::new(WHITE, BLACK),
         },
         Description("A squishy friend. You are here to rescue your squishies.".to_string()),
         ColonistStatus::Alive,
