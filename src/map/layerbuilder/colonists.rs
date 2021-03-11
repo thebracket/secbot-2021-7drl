@@ -37,6 +37,7 @@ fn build_base_colonist(
         },
     );
     commands.add_component(entity, Blood(DARK_RED.into()));
+    //commands.add_component(entity, Active{});
     commands.flush(ecs);
 
     entity

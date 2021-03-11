@@ -70,27 +70,31 @@ impl PlayerStatus {
         let mut died_in_rescue = 0;
         let mut rescued = 0;
 
-        <(Entity, &Colonist, &Position, &ColonistStatus)>::query()
-        .for_each(ecs, |(entity, _, pos, status)| {
-            total_colonists += 1;
-            if pos.layer == current_layer as u32
-                && *status != ColonistStatus::Rescued
-                && *status != ColonistStatus::DiedAfterStart
-                && *status != ColonistStatus::StartedDead
-            {
-                colonists_on_layer += 1;
-            }
-            if let Ok(entry) = ecs.entry_ref(*entity) {
-                if let Ok(_) = entry.get_component::<Found>() {
-                    match *status {
-                        ColonistStatus::Alive => located_alive += 1,
-                        ColonistStatus::StartedDead => located_dead += 1,
-                        ColonistStatus::DiedAfterStart => died_in_rescue += 1,
-                        ColonistStatus::Rescued => rescued += 1,
+        <(Entity, &Colonist, &Position, &ColonistStatus)>::query().for_each(
+            ecs,
+            |(entity, _, pos, status)| {
+                if *status != ColonistStatus::StartedDead {
+                    total_colonists += 1;
+                }
+                if pos.layer == current_layer as u32
+                    && *status != ColonistStatus::Rescued
+                    && *status != ColonistStatus::DiedAfterStart
+                    && *status != ColonistStatus::StartedDead
+                {
+                    colonists_on_layer += 1;
+                }
+                if let Ok(entry) = ecs.entry_ref(*entity) {
+                    if let Ok(_) = entry.get_component::<Found>() {
+                        match *status {
+                            ColonistStatus::Alive => located_alive += 1,
+                            ColonistStatus::StartedDead => located_dead += 1,
+                            ColonistStatus::DiedAfterStart => died_in_rescue += 1,
+                            ColonistStatus::Rescued => rescued += 1,
+                        }
                     }
                 }
-            }
-        });
+            },
+        );
 
         ColonyInfo {
             total_colonists,

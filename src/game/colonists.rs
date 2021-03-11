@@ -42,10 +42,11 @@ pub fn colonists_turn(ecs: &mut World, map: &mut Map) {
                     commands.remove_component::<Glyph>(*entity);
                     commands.remove_component::<Description>(*entity);
                 } else {
+                    //println!("Transit from level {} to {}", pos.layer, pos.layer-1);
                     commands.add_component(
                         *entity,
                         Position::with_pt(
-                            map.get_layer(pos.layer as usize).find_down_stairs(),
+                            map.get_layer(pos.layer as usize - 1).find_down_stairs(),
                             pos.layer - 1,
                         ),
                     );

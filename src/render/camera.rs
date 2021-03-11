@@ -170,7 +170,14 @@ impl Camera {
         batch.submit(30_000).expect("Error batching map");
     }
 
-    pub fn render_tooltips(&self, ecs: &mut World, map: &Map, mouse_x: i32, mouse_y: i32, clicked: bool) {
+    pub fn render_tooltips(
+        &self,
+        ecs: &mut World,
+        map: &Map,
+        mouse_x: i32,
+        mouse_y: i32,
+        clicked: bool,
+    ) {
         let mut batch = DrawBatch::new();
         batch.target(LAYER_TEXT);
         let map_pos = self.screen_to_world(mouse_x, mouse_y);
