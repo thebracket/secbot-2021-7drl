@@ -73,7 +73,11 @@ impl PlayerStatus {
 
         query.for_each(ecs, |(entity, _, pos, status)| {
             total_colonists += 1;
-            if pos.layer == current_layer as u32 && *status != ColonistStatus::Rescued {
+            if pos.layer == current_layer as u32
+                && *status != ColonistStatus::Rescued
+                && *status != ColonistStatus::DiedAfterStart
+                &&*status != ColonistStatus::StartedDead
+            {
                 colonists_on_layer += 1;
             }
             if let Ok(entry) = ecs.entry_ref(*entity) {
