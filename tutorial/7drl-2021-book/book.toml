@@ -1,0 +1,6 @@
+[book]
+authors = ["Herbert Wolverson"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Making SecBot - 7-Day Roguelike Tutorial 2021"
