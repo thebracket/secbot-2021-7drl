@@ -50,6 +50,10 @@ fn main() -> BError {
 
 Ok, so that's not very exicting. It gets me a console window on the screen, and `Hello, Bracket Terminal!` in white on black. It's a necessary start.
 
+![](./hello_bracket.jpg)
+
+> You can find the source code for `hello_bracket` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/hello_bracket/).
+
 ## WASM Building
 
 I knew from the start that I wanted to support Web Assembly as a target. `Bracket-lib` WASM builds require a tool called `wasm-bindgen`, so I made sure that was installed by typing: `cargo install wasm-bindgen`. It takes a while to compile, time for coffee!
