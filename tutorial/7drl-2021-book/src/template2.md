@@ -143,3 +143,7 @@ self.render_glyphs(ctx);
 ~~~
 
 Run the game now - and you'll see a field of open space with an `@` on it.
+
+![](./hello_entity.jpg)
+
+> You can find the source code for `hello_entity` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/hello_entity/).

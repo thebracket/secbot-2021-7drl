@@ -9,5 +9,6 @@ edition = "2018"
 [workspace]
 members = [
     "hello_bracket",
-    "sea_of_dots"
+    "sea_of_dots",
+    "hello_entity"
 ]
