@@ -184,6 +184,8 @@ fn add_game_exit(map: &mut Layer, ecs: &mut World, pt: Point) {
 
 This adds the exit tile to the map, and creates a new entity to display a tool-tip (when we have that in!) to show you that the tile represents an exit.
 
+Next, open up `mod.rs` and uncomment the line that imports `layerbuilder`.
+
 You'll notice that the game still doesn't compile. That's because we used `point2d_to_index` - which is provided by `bracket-lib`'s trait system.
 
 # Trait Implementation
@@ -253,4 +255,10 @@ impl BaseMap for Layer {
 
 # Wrap-Up
 
-If you run the program now, you'll see a docking capsule (without walls!) sitting on a field of open space. Next, we'll start making the map more interesting.
+If you run the program now, you'll see a docking capsule (without walls!) sitting on a field of open space. 
+
+![](./hello_capsule.jpg)
+
+Next, we'll start making the map more interesting.
+
+> You can find the source code for `hello_capsule` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/hello_capsule/).

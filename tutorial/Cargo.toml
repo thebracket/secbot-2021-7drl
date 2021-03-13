@@ -10,5 +10,6 @@ edition = "2018"
 members = [
     "hello_bracket",
     "sea_of_dots",
-    "hello_entity"
+    "hello_entity",
+    "hello_capsule",
 ]

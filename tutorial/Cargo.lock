@@ -689,6 +689,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hello_capsule"
+version = "0.1.0"
+dependencies = [
+ "bracket-lib",
+ "lazy_static",
+ "legion",
+]
+
+[[package]]
 name = "hello_entity"
 version = "0.1.0"
 dependencies = [
