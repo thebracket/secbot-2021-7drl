@@ -18,4 +18,5 @@
     - [Building the Colony](./colony_surface.md)
 - [Day Two](./day_2.md)
     - [Adding a colonist](./first_colonist.md)
+    - [Tracking Colonists](./colonist_status.md)
 

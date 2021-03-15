@@ -716,6 +716,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hello_colonists"
+version = "0.1.0"
+dependencies = [
+ "bracket-lib",
+ "lazy_static",
+ "legion",
+]
+
+[[package]]
 name = "hello_colony"
 version = "0.1.0"
 dependencies = [

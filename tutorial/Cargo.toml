@@ -20,4 +20,5 @@ members = [
     "hello_windows",
     "hello_colony",
     "hello_colonist",
+    "hello_colonists",
 ]
