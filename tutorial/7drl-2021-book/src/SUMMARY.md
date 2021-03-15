@@ -11,5 +11,6 @@
     - [Global RNG](./rng.md)
     - [Cleaning Up the Sandbox](./day_one_cleaning_1.md)
     - [Turn State and Modal Announcements](./turn_state.md)
+    - [Tooltips](./tooltips1.md)
 - [Day Two]()
 
