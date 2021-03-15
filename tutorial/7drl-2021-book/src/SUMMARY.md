@@ -16,5 +16,6 @@
     - [Building an Asteroid](./asteroid_surface.md)
     - [Walls, Windows and Field-of-View](./windows_fov.md)
     - [Building the Colony](./colony_surface.md)
-- [Day Two]()
+- [Day Two](./day_2.md)
+    - [Adding a colonist](./first_colonist.md)
 
