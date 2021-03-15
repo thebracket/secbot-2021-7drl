@@ -296,3 +296,13 @@ You can walk around with WASD or the cursor keys. The escape pod airlock door ha
 > You can find the source code for `hello_secbot` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/hello_secbot/).
 
 ## Onwards!
+
+The basic skeleton of the game is now in place. We've implemented:
+* A basic map.
+* Turn-state.
+* Modal dialogs.
+* Moving around the map.
+* Ending the game.
+* Tooltips.
+
+That's a pretty good start, but I still had some day remaining. So, onwards to building the basic map.

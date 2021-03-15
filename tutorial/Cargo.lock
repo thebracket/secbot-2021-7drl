@@ -680,6 +680,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hello_asteroid"
+version = "0.1.0"
+dependencies = [
+ "bracket-lib",
+ "lazy_static",
+ "legion",
+]
+
+[[package]]
 name = "hello_bracket"
 version = "0.1.0"
 dependencies = [

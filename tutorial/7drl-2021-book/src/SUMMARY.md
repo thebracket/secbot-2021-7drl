@@ -13,5 +13,6 @@
     - [Turn State and Modal Announcements](./turn_state.md)
     - [Tooltips](./tooltips1.md)
     - [Walking Around](./player_walk.md)
+    - [Building an Asteroid](./asteroid_surface.md)
 - [Day Two]()
 

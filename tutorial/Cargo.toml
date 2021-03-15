@@ -15,4 +15,5 @@ members = [
     "hello_modal",
     "hello_tooltip",
     "hello_secbot",
+    "hello_asteroid",
 ]
