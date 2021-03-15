@@ -7,6 +7,7 @@ pub struct Layer {
     pub revealed: Vec<bool>,
     pub visible: Vec<bool>,
     pub starting_point: Point,
+    pub is_door: Vec<bool>,
 }
 
 impl Layer {
@@ -18,6 +19,7 @@ impl Layer {
                 starting_point: Point::new(WIDTH / 2, HEIGHT / 2),
                 visible: vec![false; TILES],
                 revealed: vec![false; TILES],
+                is_door: vec![false; TILES],
             },
         };
         layer

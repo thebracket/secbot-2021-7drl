@@ -18,4 +18,5 @@ members = [
     "hello_secbot",
     "hello_asteroid",
     "hello_windows",
+    "hello_colony",
 ]

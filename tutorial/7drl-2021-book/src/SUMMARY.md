@@ -15,5 +15,6 @@
     - [Walking Around](./player_walk.md)
     - [Building an Asteroid](./asteroid_surface.md)
     - [Walls, Windows and Field-of-View](./windows_fov.md)
+    - [Building the Colony](./colony_surface.md)
 - [Day Two]()
 

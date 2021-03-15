@@ -49,7 +49,7 @@ impl Algorithm2D for Layer {
     }
 
     fn in_bounds(&self, pos: Point) -> bool {
-        pos.x >= 0 && pos.x < WIDTH as i32 && pos.y > 0 && pos.y <= HEIGHT as i32
+        pos.x >= 0 && pos.x < WIDTH as i32 && pos.y > 0 && pos.y < HEIGHT as i32
     }
 }
 

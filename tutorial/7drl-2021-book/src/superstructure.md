@@ -71,9 +71,9 @@ const TILES: usize = WIDTH * HEIGHT;
 pub const NUM_LAYERS: usize = 5;
 
 mod tile;
-use tile::Tile;
+use tile::*;
 mod layer;
-use layer::Layer;
+use layer::*;
 mod map;
 pub use map::Map;
 //mod layerbuilder;
