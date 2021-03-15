@@ -107,7 +107,7 @@ pub fn modal(ctx: &mut BTerm, title: &String, body: &String) -> NewState {
         .centered("PRESS ENTER TO CONTINUE")
         .reset();
 
-    let mut block = TextBlock::new(20, 15, 70, 11);
+    let mut block = TextBlock::new(21, 15, 69, 11);
     block.print(&buf).expect("Overflow occurred");
     block.render_to_draw_batch(&mut draw_batch);
     draw_batch.submit(0).expect("Batch error");
@@ -152,7 +152,7 @@ pub fn render_tooltips(ctx: &mut BTerm, ecs: &World, map: &Map) {
         });
 
         if !lines.is_empty() {
-            let height = lines.len() + 2;
+            let height = lines.len() + 1;
             let width = lines.iter().map(|s| s.len()).max().unwrap() + 2;
             let tip_x = if map_x < WIDTH as i32/2 {
                 mx+1
@@ -206,3 +206,4 @@ You can run the game now and see a tooltip for the player:
 
 ## Onwards!
 
+Next, we'll let SecBot's `@` walk around the map.

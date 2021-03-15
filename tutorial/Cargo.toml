@@ -14,4 +14,5 @@ members = [
     "hello_capsule",
     "hello_modal",
     "hello_tooltip",
+    "hello_secbot",
 ]
