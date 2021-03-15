@@ -1,11 +1,15 @@
 # Summary
 
 - [Introduction](./introduction.md)
-
-- [Initial Design](./design.md)
+- [Before I Started](./day_0.md)
+    - [Initial Design](./design.md)
 - [Day One](./day_1.md)
     - [Starting Template and Build System](./template.md)
     - [Superstructure](./superstructure.md)
     - [Adding a Player Entity](./template2.md)
     - [Initial Mapping](./firstmap.md)
+    - [Global RNG](./rng.md)
+    - [Cleaning Up the Sandbox](./day_one_cleaning_1.md)
+    - [Turn State and Modal Announcements](./turn_state.md)
+- [Day Two]()
 

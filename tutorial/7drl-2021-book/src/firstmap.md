@@ -259,6 +259,6 @@ If you run the program now, you'll see a docking capsule (without walls!) sittin
 
 ![](./hello_capsule.jpg)
 
-Next, we'll start making the map more interesting.
-
 > You can find the source code for `hello_capsule` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/hello_capsule/).
+
+Next up - adding some more elements that I'll need throughout development.

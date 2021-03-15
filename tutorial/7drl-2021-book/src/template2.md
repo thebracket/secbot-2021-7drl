@@ -112,7 +112,7 @@ Then add (implemented as part of `State`) the new function:
 }
 ~~~
 
-The `new_game` function clears the ECS (in case we are starting over), and spawns a single entity with one of each of the components we created.
+The `new_game` function clears the ECS (in case we are starting over), and spawns a single entity with one of each of the components we created. I wrote about `push` a lot in *Hands-On Rust*, so I won't repeat all of that here. Think of it as being like `push` for a vector - but in this case you are adding to the game world. It adds all of the components contained in the tuple you push to a single entity (and returns the entity, but I didn't use that here).
 
 # Render the Bot
 

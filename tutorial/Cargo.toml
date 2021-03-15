@@ -12,4 +12,5 @@ members = [
     "sea_of_dots",
     "hello_entity",
     "hello_capsule",
+    "hello_modal",
 ]
