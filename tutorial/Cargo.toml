@@ -21,4 +21,5 @@ members = [
     "hello_colony",
     "hello_colonist",
     "hello_colonists",
+    "hello_colonist_finder",
 ]

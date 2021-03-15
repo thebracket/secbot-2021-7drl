@@ -19,4 +19,5 @@
 - [Day Two](./day_2.md)
     - [Adding a colonist](./first_colonist.md)
     - [Tracking Colonists](./colonist_status.md)
+    - [Finding Colonists](./colonist_locate.md)
 
