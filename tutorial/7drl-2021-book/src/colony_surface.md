@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Building the Colony
 
 I had some definite ideas for how I wanted the mining colony to work. I wanted it to look like modules, bolted together - separated by bulkheads and walls. That made sense to me: you're on a hostile world, you build your base to withstand sections failing. That also implied that I *didn't* want corridors everywhere - why build fragile umbilicals between buildings? That seems like it's asking for trouble.

@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Starting Template and Build
 
 At the very start of the jam, I grabbed a handy template I like to keep around for basic ASCII/CodePage 437 based roguelikes. I wound up modifying it a bit to fit the "no systems, no threads" constraints - but the basic template lets me get started quickly. This section will go over the template and how it got me started.

@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Colonist Chat
 
 One of the core ideas when I was imaging what SecBot would look like included the colonists saying useless - but flavorful - things to you as you encounter them. Seeing a green smiley face is great; having the smiley face tell you something adds a layer of immersion at little cost to the game.

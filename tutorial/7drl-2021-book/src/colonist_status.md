@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Tracking Colonists
 
 It would help the player to know how many colonists need rescue (as well as how many have been rescued, found dead, etc.). It would also help to have more than one colonist - otherwise, it's a rather easy game.

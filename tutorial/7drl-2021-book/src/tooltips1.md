@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Tooltips
 
 Whenever I play a pure-ASCII roguelike, I *need* a "look" function. It's all very well to turn a corner and find yourself facing a see of `g` characters, but that triggers my brain into trying to remember what `g` stands for! It could be a goblin, a gnu, a ghost, a gargoyle or all manner of other uses of the letter `g`. I'd much rather be able to glance (ugh, another "g"!) at it and know what I'm up against!

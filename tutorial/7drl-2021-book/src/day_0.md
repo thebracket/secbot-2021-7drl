@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Before I Started
 
 The 7DRL rules give you a lot of flexibility. You can start with an existing code base, use engines, even use the week to improve an existing project (so long as you clearly label what you did). Given that leeway, I decided to do a bit of advanced planning.

@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Adding a colonist
 
 A central theme of *SecBot* is locating the colonists who live in and around the mining facility. That makes adding them a top priority! So I started day #2 by trying to do just that.

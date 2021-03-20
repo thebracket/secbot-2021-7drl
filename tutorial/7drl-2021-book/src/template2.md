@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Adding a Player Entity
 
 Now that we have a rendered map - albeit one showing just open spaces - it's time to add `SecBot` onto it. It's a good idea to get this in early; it forces you to make the basic game structure, implement turn-based movement, and setup the infrastructure to render and move entities.

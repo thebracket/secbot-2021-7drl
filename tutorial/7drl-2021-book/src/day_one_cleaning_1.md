@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Cleaning Up the Sandbox
 
 The template was written really quickly, and that tends to result in poor code choices. A couple of things bugged me, so I took a moment to clean them up.

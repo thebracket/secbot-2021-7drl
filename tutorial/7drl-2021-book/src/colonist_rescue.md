@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Rescuing Colonists
 
 It's time to make the colonists do something! Now that you've found them, it's time to make them path to the exit. If they make it, they becomes "rescued" - and you can start achieving your objective of rescuing all of them.

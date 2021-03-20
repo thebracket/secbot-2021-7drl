@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Building an Asteroid
 
 I knew that SecBot was landing on an asteroid outpost, a mining colony run by the not-so-pleasant *Bracket Corporation* (I like making myself the bad guy in games!). The landscape is interesting: it needs to be pretty, because you can see it out of the window. It also doesn't *do* anything beyond looking pretty. Fortunately, I had an idea for making it quickly.

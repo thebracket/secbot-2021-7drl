@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Building the superstructure
 
 In my mental design sketches, the map was going to be 80 tiles wide by 60 characters tall. That's probably larger than I actually needed, but it worked. I needed room for a UI, so I went with `112x62` for my initial window size. I opened up `src/main.rs` and modified the initializer:

@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Walls, Windows and Field-of-View
 
 Now that we have a nice landscape, intended to be viewed out of the window - lets add some walls, a window, and the ability to look through the window. We've already done the hard part for this, so it's relatively plain sailing.

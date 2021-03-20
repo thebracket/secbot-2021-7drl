@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Walking Around
 
 Now that we have a map and tooltips, it's time to make the player respond to some input - and walk around the map. We've done most of the back-end work for this, it's largely a matter of receiving player input, parsing it, and implementing movement logic. Unlike *Hands-on Rust*, I didn't do a lot of clever systems work here - I went with something quick and functional.

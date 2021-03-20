@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Finding Colonists
 
 Having colonists on the map is a great start. Being able to find them (and adjust the counter to show that you've located them) would be a logical next step.

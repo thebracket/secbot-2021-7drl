@@ -1,3 +1,5 @@
+{{#include header.md}}
+
 # Initial Mapping
 
 Now that you have a field of open space and a player entity, let's make something more interesting for SecBot to stand on.
