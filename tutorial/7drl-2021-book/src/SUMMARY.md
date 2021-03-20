@@ -20,4 +20,5 @@
     - [Adding a colonist](./first_colonist.md)
     - [Tracking Colonists](./colonist_status.md)
     - [Finding Colonists](./colonist_locate.md)
-
+    - [Rescuing Colonists](./colonist_rescue.md)
+    - [Colonist Chat](./colonist_chat.md)

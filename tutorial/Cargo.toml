@@ -22,4 +22,5 @@ members = [
     "hello_colonist",
     "hello_colonists",
     "hello_colonist_finder",
+    "pathing_colonists_flat",
 ]
