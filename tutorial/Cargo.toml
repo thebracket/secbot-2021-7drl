@@ -24,4 +24,5 @@ members = [
     "hello_colonist_finder",
     "pathing_colonists_flat",
     "pathing_colonists_chat",
+    "hello_monsters",
 ]

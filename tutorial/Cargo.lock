@@ -761,6 +761,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hello_monsters"
+version = "0.1.0"
+dependencies = [
+ "bracket-lib",
+ "lazy_static",
+ "legion",
+]
+
+[[package]]
 name = "hello_secbot"
 version = "0.1.0"
 dependencies = [

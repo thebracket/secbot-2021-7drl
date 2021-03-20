@@ -22,3 +22,5 @@
     - [Finding Colonists](./colonist_locate.md)
     - [Rescuing Colonists](./colonist_rescue.md)
     - [Colonist Chat](./colonist_chat.md)
+    - [Targeting](./targeting.md)
+    
