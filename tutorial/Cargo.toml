@@ -27,4 +27,5 @@ members = [
     "hello_monsters",
     "targetable_colonists",
     "mining_map1",
+    "mining_map2",
 ]
