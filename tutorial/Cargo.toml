@@ -28,4 +28,5 @@ members = [
     "targetable_colonists",
     "mining_map1",
     "mining_map2",
+    "mining_map3",
 ]
