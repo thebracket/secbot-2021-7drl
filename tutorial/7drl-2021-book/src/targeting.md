@@ -439,7 +439,7 @@ Run the game now. You can move around, and when you encounter monsters they are 
 
 ![](./hello_monsters.jpg)
 
-> You can find the source code for `pathing_colonists_flat` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/hello_monsters/).
+> You can find the source code for `hello_monsters` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/hello_monsters/).
 
 ## Next up
 

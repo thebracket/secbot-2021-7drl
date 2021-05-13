@@ -1,12 +1,12 @@
 [package]
-name = "secbot"
+name = "targetable_colonists"
 version = "0.1.0"
 authors = ["Herbert Wolverson <herberticus@gmail.com>"]
 edition = "2018"
 
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
 [dependencies]
-bracket-lib = { path = "https://github.com/amethyst/bracket-lib.git" }
+bracket-lib = { git = "https://github.com/amethyst/bracket-lib.git" }
 legion = { version = "0.3.1", default-features = false, features = ["wasm-bindgen"] }
 lazy_static = "1.4.0"
-Inflector = "0.11.4"
-ultraviolet = "0.7.5"

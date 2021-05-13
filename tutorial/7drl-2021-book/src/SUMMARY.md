@@ -23,4 +23,6 @@
     - [Rescuing Colonists](./colonist_rescue.md)
     - [Colonist Chat](./colonist_chat.md)
     - [Targeting](./targeting.md)
+- [Day Three](./day_3.md)
+    - [Targetable Component](./targetable.md)
     
