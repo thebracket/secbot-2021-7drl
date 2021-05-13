@@ -25,4 +25,5 @@
     - [Targeting](./targeting.md)
 - [Day Three](./day_3.md)
     - [Targetable Component](./targetable.md)
-    
+    - [Mapping the Mine pt 1](./mine_map1.md)
+    - [Mapping the Mine pt 2](./mine_map2.md)

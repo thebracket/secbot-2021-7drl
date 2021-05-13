@@ -1000,6 +1000,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "mining_map1"
+version = "0.1.0"
+dependencies = [
+ "bracket-lib",
+ "lazy_static",
+ "legion",
+]
+
+[[package]]
 name = "miniz_oxide"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
