@@ -104,4 +104,6 @@ Run the program now, and take a look at a mine-head level:
 
 ## Wrap-Up
 
+> You can find the source code for `mining_map2` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/mining_map2/).
+
 The mine-head is looking pretty decent, now. Let's move on to even more mapping!

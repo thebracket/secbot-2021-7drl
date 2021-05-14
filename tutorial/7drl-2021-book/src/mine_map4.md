@@ -238,4 +238,6 @@ Run the game now, and the caverns now feature an exit:
 
 ## Wrap-Up
 
+> You can find the source code for `mining_map4` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/mining_map4/).
+
 Next, we're going to start work on making staircases functional.

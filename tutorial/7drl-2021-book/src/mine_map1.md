@@ -270,4 +270,6 @@ pub fn build_mine_middle(ecs: &mut World) -> Layer {
 
 ## Wrap-Up
 
+> You can find the source code for `mining_map1` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/mining_map1/).
+
 Next, we'll continue adding details to the maps.

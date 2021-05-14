@@ -79,3 +79,6 @@ Run the game and navigate to layer 2 (or modify `map.rs` to start there). You'll
 
 ## Wrap-Up
 
+Next, we'll work on adding the caverns to the bottom of the map.
+
+> You can find the source code for `mining_map3` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/mining_map3/).
