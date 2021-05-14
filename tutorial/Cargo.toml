@@ -29,4 +29,5 @@ members = [
     "mining_map1",
     "mining_map2",
     "mining_map3",
+    "mining_map4",
 ]
