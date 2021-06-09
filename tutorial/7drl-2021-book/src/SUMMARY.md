@@ -31,4 +31,5 @@
     - [Mapping the Mine pt 4](./mine_map4.md)
     - [Vertical Navigation](./vertical1.md)
 - [Day Four](./day_4.md)
+    - [Active/Idle Colonists](./active_idle.md)
 

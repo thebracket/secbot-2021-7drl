@@ -31,4 +31,5 @@ members = [
     "mining_map3",
     "mining_map4",
     "stairs1",
+    "active_components",
 ]
