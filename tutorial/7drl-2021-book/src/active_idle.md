@@ -39,7 +39,7 @@ fn build_base_colonist(ecs: &mut World, location: Point, layer: u32) -> Entity {
     ecs.push((
         Colonist { path: None },
         Position::with_pt(location, layer),
-        ColorPair::new(LIME_GREEN, BLACK),
+        Glyph{ glyph: to_cp437('☺'), color: ColorPair::new(LIME_GREEN, BLACK) },
         Description("A squishy friend. You are here to rescue your squishies.".to_string()),
         ColonistStatus::Alive,
         Name("Colonist".to_string()),
@@ -177,6 +177,7 @@ There are still some problems with the HUD, and these will be resolved in later 
 
 (Screenshot)
 
-(Source link)
+> You can find the source code for `active_components` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/active_components/).
 
-This was a relatively small set of changes, but has smoothed over how entity activation works---ready to start having monsters activate when they are near the player.
+
+This was a relatively small set of changes, but has smoothed over how entity activation works. Next up, we'll make colonists path properly across levels.

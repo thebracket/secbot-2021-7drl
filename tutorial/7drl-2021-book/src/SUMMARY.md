@@ -32,4 +32,5 @@
     - [Vertical Navigation](./vertical1.md)
 - [Day Four](./day_4.md)
     - [Active/Idle Colonists](./active_idle.md)
+    - [Colonist Cross-Layer Navigation](./cross_layer.md)
 

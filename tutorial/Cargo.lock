@@ -1612,6 +1612,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "stairs2"
+version = "0.1.0"
+dependencies = [
+ "bracket-lib",
+ "lazy_static",
+ "legion",
+]
+
+[[package]]
 name = "strsim"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
