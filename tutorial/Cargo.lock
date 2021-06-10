@@ -818,6 +818,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "hit_points"
+version = "0.1.0"
+dependencies = [
+ "Inflector",
+ "bracket-lib",
+ "lazy_static",
+ "legion",
+]
+
+[[package]]
 name = "ident_case"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
