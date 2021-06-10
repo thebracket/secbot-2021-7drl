@@ -1586,6 +1586,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "shooting1"
+version = "0.1.0"
+dependencies = [
+ "Inflector",
+ "bracket-lib",
+ "lazy_static",
+ "legion",
+ "ultraviolet",
+]
+
+[[package]]
 name = "slab"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"

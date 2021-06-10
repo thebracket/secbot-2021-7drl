@@ -35,4 +35,5 @@ members = [
     "stairs2",
     "taking_names",
     "hit_points",
+    "shooting1",
 ]

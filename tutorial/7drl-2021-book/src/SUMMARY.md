@@ -35,4 +35,5 @@
     - [Colonist Cross-Layer Navigation](./cross_layer.md)
     - [Naming Colonists](./naming.md)
     - [Hit Points](./hit_points.md)
+    - [Shooting Things](./shooting1.md)
 
