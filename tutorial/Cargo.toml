@@ -33,4 +33,5 @@ members = [
     "stairs1",
     "active_components",
     "stairs2",
+    "taking_names",
 ]
