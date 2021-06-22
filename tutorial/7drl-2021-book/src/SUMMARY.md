@@ -37,4 +37,5 @@
     - [Hit Points](./hit_points.md)
     - [Shooting Things](./shooting1.md)
     - [Warnings and Hostiles](./warnings_hostiles.md)
+    - [Killing SecBot](./killing_secbot.md)
 

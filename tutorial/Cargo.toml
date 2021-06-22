@@ -37,4 +37,5 @@ members = [
     "hit_points",
     "shooting1",
     "warnings_hostiles",
+    "killing_secbot",
 ]
