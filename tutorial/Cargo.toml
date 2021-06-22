@@ -38,4 +38,5 @@ members = [
     "shooting1",
     "warnings_hostiles",
     "killing_secbot",
+    "sad_colonists",
 ]
