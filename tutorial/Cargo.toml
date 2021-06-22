@@ -36,4 +36,5 @@ members = [
     "taking_names",
     "hit_points",
     "shooting1",
+    "warnings_hostiles",
 ]

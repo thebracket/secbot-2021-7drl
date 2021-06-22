@@ -462,4 +462,4 @@ Whew! That was a lot of steps. The good news is that you can now lay waste to co
 
 > You can find the source code for `shooting1` [here](https://github.com/thebracket/secbot-2021-7drl/tree/tutorial/tutorial/shooting1/).
 
-Up next...
+Up next, we'll clean up some code warnings---and start to let the mobs fight back.
